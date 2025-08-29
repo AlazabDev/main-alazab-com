@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building2, MapPin, Calendar, DollarSign, Search, Plus, Eye, Edit } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { NewPropertyForm } from "@/components/forms/NewPropertyForm";
+import { useProperties } from "@/hooks/useProperties";
 
 const mockProperties = [
   {
@@ -55,6 +58,9 @@ export default function Properties() {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showNewPropertyForm, setShowNewPropertyForm] = useState(false);
+  
+  const { properties, loading, error } = useProperties();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -94,10 +100,20 @@ export default function Properties() {
                 <h1 className="text-3xl font-bold text-foreground">إدارة العقارات</h1>
                 <p className="text-muted-foreground">إدارة ومتابعة العقارات والممتلكات</p>
               </div>
-              <Button className="bg-primary hover:bg-primary/90">
-                <Plus className="h-4 w-4 ml-2" />
-                إضافة عقار جديد
-              </Button>
+              <Dialog open={showNewPropertyForm} onOpenChange={setShowNewPropertyForm}>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary hover:bg-primary/90">
+                    <Plus className="h-4 w-4 ml-2" />
+                    إضافة عقار جديد
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <NewPropertyForm 
+                    onClose={() => setShowNewPropertyForm(false)}
+                    onSuccess={() => setShowNewPropertyForm(false)}
+                  />
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* Stats Cards */}

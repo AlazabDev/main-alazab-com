@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Search, Filter, Plus, Users, Star, Clock } from "lucide-react";
+import { NewVendorForm } from "@/components/forms/NewVendorForm";
+import { useVendors } from "@/hooks/useVendors";
+import { toast } from "@/hooks/use-toast";
 
 const mockVendors = [
   {
@@ -69,16 +73,26 @@ export default function Vendors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showNewVendorForm, setShowNewVendorForm] = useState(false);
+  
+  const { vendors, loading, error } = useVendors();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const filteredVendors = mockVendors.filter(vendor => {
-    const matchesSearch = vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         vendor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSpecialty = specialtyFilter === "all" || vendor.specialty.includes(specialtyFilter);
-    const matchesStatus = statusFilter === "all" || vendor.status === statusFilter;
+  // Use real data if available, fallback to mock data
+  const vendorList = loading ? [] : vendors.length > 0 ? vendors : mockVendors;
+  
+  const filteredVendors = vendorList.filter((vendor: any) => {
+    const vendorName = vendor.name;
+    const vendorSpecialty = vendor.specialty;
+    const vendorStatus = vendor.status;
+    
+    const matchesSearch = vendorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         vendorSpecialty.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSpecialty = specialtyFilter === "all" || vendorSpecialty.includes(specialtyFilter);
+    const matchesStatus = statusFilter === "all" || vendorStatus === statusFilter;
     
     return matchesSearch && matchesSpecialty && matchesStatus;
   });
@@ -96,10 +110,10 @@ export default function Vendors() {
   };
 
   const stats = {
-    total: mockVendors.length,
-    available: mockVendors.filter(v => v.status === "available").length,
-    busy: mockVendors.filter(v => v.status === "busy").length,
-    avgRating: (mockVendors.reduce((sum, v) => sum + v.rating, 0) / mockVendors.length).toFixed(1)
+    total: vendorList.length,
+    available: vendorList.filter(v => v.status === "available").length,
+    busy: vendorList.filter(v => v.status === "busy").length,
+    avgRating: vendorList.length > 0 ? (vendorList.reduce((sum, v) => sum + v.rating, 0) / vendorList.length).toFixed(1) : '0'
   };
 
   return (
@@ -115,10 +129,26 @@ export default function Vendors() {
                 <h1 className="text-3xl font-bold text-foreground">الموردين والفنيين</h1>
                 <p className="text-muted-foreground">إدارة شبكة الموردين والفنيين</p>
               </div>
-              <Button className="bg-primary hover:bg-primary/90">
-                <Plus className="h-4 w-4 ml-2" />
-                إضافة مورد جديد
-              </Button>
+              <Dialog open={showNewVendorForm} onOpenChange={setShowNewVendorForm}>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary hover:bg-primary/90">
+                    <Plus className="h-4 w-4 ml-2" />
+                    إضافة مورد جديد
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <NewVendorForm 
+                    onClose={() => setShowNewVendorForm(false)}
+                    onSuccess={() => {
+                      setShowNewVendorForm(false);
+                      toast({
+                        title: "تم بنجاح",
+                        description: "تم إضافة المورد الجديد بنجاح"
+                      });
+                    }}
+                  />
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* Stats Cards */}
@@ -232,10 +262,22 @@ export default function Vendors() {
 
             {/* Vendors Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredVendors.map((vendor) => (
+              {filteredVendors.map((vendor: any) => (
                 <VendorCard
                   key={vendor.id}
-                  vendor={vendor}
+                  vendor={{
+                    id: vendor.id,
+                    name: vendor.name,
+                    specialty: vendor.specialty,
+                    rating: vendor.rating,
+                    completedJobs: vendor.completedJobs || 0,
+                    location: vendor.address || vendor.location || 'غير محدد',
+                    phone: vendor.phone || '',
+                    status: vendor.status,
+                    hourlyRate: vendor.hourly_rate ? `${vendor.hourly_rate} ريال/ساعة` : vendor.hourlyRate || '0 ريال/ساعة',
+                    verified: vendor.certifications ? vendor.certifications.length > 0 : vendor.verified || false,
+                    responseTime: vendor.responseTime || '30 دقيقة'
+                  }}
                   onContact={handleContact}
                   onAssign={handleAssign}
                 />

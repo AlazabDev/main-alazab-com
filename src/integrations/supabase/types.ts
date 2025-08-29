@@ -259,6 +259,94 @@ export type Database = {
           },
         ]
       }
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          location: string | null
+          maintenance_request_id: string | null
+          notes: string | null
+          property_id: string | null
+          reminder_sent: boolean | null
+          status: string | null
+          title: string
+          updated_at: string
+          vendor_id: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_maintenance_request_id_fkey"
+            columns: ["maintenance_request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assignments: {
         Row: {
           assigned_at: string | null
@@ -1303,6 +1391,83 @@ export type Database = {
           },
         ]
       }
+      properties: {
+        Row: {
+          address: string
+          amenities: string[] | null
+          area: number | null
+          bathrooms: number | null
+          created_at: string
+          description: string | null
+          floors: number | null
+          id: string
+          last_inspection_date: string | null
+          maintenance_schedule: string | null
+          manager_id: string | null
+          name: string
+          next_inspection_date: string | null
+          parking_spaces: number | null
+          region_id: string | null
+          rooms: number | null
+          status: string | null
+          type: string
+          updated_at: string
+          value: number | null
+        }
+        Insert: {
+          address: string
+          amenities?: string[] | null
+          area?: number | null
+          bathrooms?: number | null
+          created_at?: string
+          description?: string | null
+          floors?: number | null
+          id?: string
+          last_inspection_date?: string | null
+          maintenance_schedule?: string | null
+          manager_id?: string | null
+          name: string
+          next_inspection_date?: string | null
+          parking_spaces?: number | null
+          region_id?: string | null
+          rooms?: number | null
+          status?: string | null
+          type: string
+          updated_at?: string
+          value?: number | null
+        }
+        Update: {
+          address?: string
+          amenities?: string[] | null
+          area?: number | null
+          bathrooms?: number | null
+          created_at?: string
+          description?: string | null
+          floors?: number | null
+          id?: string
+          last_inspection_date?: string | null
+          maintenance_schedule?: string | null
+          manager_id?: string | null
+          name?: string
+          next_inspection_date?: string | null
+          parking_spaces?: number | null
+          region_id?: string | null
+          rooms?: number | null
+          status?: string | null
+          type?: string
+          updated_at?: string
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "properties_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ratings: {
         Row: {
           comment: string | null
@@ -1756,6 +1921,60 @@ export type Database = {
           setting_value?: Json
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      vendors: {
+        Row: {
+          address: string | null
+          certifications: string[] | null
+          company_name: string | null
+          created_at: string
+          email: string | null
+          experience_years: number | null
+          hourly_rate: number | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          rating: number | null
+          specialty: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          certifications?: string[] | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          rating?: number | null
+          specialty: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          certifications?: string[] | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          rating?: number | null
+          specialty?: string
+          status?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

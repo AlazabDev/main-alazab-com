@@ -1,14 +1,20 @@
+import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Calendar, Clock, Plus, User } from "lucide-react";
+import { NewAppointmentForm } from "@/components/forms/NewAppointmentForm";
+import { useAppointments } from "@/hooks/useAppointments";
 
 export default function Appointments() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showNewAppointmentForm, setShowNewAppointmentForm] = useState(false);
+  
+  const { appointments, loading, error } = useAppointments();
 
-  const appointments = [
+  const mockAppointments = [
     {
       id: 1,
       title: "فحص دوري للمكيفات",
@@ -36,14 +42,24 @@ export default function Appointments() {
           <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-foreground">المواعيد</h1>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                حجز موعد جديد
-              </Button>
+              <Dialog open={showNewAppointmentForm} onOpenChange={setShowNewAppointmentForm}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    حجز موعد جديد
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <NewAppointmentForm 
+                    onClose={() => setShowNewAppointmentForm(false)}
+                    onSuccess={() => setShowNewAppointmentForm(false)}
+                  />
+                </DialogContent>
+              </Dialog>
             </div>
             
             <div className="grid gap-6">
-              {appointments.map((appointment) => (
+              {(loading ? mockAppointments : appointments.length > 0 ? appointments : mockAppointments).map((appointment: any) => (
                 <Card key={appointment.id} className="card-elegant">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
