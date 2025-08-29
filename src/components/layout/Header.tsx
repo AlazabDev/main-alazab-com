@@ -23,7 +23,6 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
           variant="ghost"
           size="sm"
           onClick={onMenuToggle}
-          className="lg:hidden"
         >
           <Menu className="h-5 w-5" />
         </Button>

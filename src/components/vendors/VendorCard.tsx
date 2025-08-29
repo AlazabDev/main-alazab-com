@@ -1,0 +1,109 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Star, Phone, MapPin, Clock, Shield, Award } from "lucide-react";
+
+interface VendorCardProps {
+  vendor: {
+    id: string;
+    name: string;
+    specialty: string;
+    rating: number;
+    completedJobs: number;
+    location: string;
+    phone: string;
+    status: "available" | "busy" | "offline";
+    hourlyRate: string;
+    avatar?: string;
+    verified: boolean;
+    responseTime: string;
+  };
+  onContact: (vendorId: string) => void;
+  onAssign: (vendorId: string) => void;
+}
+
+export function VendorCard({ vendor, onContact, onAssign }: VendorCardProps) {
+  const statusConfig = {
+    available: { label: "متاح", className: "bg-green-500 text-white" },
+    busy: { label: "مشغول", className: "bg-yellow-500 text-white" },
+    offline: { label: "غير متاح", className: "bg-gray-500 text-white" }
+  };
+
+  return (
+    <Card className="card-elegant hover:shadow-lg transition-all duration-300">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={vendor.avatar} />
+              <AvatarFallback className="bg-primary text-primary-foreground">
+                {vendor.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-lg">{vendor.name}</CardTitle>
+                {vendor.verified && (
+                  <Shield className="h-4 w-4 text-green-500" />
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">{vendor.specialty}</p>
+            </div>
+          </div>
+          <Badge className={statusConfig[vendor.status].className}>
+            {statusConfig[vendor.status].label}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {/* Rating & Stats */}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <span className="font-medium">{vendor.rating}</span>
+            <span className="text-muted-foreground">({vendor.completedJobs} مهمة)</span>
+          </div>
+          <div className="flex items-center gap-1 text-primary">
+            <Award className="h-4 w-4" />
+            <span>{vendor.hourlyRate}</span>
+          </div>
+        </div>
+
+        {/* Location & Response Time */}
+        <div className="space-y-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <MapPin className="h-4 w-4" />
+            <span>{vendor.location}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            <span>متوسط الاستجابة: {vendor.responseTime}</span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2 pt-3">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1"
+            onClick={() => onContact(vendor.id)}
+          >
+            <Phone className="h-4 w-4 ml-2" />
+            اتصال
+          </Button>
+          <Button 
+            size="sm" 
+            className="flex-1"
+            onClick={() => onAssign(vendor.id)}
+            disabled={vendor.status === "offline"}
+          >
+            تعيين
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

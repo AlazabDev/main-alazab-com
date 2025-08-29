@@ -82,9 +82,14 @@ const mockRequests: MaintenanceRequest[] = [
 ];
 
 export default function Requests() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   const filteredRequests = mockRequests.filter(request => {
     const matchesSearch = request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -98,9 +103,9 @@ export default function Requests() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header onMenuToggle={toggleSidebar} />
       <div className="flex">
-        <Sidebar />
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className="flex-1 p-6">
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Page Header */}
