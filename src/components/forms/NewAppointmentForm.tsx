@@ -28,7 +28,7 @@ interface Property {
 interface Vendor {
   id: string;
   name: string;
-  specialty: string;
+  specialization: string[];
 }
 
 export const NewAppointmentForm = ({ onClose, onSuccess }: NewAppointmentFormProps) => {
@@ -83,7 +83,7 @@ export const NewAppointmentForm = ({ onClose, onSuccess }: NewAppointmentFormPro
     try {
       const { data, error } = await supabase
         .from('vendors')
-        .select('id, name, specialty')
+        .select('id, name, specialization')
         .eq('status', 'available')
         .order('name');
       
@@ -291,7 +291,7 @@ export const NewAppointmentForm = ({ onClose, onSuccess }: NewAppointmentFormPro
                     <SelectItem key={vendor.id} value={vendor.id}>
                       <div>
                         <div className="font-medium">{vendor.name}</div>
-                        <div className="text-sm text-muted-foreground">{vendor.specialty}</div>
+                        <div className="text-sm text-muted-foreground">{vendor.specialization?.join(', ')}</div>
                       </div>
                     </SelectItem>
                   ))}

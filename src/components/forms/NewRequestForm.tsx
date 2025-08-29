@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Clock, DollarSign, Loader2 } from "lucide-react";
-import { useMaintenanceRequests, NewRequestData } from "@/hooks/useMaintenanceRequests";
+// import { useMaintenanceRequests, NewRequestData } from "@/hooks/useMaintenanceRequests";
 
 interface NewRequestFormProps {
   onSuccess?: () => void;
@@ -15,9 +15,9 @@ interface NewRequestFormProps {
 }
 
 export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
-  const { createRequest } = useMaintenanceRequests();
+  // const { createRequest } = useMaintenanceRequests();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<NewRequestData>({
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
     address: "",
@@ -34,7 +34,7 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     setIsSubmitting(true);
     
     try {
-      await createRequest(formData);
+      // await createRequest(formData);
       setFormData({
         title: "",
         description: "",

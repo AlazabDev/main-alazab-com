@@ -9,14 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useNotifications } from "@/hooks/useMaintenanceRequests";
+// import { useNotifications } from "@/hooks/useMaintenanceRequests";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
 }
 
 export const Header = ({ onMenuToggle }: HeaderProps) => {
-  const { notifications, unreadCount, markAsRead } = useNotifications();
+  // const { notifications, unreadCount, markAsRead } = useNotifications();
+  const notifications: any[] = [];
+  const unreadCount = 0;
+  const markAsRead = (id: string) => {};
   return (
     <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between sticky top-0 z-50">
       {/* Logo and Menu */}

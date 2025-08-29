@@ -19,7 +19,7 @@ export const NewVendorForm = ({ onClose, onSuccess }: NewVendorFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
     company_name: "",
-    specialty: "",
+    specialization: [] as string[],
     phone: "",
     email: "",
     address: "",
@@ -61,7 +61,7 @@ export const NewVendorForm = ({ onClose, onSuccess }: NewVendorFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.specialty) {
+    if (!formData.name || formData.specialization.length === 0) {
       toast({
         title: "خطأ",
         description: "يرجى ملء الحقول المطلوبة",
@@ -134,7 +134,7 @@ export const NewVendorForm = ({ onClose, onSuccess }: NewVendorFormProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="specialty">التخصص *</Label>
-              <Select value={formData.specialty} onValueChange={(value) => handleInputChange("specialty", value)}>
+              <Select value={formData.specialization[0] || ""} onValueChange={(value) => setFormData(prev => ({ ...prev, specialization: [value] }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="اختر التخصص" />
                 </SelectTrigger>

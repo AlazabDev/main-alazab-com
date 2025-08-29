@@ -4,8 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Property {
   id: string;
   name: string;
-  type: 'residential' | 'commercial' | 'industrial' | 'mixed_use';
-  status: 'active' | 'maintenance' | 'inactive' | 'sold';
+  type: string;
+  status: string;
   address: string;
   area?: number;
   value?: number;

@@ -5,16 +5,16 @@ export interface Vendor {
   id: string;
   name: string;
   company_name?: string;
-  specialty: string;
+  specialization?: string[];
   phone?: string;
   email?: string;
   address?: string;
-  rating: number;
-  status: 'available' | 'busy' | 'inactive';
+  rating?: number;
+  status?: string;
   hourly_rate?: number;
   experience_years?: number;
-  certifications?: string[];
-  notes?: string;
+  profile_image?: string;
+  total_jobs?: number;
   created_at: string;
   updated_at: string;
 }

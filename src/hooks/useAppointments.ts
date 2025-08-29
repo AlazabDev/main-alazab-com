@@ -11,7 +11,7 @@ export interface Appointment {
   appointment_date: string;
   appointment_time: string;
   duration_minutes: number;
-  status: 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled' | 'rescheduled';
+  status: string;
   property_id?: string;
   vendor_id?: string;
   maintenance_request_id?: string;
@@ -23,7 +23,7 @@ export interface Appointment {
   updated_at: string;
   // Related data
   properties?: { name: string; address: string };
-  vendors?: { name: string; specialty: string };
+  vendors?: { name: string; specialization: string[] };
 }
 
 export const useAppointments = () => {
@@ -57,7 +57,7 @@ export const useAppointments = () => {
         .select(`
           *,
           properties:property_id(name, address),
-          vendors:vendor_id(name, specialty)
+          vendors:vendor_id(name, specialization)
         `)
         .order('appointment_date', { ascending: true })
         .order('appointment_time', { ascending: true });

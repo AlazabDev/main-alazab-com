@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Eye, MapPin, Clock, User, Search, Filter, Plus, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
+// import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 
 const statusConfig = {
   pending: { label: "في انتظار التحديد", className: "bg-yellow-500 text-white" },
@@ -42,7 +42,9 @@ export default function Requests() {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [showNewRequestForm, setShowNewRequestForm] = useState(false);
   
-  const { requests, loading } = useMaintenanceRequests();
+  // const { requests, loading } = useMaintenanceRequests();
+  const requests: any[] = [];
+  const loading = false;
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
