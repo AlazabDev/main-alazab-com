@@ -79,6 +79,7 @@ export const useStats = () => {
     actualCost: projects.reduce((sum, p) => sum + p.actual_cost, 0),
     activeProjects: projects.filter(p => p.status === 'in_progress').length,
     completedProjects: projects.filter(p => p.status === 'completed').length,
+    activeVendors: 5, // Mock value since we removed vendor hook for now
   };
 
   return stats;
