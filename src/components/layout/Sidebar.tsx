@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "react-router-dom";
 import {
   Home,
-  Wrench,
+  ClipboardList,
   BarChart3,
   Users,
   MapPin,
@@ -23,24 +24,23 @@ const menuItems = [
   {
     icon: Home,
     label: "الرئيسية",
-    href: "/",
-    active: true
+    href: "/"
   },
   {
-    icon: Wrench,
+    icon: ClipboardList,
     label: "طلبات الصيانة",
-    href: "/maintenance",
+    href: "/requests",
     badge: "2"
+  },
+  {
+    icon: Users,
+    label: "الموردين والفنيين",
+    href: "/vendors"
   },
   {
     icon: BarChart3,
     label: "التقارير والإحصائيات",
     href: "/reports"
-  },
-  {
-    icon: Users,
-    label: "المستخدمين",
-    href: "/users"
   },
   {
     icon: Building2,
@@ -75,6 +75,8 @@ const menuItems = [
 ];
 
 export const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
+  const location = useLocation();
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -106,24 +108,30 @@ export const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
 
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-2">
-            {menuItems.map((item, index) => (
-              <Button
-                key={index}
-                variant={item.active ? "default" : "ghost"}
-                className={cn(
-                  "w-full justify-start gap-3 h-12 text-right",
-                  item.active && "bg-primary text-primary-foreground"
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                <span className="flex-1">{item.label}</span>
-                {item.badge && (
-                  <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">
-                    {item.badge}
-                  </span>
-                )}
-              </Button>
-            ))}
+            {menuItems.map((item, index) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Button
+                  key={index}
+                  variant={isActive ? "default" : "ghost"}
+                  className={cn(
+                    "w-full justify-start gap-3 h-12 text-right",
+                    isActive && "bg-primary text-primary-foreground"
+                  )}
+                  asChild
+                >
+                  <Link to={item.href} onClick={onClose}>
+                    <item.icon className="h-5 w-5" />
+                    <span className="flex-1">{item.label}</span>
+                    {item.badge && (
+                      <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                </Button>
+              );
+            })}
           </nav>
 
           {/* Footer */}
