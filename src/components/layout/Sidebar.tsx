@@ -107,7 +107,7 @@ export const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             {menuItems.map((item, index) => {
               const isActive = location.pathname === item.href;
               return (
