@@ -9,12 +9,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useNotifications } from "@/hooks/useMaintenanceRequests";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
 }
 
 export const Header = ({ onMenuToggle }: HeaderProps) => {
+  const { notifications, unreadCount, markAsRead } = useNotifications();
   return (
     <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between sticky top-0 z-50">
       {/* Logo and Menu */}
@@ -45,26 +47,36 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="relative">
               <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-secondary">
-                3
-              </Badge>
+              {unreadCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-destructive">
+                  {unreadCount}
+                </Badge>
+              )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
             <DropdownMenuLabel>الإشعارات</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">طلب صيانة جديد</p>
-                <p className="text-xs text-muted-foreground">تم استلام طلب صيانة من محمد عزب</p>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">اكتمال الصيانة</p>
-                <p className="text-xs text-muted-foreground">تم الانتهاء من صيانة المحل التجاري</p>
-              </div>
-            </DropdownMenuItem>
+            {notifications.length > 0 ? (
+              notifications.slice(0, 5).map((notification) => (
+                <DropdownMenuItem 
+                  key={notification.id}
+                  onClick={() => markAsRead(notification.id)}
+                  className={notification.is_read ? 'opacity-60' : ''}
+                >
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm font-medium">{notification.title}</p>
+                    <p className="text-xs text-muted-foreground">{notification.message}</p>
+                  </div>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <DropdownMenuItem>
+                <div className="text-center py-4">
+                  <p className="text-sm text-muted-foreground">لا توجد إشعارات</p>
+                </div>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 

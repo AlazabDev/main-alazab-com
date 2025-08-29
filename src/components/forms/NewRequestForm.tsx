@@ -6,35 +6,52 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Clock, DollarSign } from "lucide-react";
+import { MapPin, Phone, Clock, DollarSign, Loader2 } from "lucide-react";
+import { useMaintenanceRequests, NewRequestData } from "@/hooks/useMaintenanceRequests";
 
 interface NewRequestFormProps {
-  onSubmit: (requestData: any) => void;
-  onCancel: () => void;
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
-export function NewRequestForm({ onSubmit, onCancel }: NewRequestFormProps) {
-  const [formData, setFormData] = useState({
+export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
+  const { createRequest } = useMaintenanceRequests();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<NewRequestData>({
     title: "",
     description: "",
-    location: "",
-    customer: "",
+    address: "",
     phone: "",
-    serviceType: "",
+    service_type: "general",
     priority: "medium",
-    preferredDate: "",
-    preferredTime: "",
-    estimatedBudget: ""
+    preferred_date: "",
+    preferred_time: "",
+    customer_notes: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      ...formData,
-      id: `MR-${Date.now().toString(36).toUpperCase()}`,
-      status: "pending",
-      date: new Date().toISOString(),
-    });
+    setIsSubmitting(true);
+    
+    try {
+      await createRequest(formData);
+      setFormData({
+        title: "",
+        description: "",
+        address: "",
+        phone: "",
+        service_type: "general",
+        priority: "medium",
+        preferred_date: "",
+        preferred_time: "",
+        customer_notes: ""
+      });
+      onSuccess?.();
+    } catch (error) {
+      // الخطأ تم التعامل معه في الـ hook
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -62,20 +79,6 @@ export function NewRequestForm({ onSubmit, onCancel }: NewRequestFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="customer">اسم العميل *</Label>
-              <Input
-                id="customer"
-                placeholder="الاسم الكامل"
-                value={formData.customer}
-                onChange={(e) => handleChange("customer", e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          {/* Contact & Location */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
               <Label htmlFor="phone">رقم الهاتف *</Label>
               <div className="relative">
                 <Phone className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -91,14 +94,14 @@ export function NewRequestForm({ onSubmit, onCancel }: NewRequestFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="location">العنوان *</Label>
+              <Label htmlFor="address">العنوان *</Label>
               <div className="relative">
                 <MapPin className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="location"
+                  id="address"
                   placeholder="العنوان التفصيلي"
-                  value={formData.location}
-                  onChange={(e) => handleChange("location", e.target.value)}
+                  value={formData.address}
+                  onChange={(e) => handleChange("address", e.target.value)}
                   className="pr-10"
                   required
                 />
@@ -106,19 +109,21 @@ export function NewRequestForm({ onSubmit, onCancel }: NewRequestFormProps) {
             </div>
           </div>
 
+
           {/* Service Details */}
           <div className="space-y-2">
-            <Label htmlFor="serviceType">نوع الخدمة *</Label>
-            <Select value={formData.serviceType} onValueChange={(value) => handleChange("serviceType", value)}>
+            <Label htmlFor="service_type">نوع الخدمة *</Label>
+            <Select value={formData.service_type} onValueChange={(value) => handleChange("service_type", value)}>
               <SelectTrigger>
                 <SelectValue placeholder="اختر نوع الخدمة" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="plumbing">سباكة</SelectItem>
                 <SelectItem value="electrical">كهرباء</SelectItem>
-                <SelectItem value="air-conditioning">تكييف</SelectItem>
+                <SelectItem value="hvac">تكييف</SelectItem>
                 <SelectItem value="carpentry">نجارة</SelectItem>
                 <SelectItem value="painting">دهانات</SelectItem>
+                <SelectItem value="cleaning">تنظيف</SelectItem>
                 <SelectItem value="general">صيانة عامة</SelectItem>
               </SelectContent>
             </Select>
@@ -153,18 +158,18 @@ export function NewRequestForm({ onSubmit, onCancel }: NewRequestFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="preferredDate">التاريخ المفضل</Label>
+              <Label htmlFor="preferred_date">التاريخ المفضل</Label>
               <Input
-                id="preferredDate"
+                id="preferred_date"
                 type="date"
-                value={formData.preferredDate}
-                onChange={(e) => handleChange("preferredDate", e.target.value)}
+                value={formData.preferred_date}
+                onChange={(e) => handleChange("preferred_date", e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="preferredTime">الوقت المفضل</Label>
-              <Select value={formData.preferredTime} onValueChange={(value) => handleChange("preferredTime", value)}>
+              <Label htmlFor="preferred_time">الوقت المفضل</Label>
+              <Select value={formData.preferred_time} onValueChange={(value) => handleChange("preferred_time", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="اختر الوقت" />
                 </SelectTrigger>
@@ -177,20 +182,15 @@ export function NewRequestForm({ onSubmit, onCancel }: NewRequestFormProps) {
             </div>
           </div>
 
-          {/* Budget */}
           <div className="space-y-2">
-            <Label htmlFor="estimatedBudget">الميزانية المتوقعة (ج.م)</Label>
-            <div className="relative">
-              <DollarSign className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="estimatedBudget"
-                type="number"
-                placeholder="0.00"
-                value={formData.estimatedBudget}
-                onChange={(e) => handleChange("estimatedBudget", e.target.value)}
-                className="pr-10"
-              />
-            </div>
+            <Label htmlFor="customer_notes">ملاحظات إضافية</Label>
+            <Textarea
+              id="customer_notes"
+              placeholder="أي معلومات إضافية تساعد في تنفيذ المهمة..."
+              value={formData.customer_notes}
+              onChange={(e) => handleChange("customer_notes", e.target.value)}
+              rows={3}
+            />
           </div>
 
           {/* Priority Badge Preview */}
@@ -208,10 +208,11 @@ export function NewRequestForm({ onSubmit, onCancel }: NewRequestFormProps) {
 
           {/* Actions */}
           <div className="flex gap-3 pt-4">
-            <Button type="submit" className="flex-1">
+            <Button type="submit" className="flex-1" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="h-4 w-4 animate-spin ml-2" />}
               إرسال الطلب
             </Button>
-            <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+            <Button type="button" variant="outline" onClick={onCancel} className="flex-1" disabled={isSubmitting}>
               إلغاء
             </Button>
           </div>

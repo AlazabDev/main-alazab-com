@@ -669,54 +669,81 @@ export type Database = {
       maintenance_requests: {
         Row: {
           actual_completion: string | null
+          address: string | null
           assigned_to: string | null
+          completion_photos: string[] | null
           cost: number | null
           created_at: string | null
+          customer_notes: string | null
           description: string | null
           estimated_completion: string | null
           id: string
           notes: string | null
+          phone: string | null
+          preferred_date: string | null
+          preferred_time: string | null
           priority: Database["public"]["Enums"]["priority_level"] | null
+          rating: number | null
           requested_by: string | null
           service_type: Database["public"]["Enums"]["service_type"]
           status: Database["public"]["Enums"]["request_status"] | null
           store_id: string | null
           title: string
           updated_at: string | null
+          urgency_level: Database["public"]["Enums"]["priority_level"] | null
+          vendor_notes: string | null
         }
         Insert: {
           actual_completion?: string | null
+          address?: string | null
           assigned_to?: string | null
+          completion_photos?: string[] | null
           cost?: number | null
           created_at?: string | null
+          customer_notes?: string | null
           description?: string | null
           estimated_completion?: string | null
           id?: string
           notes?: string | null
+          phone?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
           priority?: Database["public"]["Enums"]["priority_level"] | null
+          rating?: number | null
           requested_by?: string | null
           service_type: Database["public"]["Enums"]["service_type"]
           status?: Database["public"]["Enums"]["request_status"] | null
           store_id?: string | null
           title: string
           updated_at?: string | null
+          urgency_level?: Database["public"]["Enums"]["priority_level"] | null
+          vendor_notes?: string | null
         }
         Update: {
           actual_completion?: string | null
+          address?: string | null
           assigned_to?: string | null
+          completion_photos?: string[] | null
           cost?: number | null
           created_at?: string | null
+          customer_notes?: string | null
           description?: string | null
           estimated_completion?: string | null
           id?: string
           notes?: string | null
+          phone?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
           priority?: Database["public"]["Enums"]["priority_level"] | null
+          rating?: number | null
           requested_by?: string | null
           service_type?: Database["public"]["Enums"]["service_type"]
           status?: Database["public"]["Enums"]["request_status"] | null
           store_id?: string | null
           title?: string
           updated_at?: string | null
+          urgency_level?: Database["public"]["Enums"]["priority_level"] | null
+          vendor_notes?: string | null
         }
         Relationships: [
           {
@@ -1479,6 +1506,85 @@ export type Database = {
             columns: ["repository_id"]
             isOneToOne: false
             referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          request_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          request_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          request_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_notifications_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_status_history: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          id: string
+          new_status: Database["public"]["Enums"]["request_status"]
+          notes: string | null
+          old_status: Database["public"]["Enums"]["request_status"] | null
+          request_id: string | null
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          new_status: Database["public"]["Enums"]["request_status"]
+          notes?: string | null
+          old_status?: Database["public"]["Enums"]["request_status"] | null
+          request_id?: string | null
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          new_status?: Database["public"]["Enums"]["request_status"]
+          notes?: string | null
+          old_status?: Database["public"]["Enums"]["request_status"] | null
+          request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_status_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
             referencedColumns: ["id"]
           },
         ]
