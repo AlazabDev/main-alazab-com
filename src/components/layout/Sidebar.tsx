@@ -89,8 +89,8 @@ export const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
       
       {/* Sidebar */}
       <aside className={cn(
-        "fixed top-0 right-0 z-50 h-full w-64 bg-card border-l border-border transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:z-auto",
-        isOpen ? "translate-x-0" : "translate-x-full"
+        "fixed top-0 right-0 z-50 h-full w-64 bg-card border-l border-border transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:z-auto lg:block",
+        isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
