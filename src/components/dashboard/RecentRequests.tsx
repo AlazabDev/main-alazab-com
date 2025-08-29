@@ -1,57 +1,59 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, MapPin, Clock, User } from "lucide-react";
+import { Eye, MapPin, Clock, User, Loader2, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface MaintenanceRequest {
-  id: string;
-  title: string;
-  location: string;
-  customer: string;
-  status: "pending" | "in-progress" | "completed" | "cancelled";
-  priority: "low" | "medium" | "high";
-  date: string;
-  estimatedCost: string;
-}
+import { useMaintenanceRequests } from "@/hooks/useSupabaseData";
 
 const statusConfig = {
-  pending: { label: "في انتظار التحديد", className: "status-pending" },
-  "in-progress": { label: "في انتظار المورد", className: "status-in-progress" },
-  completed: { label: "تم التعيين", className: "status-completed" },
-  cancelled: { label: "ملغي", className: "status-cancelled" }
+  pending: { label: "معلق", className: "bg-warning text-warning-foreground" },
+  "in_progress": { label: "قيد التنفيذ", className: "bg-primary text-primary-foreground" },
+  completed: { label: "مكتمل", className: "bg-success text-success-foreground" },
+  cancelled: { label: "ملغي", className: "bg-destructive text-destructive-foreground" }
 };
 
 const priorityConfig = {
   low: { label: "منخفضة", className: "bg-muted text-muted-foreground" },
   medium: { label: "متوسطة", className: "bg-warning text-warning-foreground" },
-  high: { label: "عالية", className: "bg-destructive text-destructive-foreground" }
+  high: { label: "عالية", className: "bg-destructive text-destructive-foreground" },
+  urgent: { label: "طارئة", className: "bg-destructive text-destructive-foreground animate-pulse" }
 };
 
-const mockRequests: MaintenanceRequest[] = [
-  {
-    id: "MR-250803-4C1E-OTYJ",
-    title: "مشكلة في السباكة الداخلية بالكامل",
-    location: "المنصورة، مصر",
-    customer: "محمد عزب",
-    status: "in-progress",
-    priority: "high",
-    date: "12:00 2025-08-04",
-    estimatedCost: "375.06 ج.م"
-  },
-  {
-    id: "MR-250802-4C1E-HXJW", 
-    title: "ساكية",
-    location: "شارع 500 المعادي 8",
-    customer: "أحمد محمد",
-    status: "completed",
-    priority: "medium",
-    date: "09:00 اليوم",
-    estimatedCost: "329.00 ج.م"
-  }
-];
-
 export const RecentRequests = () => {
+  const { requests, loading, error } = useMaintenanceRequests();
+  const recentRequests = requests.slice(0, 3); // عرض آخر 3 طلبات فقط
+
+  if (loading) {
+    return (
+      <Card className="card-elegant">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-lg font-semibold">طلبات الصيانة الأخيرة</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span className="mr-2">جاري التحميل...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="card-elegant">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-lg font-semibold">طلبات الصيانة الأخيرة</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-destructive">
+            {error}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="card-elegant">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -61,7 +63,7 @@ export const RecentRequests = () => {
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
-        {mockRequests.map((request) => (
+        {recentRequests.map((request) => (
           <div key={request.id} className="border border-border rounded-lg p-4 space-y-3 hover:bg-muted/50 transition-colors">
             {/* Header */}
             <div className="flex items-start justify-between">
@@ -69,7 +71,7 @@ export const RecentRequests = () => {
                 <h3 className="font-medium text-foreground line-clamp-1">
                   {request.title}
                 </h3>
-                <p className="text-sm text-primary font-medium">{request.id}</p>
+                <p className="text-sm text-primary font-medium">#{request.id.slice(0, 8)}</p>
               </div>
               <div className="flex items-center gap-2">
                 <Badge className={cn("text-xs", priorityConfig[request.priority].className)}>
@@ -90,28 +92,30 @@ export const RecentRequests = () => {
               
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User className="h-4 w-4" />
-                <span>{request.customer}</span>
+                <span>{request.client_name}</span>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <span>{request.date}</span>
+                <span>{new Date(request.created_at).toLocaleDateString('ar-EG')}</span>
               </div>
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-between pt-2 border-t border-border">
-              <Badge className={cn("text-xs", statusConfig[request.status].className)}>
-                {statusConfig[request.status].label}
+              <Badge className={cn("text-xs", statusConfig[request.status as keyof typeof statusConfig].className)}>
+                {statusConfig[request.status as keyof typeof statusConfig].label}
               </Badge>
-              <span className="text-sm font-medium text-primary">
-                {request.estimatedCost}
-              </span>
+              {request.estimated_cost && (
+                <span className="text-sm font-medium text-primary">
+                  {request.estimated_cost} ج.م
+                </span>
+              )}
             </div>
           </div>
         ))}
 
-        {mockRequests.length === 0 && (
+        {recentRequests.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <p>لا توجد طلبات صيانة حالياً</p>
           </div>

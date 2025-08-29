@@ -5,6 +5,7 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { RecentRequests } from "@/components/dashboard/RecentRequests";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { MaintenanceChart } from "@/components/dashboard/MaintenanceChart";
+import { useStats } from "@/hooks/useSupabaseData";
 import { 
   Wrench, 
   CheckCircle, 
@@ -16,6 +17,7 @@ import {
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const stats = useStats();
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,30 +47,30 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <StatsCard
                 title="الطلبات المعلقة"
-                value="0"
+                value={stats.pendingRequests.toString()}
                 icon={Clock}
                 iconColor="text-warning"
               />
               
               <StatsCard
                 title="الطلبات المضافة اليوم"
-                value="1"
-                subtitle="تقدير الأدنى"
+                value={stats.todayRequests.toString()}
+                subtitle="طلبات جديدة"
                 icon={Wrench}
                 iconColor="text-primary"
               />
               
               <StatsCard
                 title="الطلبات المكتملة"
-                value="0"
-                subtitle="0%"
+                value={stats.completedRequests.toString()}
+                subtitle={`${stats.totalRequests > 0 ? Math.round((stats.completedRequests / stats.totalRequests) * 100) : 0}%`}
                 icon={CheckCircle}
                 iconColor="text-success"
               />
               
               <StatsCard
                 title="إجمالي طلبات الصيانة"
-                value="2"
+                value={stats.totalRequests.toString()}
                 icon={TrendingUp}
                 iconColor="text-secondary"
               />
@@ -78,8 +80,8 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <StatsCard
                 title="الطلبات هذا الشهر"
-                value="2"
-                subtitle="استخدام الميزانية"
+                value={stats.thisMonthRequests.toString()}
+                subtitle="طلبات الشهر الحالي"
                 icon={Wrench}
                 iconColor="text-primary"
                 className="lg:col-span-1"
@@ -87,7 +89,7 @@ const Dashboard = () => {
               
               <StatsCard
                 title="الميزانية المتبقية"
-                value="EGP 2,624.94"
+                value={`EGP ${(stats.totalBudget - stats.actualCost).toLocaleString()}`}
                 icon={DollarSign}
                 iconColor="text-success"
                 className="lg:col-span-1"
@@ -95,7 +97,7 @@ const Dashboard = () => {
               
               <StatsCard
                 title="المبلغ المدفوع"
-                value="EGP 375.06"
+                value={`EGP ${stats.actualCost.toLocaleString()}`}
                 icon={CheckCircle}
                 iconColor="text-secondary"
                 className="lg:col-span-1"
@@ -103,8 +105,8 @@ const Dashboard = () => {
               
               <StatsCard
                 title="إجمالي الميزانية"
-                value="EGP 3,000.00"
-                subtitle="مستوى 0%"
+                value={`EGP ${stats.totalBudget.toLocaleString()}`}
+                subtitle={`استخدام ${stats.totalBudget > 0 ? Math.round((stats.actualCost / stats.totalBudget) * 100) : 0}%`}
                 icon={TrendingUp}
                 iconColor="text-primary"
                 className="lg:col-span-1"
@@ -123,22 +125,28 @@ const Dashboard = () => {
             {/* Performance Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="text-center p-6 bg-card rounded-lg border card-elegant">
-                <div className="text-3xl font-bold text-primary">100%</div>
-                <div className="text-sm text-muted-foreground">نسبة العقارات النشطة</div>
+                <div className="text-3xl font-bold text-primary">{stats.activeVendors}</div>
+                <div className="text-sm text-muted-foreground">الموردون النشطون</div>
               </div>
               
               <div className="text-center p-6 bg-card rounded-lg border card-elegant">
-                <div className="text-3xl font-bold text-muted-foreground">0%</div>
+                <div className="text-3xl font-bold text-muted-foreground">
+                  {stats.totalRequests > 0 ? Math.round((stats.totalRequests - stats.completedRequests - stats.pendingRequests) / stats.totalRequests * 100) : 0}%
+                </div>
                 <div className="text-sm text-muted-foreground">نسبة الطلبات الملغاة</div>
               </div>
               
               <div className="text-center p-6 bg-card rounded-lg border card-elegant">
-                <div className="text-3xl font-bold text-muted-foreground">0%</div>
+                <div className="text-3xl font-bold text-primary">
+                  {stats.totalRequests > 0 ? Math.round((stats.totalRequests - stats.completedRequests - stats.pendingRequests) / stats.totalRequests * 100) : 0}%
+                </div>
                 <div className="text-sm text-muted-foreground">نسبة الطلبات قيد التنفيذ</div>
               </div>
               
               <div className="text-center p-6 bg-card rounded-lg border card-elegant">
-                <div className="text-3xl font-bold text-muted-foreground">0%</div>
+                <div className="text-3xl font-bold text-success">
+                  {stats.totalRequests > 0 ? Math.round((stats.completedRequests / stats.totalRequests) * 100) : 0}%
+                </div>
                 <div className="text-sm text-muted-foreground">نسبة الطلبات المكتملة</div>
               </div>
             </div>
