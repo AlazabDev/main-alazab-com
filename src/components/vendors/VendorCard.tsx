@@ -30,8 +30,10 @@ export function VendorCard({ vendor, onContact, onAssign }: VendorCardProps) {
     offline: { label: "غير متاح", className: "bg-gray-500 text-white" }
   };
 
-  // Ensure we have a valid status, default to 'available' if undefined
-  const currentStatus = (vendor.status && statusConfig[vendor.status]) ? vendor.status : 'available';
+  // Ensure we have a valid status with proper type checking
+  const currentStatus: keyof typeof statusConfig = (vendor?.status && vendor.status in statusConfig) 
+    ? vendor.status 
+    : 'available';
 
   return (
     <Card className="card-elegant hover:shadow-lg transition-all duration-300">
