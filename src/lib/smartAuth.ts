@@ -116,14 +116,7 @@ export async function smartLogin(email: string, password: string): Promise<Smart
       return { ok: false, mode: 'confirm_resent' };
     }
 
-    // كلمة مرور خاطئة
-    if (msg.includes('invalid login credentials')) {
-      await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${ORIGIN}/auth/update-password`
-      });
-      return { ok: false, mode: 'reset_sent' };
-    }
-
+    // إرجاع خطأ كلمة المرور دون إرسال رابط إعادة التعيين تلقائياً
     return { ok: false, mode: 'error', error };
     
   } catch (error) {
