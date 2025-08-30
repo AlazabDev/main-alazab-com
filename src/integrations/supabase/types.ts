@@ -95,6 +95,63 @@ export type Database = {
           },
         ]
       }
+      branches: {
+        Row: {
+          city: string | null
+          code: string | null
+          country_code: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          city?: string | null
+          code?: string | null
+          country_code?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          city?: string | null
+          code?: string | null
+          country_code?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          description: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number | null
+        }
+        Insert: {
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number | null
+        }
+        Update: {
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           author_id: string | null
@@ -124,6 +181,38 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      internal_teams: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internal_teams_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       maintenance_requests: {
         Row: {
@@ -235,6 +324,57 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: Database["public"]["Enums"]["currency_t"]
+          id: string
+          method: string
+          notes: string | null
+          provider_ref: string | null
+          request_id: string
+          status: Database["public"]["Enums"]["payment_status_t"]
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: Database["public"]["Enums"]["currency_t"]
+          id?: string
+          method?: string
+          notes?: string | null
+          provider_ref?: string | null
+          request_id: string
+          status?: Database["public"]["Enums"]["payment_status_t"]
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: Database["public"]["Enums"]["currency_t"]
+          id?: string
+          method?: string
+          notes?: string | null
+          provider_ref?: string | null
+          request_id?: string
+          status?: Database["public"]["Enums"]["payment_status_t"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "request_list_vw"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           content: string | null
@@ -294,6 +434,7 @@ export type Database = {
           role: string | null
           updated_at: string
           user_id: string
+          vendor_id: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -305,6 +446,7 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id: string
+          vendor_id?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -316,8 +458,17 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id?: string
+          vendor_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       projects: {
         Row: {
@@ -442,6 +593,408 @@ export type Database = {
         }
         Relationships: []
       }
+      request_attachments: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          file_path: string
+          id: string
+          mime_type: string | null
+          request_id: string
+          size_bytes: number | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          file_path: string
+          id?: string
+          mime_type?: string | null
+          request_id: string
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          file_path?: string
+          id?: string
+          mime_type?: string | null
+          request_id?: string
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_attachments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "request_list_vw"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_attachments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_lines: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          qty: number
+          rate: number
+          request_id: string
+          service_id: string
+          vat_amount: number
+          vat_rate: number
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          qty?: number
+          rate?: number
+          request_id: string
+          service_id: string
+          vat_amount?: number
+          vat_rate?: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          qty?: number
+          rate?: number
+          request_id?: string
+          service_id?: string
+          vat_amount?: number
+          vat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_lines_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "request_list_vw"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_lines_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_lines_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_status_history: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          from_status: Database["public"]["Enums"]["request_status_t"] | null
+          id: string
+          note: string | null
+          request_id: string
+          to_status: Database["public"]["Enums"]["request_status_t"]
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          from_status?: Database["public"]["Enums"]["request_status_t"] | null
+          id?: string
+          note?: string | null
+          request_id: string
+          to_status: Database["public"]["Enums"]["request_status_t"]
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          from_status?: Database["public"]["Enums"]["request_status_t"] | null
+          id?: string
+          note?: string | null
+          request_id?: string
+          to_status?: Database["public"]["Enums"]["request_status_t"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_status_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "request_list_vw"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_status_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_prices: {
+        Row: {
+          branch_id: string | null
+          currency: Database["public"]["Enums"]["currency_t"]
+          id: string
+          price: number
+          service_id: string
+          vat_rate: number | null
+          vendor_id: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          currency?: Database["public"]["Enums"]["currency_t"]
+          id?: string
+          price: number
+          service_id: string
+          vat_rate?: number | null
+          vendor_id?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          currency?: Database["public"]["Enums"]["currency_t"]
+          id?: string
+          price?: number
+          service_id?: string
+          vat_rate?: number | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_prices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_prices_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_prices_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_requests: {
+        Row: {
+          branch_id: string
+          code: string
+          contact_user_id: string | null
+          created_at: string
+          created_by: string
+          currency: Database["public"]["Enums"]["currency_t"]
+          id: string
+          notes: string | null
+          paid_amount: number
+          property_id: string | null
+          provider_type: Database["public"]["Enums"]["provider_type_t"]
+          scheduled_at: string | null
+          status: Database["public"]["Enums"]["request_status_t"]
+          subtotal: number
+          team_id: string | null
+          temp_contact_country_code: string | null
+          temp_contact_name: string | null
+          temp_contact_phone: string | null
+          total: number
+          vat_amount: number
+          vendor_id: string | null
+        }
+        Insert: {
+          branch_id: string
+          code?: string
+          contact_user_id?: string | null
+          created_at?: string
+          created_by: string
+          currency?: Database["public"]["Enums"]["currency_t"]
+          id?: string
+          notes?: string | null
+          paid_amount?: number
+          property_id?: string | null
+          provider_type?: Database["public"]["Enums"]["provider_type_t"]
+          scheduled_at?: string | null
+          status?: Database["public"]["Enums"]["request_status_t"]
+          subtotal?: number
+          team_id?: string | null
+          temp_contact_country_code?: string | null
+          temp_contact_name?: string | null
+          temp_contact_phone?: string | null
+          total?: number
+          vat_amount?: number
+          vendor_id?: string | null
+        }
+        Update: {
+          branch_id?: string
+          code?: string
+          contact_user_id?: string | null
+          created_at?: string
+          created_by?: string
+          currency?: Database["public"]["Enums"]["currency_t"]
+          id?: string
+          notes?: string | null
+          paid_amount?: number
+          property_id?: string | null
+          provider_type?: Database["public"]["Enums"]["provider_type_t"]
+          scheduled_at?: string | null
+          status?: Database["public"]["Enums"]["request_status_t"]
+          subtotal?: number
+          team_id?: string | null
+          temp_contact_country_code?: string | null
+          temp_contact_name?: string | null
+          temp_contact_phone?: string | null
+          total?: number
+          vat_amount?: number
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_contact_user_id_fkey"
+            columns: ["contact_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "service_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "internal_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          base_price: number
+          code: string | null
+          default_vat_rate: number
+          description: string | null
+          id: string
+          is_active: boolean
+          max_qty: number | null
+          min_qty: number | null
+          name: string
+          search_keywords: unknown | null
+          subcategory_id: string
+          unit: string | null
+        }
+        Insert: {
+          base_price?: number
+          code?: string | null
+          default_vat_rate?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_qty?: number | null
+          min_qty?: number | null
+          name: string
+          search_keywords?: unknown | null
+          subcategory_id: string
+          unit?: string | null
+        }
+        Update: {
+          base_price?: number
+          code?: string | null
+          default_vat_rate?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_qty?: number | null
+          min_qty?: number | null
+          name?: string
+          search_keywords?: unknown | null
+          subcategory_id?: string
+          unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "subcategories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subcategories: {
+        Row: {
+          category_id: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number | null
+        }
+        Insert: {
+          category_id: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number | null
+        }
+        Update: {
+          category_id?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcategories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendors: {
         Row: {
           address: string | null
@@ -498,13 +1051,56 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      request_list_vw: {
+        Row: {
+          branch: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string | null
+          property: string | null
+          provider: string | null
+          remaining: number | null
+          request_no: string | null
+          scheduled_at: string | null
+          services: string | null
+          status: Database["public"]["Enums"]["request_status_t"] | null
+          total: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      is_staff: {
+        Args: { uid: string }
+        Returns: boolean
+      }
+      is_vendor: {
+        Args: { uid: string }
+        Returns: boolean
+      }
+      recalc_request_totals: {
+        Args: { p_request_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      currency_t: "EGP" | "USD" | "EUR" | "SAR" | "AED"
+      payment_status_t:
+        | "draft"
+        | "pending"
+        | "authorized"
+        | "captured"
+        | "failed"
+        | "refunded"
+        | "cancelled"
+      provider_type_t: "internal_team" | "external_vendor"
+      request_status_t:
+        | "draft"
+        | "awaiting_vendor"
+        | "scheduled"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -631,6 +1227,26 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      currency_t: ["EGP", "USD", "EUR", "SAR", "AED"],
+      payment_status_t: [
+        "draft",
+        "pending",
+        "authorized",
+        "captured",
+        "failed",
+        "refunded",
+        "cancelled",
+      ],
+      provider_type_t: ["internal_team", "external_vendor"],
+      request_status_t: [
+        "draft",
+        "awaiting_vendor",
+        "scheduled",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+    },
   },
 } as const
