@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { AuthWrapper } from "@/components/auth/AuthWrapper";
 import Index from "./pages/Index";
 import Requests from "./pages/Requests";
 import Vendors from "./pages/Vendors";
@@ -24,22 +25,23 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppLayout>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/requests" element={<Requests />} />
-            <Route path="/vendors" element={<Vendors />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/properties" element={<Properties />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/invoices" element={<Invoices />} />
-            <Route path="/map" element={<Map />} />
-            <Route path="/documentation" element={<Documentation />} />
-            <Route path="/settings" element={<Settings />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AppLayout>
+        <AuthWrapper>
+          <AppLayout>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/requests" element={<Requests />} />
+              <Route path="/vendors" element={<Vendors />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/properties" element={<Properties />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/invoices" element={<Invoices />} />
+              <Route path="/map" element={<Map />} />
+              <Route path="/documentation" element={<Documentation />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AppLayout>
+        </AuthWrapper>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

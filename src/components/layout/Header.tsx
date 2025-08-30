@@ -1,6 +1,8 @@
-import { Bell, Settings, User, Menu } from "lucide-react";
+import { Bell, Settings, User, Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +18,27 @@ interface HeaderProps {
 }
 
 export const Header = ({ onMenuToggle }: HeaderProps) => {
+  const { toast } = useToast();
   // const { notifications, unreadCount, markAsRead } = useNotifications();
   const notifications: any[] = [];
   const unreadCount = 0;
   const markAsRead = (id: string) => {};
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "تم تسجيل الخروج",
+        description: "نراك قريباً",
+      });
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "فشل في تسجيل الخروج",
+        variant: "destructive",
+      });
+    }
+  };
   return (
     <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between sticky top-0 z-50">
       {/* Logo and Menu */}
@@ -108,8 +127,9 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
               <span>الإعدادات</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
-              تسجيل الخروج
+            <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>تسجيل الخروج</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
