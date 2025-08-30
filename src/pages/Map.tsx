@@ -2,7 +2,8 @@ import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { GoogleMap } from "@/components/maps/GoogleMap";
 
 export default function Map() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,21 +19,20 @@ export default function Map() {
               <h1 className="text-3xl font-bold text-foreground">الخريطة</h1>
             </div>
             
-            <Card className="h-[600px]">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-primary" />
                   مواقع العقارات والطلبات
                 </CardTitle>
               </CardHeader>
-              <CardContent className="h-full">
-                <div className="h-full bg-muted rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <Navigation className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-muted-foreground">خريطة تفاعلية</h3>
-                    <p className="text-muted-foreground">سيتم إضافة خدمة الخرائط قريباً</p>
-                  </div>
-                </div>
+              <CardContent>
+                <GoogleMap 
+                  height="600px"
+                  markers={[
+                    // يمكن إضافة markers هنا لعرض مواقع العقارات والطلبات
+                  ]}
+                />
               </CardContent>
             </Card>
           </div>

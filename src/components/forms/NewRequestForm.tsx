@@ -6,9 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Clock, Upload, Loader2, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { MapPin, Phone, Loader2 } from "lucide-react";
 import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import { useToast } from "@/hooks/use-toast";
+import { LocationPicker } from "@/components/forms/LocationPicker";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NewRequestFormProps {
   onSuccess?: () => void;
@@ -29,33 +32,81 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     priority: "medium",
     preferred_date: "",
     preferred_time: "",
-    customer_notes: ""
+    customer_notes: "",
+    latitude: null as number | null,
+    longitude: null as number | null
   });
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
-      await createRequest(formData);
-      setFormData({
-        title: "",
-        description: "",
-        client_name: "",
-        client_phone: "",
-        location: "",
-        service_type: "general",
-        priority: "medium",
-        preferred_date: "",
-        preferred_time: "",
-        customer_notes: ""
-      });
-      onSuccess?.();
+      const result = await createRequest(formData);
+      if (result) {
+        toast({
+          title: "تم إرسال الطلب بنجاح",
+          description: "سيتم التواصل معك قريباً",
+        });
+
+        // إرسال إشعار لأقرب فني إذا تم تحديد الموقع
+        if (formData.latitude && formData.longitude) {
+          try {
+            await supabase.functions.invoke('send-notification', {
+              body: {
+                maintenanceRequestId: result.id,
+                latitude: formData.latitude,
+                longitude: formData.longitude,
+                serviceType: formData.service_type,
+                clientName: formData.client_name,
+                address: formData.location
+              }
+            });
+          } catch (notificationError) {
+            console.error('Error sending notification:', notificationError);
+          }
+        }
+
+        setFormData({
+          title: "",
+          description: "",
+          client_name: "",
+          client_phone: "",
+          location: "",
+          service_type: "general",
+          priority: "medium",
+          preferred_date: "",
+          preferred_time: "",
+          customer_notes: "",
+          latitude: null,
+          longitude: null
+        });
+        onSuccess?.();
+      }
     } catch (error) {
-      // الخطأ تم التعامل معه في الـ hook
+      toast({
+        title: "خطأ في إرسال الطلب",
+        description: "حدث خطأ غير متوقع",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleLocationSelect = (lat: number, lng: number, address?: string) => {
+    setFormData(prev => ({
+      ...prev,
+      latitude: lat,
+      longitude: lng,
+      location: address || prev.location
+    }));
+    setShowLocationPicker(false);
+    toast({
+      title: "تم تحديد الموقع",
+      description: "تم حفظ موقعك بنجاح",
+    });
   };
 
   const handleChange = (field: string, value: string) => {
@@ -111,10 +162,11 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="location">العنوان *</Label>
-              <div className="relative">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
                 <MapPin className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="address"
+                  id="location"
                   placeholder="العنوان التفصيلي"
                   value={formData.location}
                   onChange={(e) => handleChange("location", e.target.value)}
@@ -122,7 +174,31 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
                   required
                 />
               </div>
+              <Dialog open={showLocationPicker} onOpenChange={setShowLocationPicker}>
+                <DialogTrigger asChild>
+                  <Button type="button" variant="outline" size="icon">
+                    <MapPin className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl">
+                  <DialogHeader>
+                    <DialogTitle>تحديد الموقع على الخريطة</DialogTitle>
+                  </DialogHeader>
+                  <LocationPicker 
+                    onLocationSelect={handleLocationSelect}
+                    initialLatitude={formData.latitude || undefined}
+                    initialLongitude={formData.longitude || undefined}
+                    initialAddress={formData.location}
+                  />
+                </DialogContent>
+              </Dialog>
             </div>
+            {formData.latitude && formData.longitude && (
+              <p className="text-sm text-green-600">
+                ✓ تم تحديد الموقع على الخريطة
+              </p>
+            )}
+          </div>
 
 
           {/* Service Details */}

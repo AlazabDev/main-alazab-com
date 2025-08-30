@@ -230,7 +230,9 @@ export type Database = {
           estimated_completion: string | null
           estimated_cost: number | null
           id: string
+          latitude: number | null
           location: string
+          longitude: number | null
           phone: string | null
           preferred_date: string | null
           preferred_time: string | null
@@ -258,7 +260,9 @@ export type Database = {
           estimated_completion?: string | null
           estimated_cost?: number | null
           id?: string
+          latitude?: number | null
           location: string
+          longitude?: number | null
           phone?: string | null
           preferred_date?: string | null
           preferred_time?: string | null
@@ -286,7 +290,9 @@ export type Database = {
           estimated_completion?: string | null
           estimated_cost?: number | null
           id?: string
+          latitude?: number | null
           location?: string
+          longitude?: number | null
           phone?: string | null
           preferred_date?: string | null
           preferred_time?: string | null
@@ -321,6 +327,48 @@ export type Database = {
         Update: {
           id?: never
           title?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          message: string
+          read_at: string | null
+          recipient_id: string
+          sender_id: string | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          message: string
+          read_at?: string | null
+          recipient_id: string
+          sender_id?: string | null
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          message?: string
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -998,6 +1046,39 @@ export type Database = {
           },
         ]
       }
+      vendor_locations: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          last_updated: string
+          latitude: number
+          longitude: number
+          vendor_id: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_updated?: string
+          latitude: number
+          longitude: number
+          vendor_id: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_updated?: string
+          latitude?: number
+          longitude?: number
+          vendor_id?: string
+        }
+        Relationships: []
+      }
       vendors: {
         Row: {
           address: string | null
@@ -1073,6 +1154,24 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_distance: {
+        Args: { lat1: number; lat2: number; lon1: number; lon2: number }
+        Returns: number
+      }
+      find_nearest_vendor: {
+        Args: {
+          request_latitude: number
+          request_longitude: number
+          service_specialization?: string
+        }
+        Returns: {
+          distance: number
+          email: string
+          phone: string
+          vendor_id: string
+          vendor_name: string
+        }[]
+      }
       is_staff: {
         Args: { uid: string }
         Returns: boolean
