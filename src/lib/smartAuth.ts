@@ -93,15 +93,19 @@ export async function smartSignup(
 
 export async function smartLogin(email: string, password: string): Promise<SmartAuthResult> {
   try {
+    console.log('Attempting login with:', { email }); // لا نطبع كلمة المرور لأغراض الأمان
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
 
     if (!error) {
+      console.log('Login successful');
       return { ok: true, mode: 'login', data };
     }
 
+    console.log('Login error:', error);
     const msg = (error.message || '').toLowerCase();
     
     // الحساب غير مؤكد
