@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthWrapper } from "@/components/auth/AuthWrapper";
 import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
 import Requests from "./pages/Requests";
 import Vendors from "./pages/Vendors";
 import Reports from "./pages/Reports";
@@ -32,23 +33,80 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AuthWrapper>
-            <AppLayout>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/requests" element={<Requests />} />
-                <Route path="/vendors" element={<Vendors />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/properties" element={<Properties />} />
-                <Route path="/appointments" element={<Appointments />} />
-                <Route path="/invoices" element={<Invoices />} />
-                <Route path="/map" element={<Map />} />
-                <Route path="/documentation" element={<Documentation />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AppLayout>
-          </AuthWrapper>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/requests" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Requests />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/vendors" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Vendors />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/reports" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Reports />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/properties" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Properties />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/appointments" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Appointments />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/invoices" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Invoices />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/map" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Map />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/documentation" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Documentation />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/settings" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <Settings />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

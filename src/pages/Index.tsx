@@ -1,5 +1,5 @@
-import Dashboard from "./Dashboard";
+import { LandingPage } from "@/components/landing/LandingPage";
 
 export default function Index() {
-  return <Dashboard />;
+  return <LandingPage />;
 }
