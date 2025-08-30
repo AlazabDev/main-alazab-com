@@ -30,6 +30,9 @@ export function VendorCard({ vendor, onContact, onAssign }: VendorCardProps) {
     offline: { label: "غير متاح", className: "bg-gray-500 text-white" }
   };
 
+  // Ensure we have a valid status, default to 'available' if undefined
+  const currentStatus = (vendor.status && statusConfig[vendor.status]) ? vendor.status : 'available';
+
   return (
     <Card className="card-elegant hover:shadow-lg transition-all duration-300">
       <CardHeader className="pb-3">
@@ -51,8 +54,8 @@ export function VendorCard({ vendor, onContact, onAssign }: VendorCardProps) {
               <p className="text-sm text-muted-foreground">{vendor.specialty}</p>
             </div>
           </div>
-          <Badge className={statusConfig[vendor.status].className}>
-            {statusConfig[vendor.status].label}
+          <Badge className={statusConfig[currentStatus].className}>
+            {statusConfig[currentStatus].label}
           </Badge>
         </div>
       </CardHeader>
@@ -98,7 +101,7 @@ export function VendorCard({ vendor, onContact, onAssign }: VendorCardProps) {
             size="sm" 
             className="flex-1"
             onClick={() => onAssign(vendor.id)}
-            disabled={vendor.status === "offline"}
+            disabled={currentStatus === "offline"}
           >
             تعيين
           </Button>
