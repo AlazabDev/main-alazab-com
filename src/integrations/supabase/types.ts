@@ -801,6 +801,7 @@ export type Database = {
       }
       service_requests: {
         Row: {
+          assigned_to: string | null
           branch_id: string
           code: string
           contact_user_id: string | null
@@ -824,6 +825,7 @@ export type Database = {
           vendor_id: string | null
         }
         Insert: {
+          assigned_to?: string | null
           branch_id: string
           code?: string
           contact_user_id?: string | null
@@ -847,6 +849,7 @@ export type Database = {
           vendor_id?: string | null
         }
         Update: {
+          assigned_to?: string | null
           branch_id?: string
           code?: string
           contact_user_id?: string | null
