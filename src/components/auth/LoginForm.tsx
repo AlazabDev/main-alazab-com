@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Building2, UserPlus } from 'lucide-react';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
+import { smartSignup, smartLogin } from '@/lib/smartAuth';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
@@ -29,23 +30,30 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "تم تسجيل الدخول بنجاح",
-        description: "مرحباً بك في نظام إدارة الصيانة",
-      });
+      const result = await smartLogin(email, password);
+      
+      if (result.ok) {
+        toast({
+          title: "تم تسجيل الدخول بنجاح",
+          description: "مرحباً بك في نظام إدارة الصيانة",
+        });
+      } else {
+        const messages = {
+          confirm_resent: "تم إرسال رابط التفعيل إلى بريدك الإلكتروني",
+          reset_sent: "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني",
+          error: result.error?.message || "حدث خطأ في تسجيل الدخول"
+        };
+        
+        toast({
+          title: result.mode === 'error' ? "خطأ في تسجيل الدخول" : "تم الإرسال",
+          description: messages[result.mode as keyof typeof messages],
+          variant: result.mode === 'error' ? "destructive" : "default",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "خطأ في تسجيل الدخول",
-        description: error?.message === "captcha verification process failed" 
-          ? "يرجى التسجيل أولاً لإنشاء الحساب" 
-          : "تأكد من البريد الإلكتروني وكلمة المرور",
+        description: "حدث خطأ غير متوقع",
         variant: "destructive",
       });
     } finally {
@@ -67,29 +75,31 @@ export function LoginForm() {
     setIsSigningUp(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            first_name: 'محمد',
-            last_name: 'عزب',
-            role: 'admin'
-          }
-        }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "تم إنشاء الحساب بنجاح",
-        description: "يمكنك الآن تسجيل الدخول",
-      });
+      const result = await smartSignup(email, password, 'محمد عزب');
+      
+      if (result.ok) {
+        toast({
+          title: result.mode === 'signup' ? "تم إنشاء الحساب بنجاح" : "تم تسجيل الدخول بنجاح",
+          description: result.mode === 'signup' ? "يمكنك الآن تسجيل الدخول" : "مرحباً بك في نظام إدارة الصيانة",
+        });
+      } else {
+        const messages = {
+          confirm_resent: "تم إرسال رابط التفعيل إلى بريدك الإلكتروني",
+          reset_sent: "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني",
+          otp_sent: "تم إرسال رابط دخول سحري إلى بريدك الإلكتروني",
+          error: result.error?.message || "حدث خطأ في إنشاء الحساب"
+        };
+        
+        toast({
+          title: result.mode === 'error' ? "خطأ في إنشاء الحساب" : "تم الإرسال",
+          description: messages[result.mode as keyof typeof messages],
+          variant: result.mode === 'error' ? "destructive" : "default",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "خطأ في إنشاء الحساب",
-        description: error?.message || "حدث خطأ غير متوقع",
+        description: "حدث خطأ غير متوقع",
         variant: "destructive",
       });
     } finally {
