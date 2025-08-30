@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Building2, UserPlus } from 'lucide-react';
+import { FaGoogle, FaFacebook } from 'react-icons/fa';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
@@ -96,6 +97,44 @@ export function LoginForm() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`
+        }
+      });
+      
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "خطأ في تسجيل الدخول",
+        description: "تعذر تسجيل الدخول بجوجل",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: `${window.location.origin}/`
+        }
+      });
+      
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "خطأ في تسجيل الدخول",
+        description: "تعذر تسجيل الدخول بفيسبوك",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
       <Card className="w-full max-w-md">
@@ -149,6 +188,40 @@ export function LoginForm() {
               </Button>
             </div>
           </form>
+
+          <div className="mt-4 space-y-3">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">أو سجل الدخول باستخدام</span>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button 
+                type="button"
+                variant="outline"
+                onClick={handleGoogleLogin}
+                className="flex-1 gap-2"
+                disabled={isLoading || isSigningUp}
+              >
+                <FaGoogle className="h-4 w-4 text-red-500" />
+                جوجل
+              </Button>
+              <Button 
+                type="button"
+                variant="outline"
+                onClick={handleFacebookLogin}
+                className="flex-1 gap-2"
+                disabled={isLoading || isSigningUp}
+              >
+                <FaFacebook className="h-4 w-4 text-blue-600" />
+                فيسبوك
+              </Button>
+            </div>
+          </div>
           
           <div className="mt-4 p-3 bg-muted/50 rounded-lg">
             <p className="text-sm text-muted-foreground text-center">
