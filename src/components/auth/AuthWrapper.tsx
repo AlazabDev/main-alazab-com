@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { LoginForm } from './LoginForm';
@@ -10,6 +11,8 @@ interface AuthWrapperProps {
 export function AuthWrapper({ children }: AuthWrapperProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check initial session
@@ -21,8 +24,14 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setUser(session?.user || null);
+        const newUser = session?.user || null;
+        setUser(newUser);
         setLoading(false);
+        
+        // التوجيه التلقائي للصفحة الرئيسية بعد نجاح تسجيل الدخول
+        if (event === 'SIGNED_IN' && newUser && location.pathname === '/') {
+          navigate('/', { replace: true });
+        }
       }
     );
 
