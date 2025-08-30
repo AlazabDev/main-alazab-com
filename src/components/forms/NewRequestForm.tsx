@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Clock, DollarSign, Loader2 } from "lucide-react";
-// import { useMaintenanceRequests, NewRequestData } from "@/hooks/useMaintenanceRequests";
+import { MapPin, Phone, Clock, Upload, Loader2, X } from "lucide-react";
+import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
+import { useToast } from "@/hooks/use-toast";
 
 interface NewRequestFormProps {
   onSuccess?: () => void;
@@ -15,13 +16,15 @@ interface NewRequestFormProps {
 }
 
 export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
-  // const { createRequest } = useMaintenanceRequests();
+  const { createRequest } = useMaintenanceRequests();
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    address: "",
-    phone: "",
+    client_name: "",
+    client_phone: "",
+    location: "",
     service_type: "general",
     priority: "medium",
     preferred_date: "",
@@ -34,12 +37,13 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     setIsSubmitting(true);
     
     try {
-      // await createRequest(formData);
+      await createRequest(formData);
       setFormData({
         title: "",
         description: "",
-        address: "",
-        phone: "",
+        client_name: "",
+        client_phone: "",
+        location: "",
         service_type: "general",
         priority: "medium",
         preferred_date: "",
@@ -85,8 +89,8 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
                 <Input
                   id="phone"
                   placeholder="01xxxxxxxxx"
-                  value={formData.phone}
-                  onChange={(e) => handleChange("phone", e.target.value)}
+                  value={formData.client_phone}
+                  onChange={(e) => handleChange("client_phone", e.target.value)}
                   className="pr-10"
                   required
                 />
@@ -94,20 +98,31 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">العنوان *</Label>
+              <Label htmlFor="client_name">اسم العميل *</Label>
+              <Input
+                id="client_name"
+                placeholder="اسم العميل"
+                value={formData.client_name}
+                onChange={(e) => handleChange("client_name", e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="location">العنوان *</Label>
               <div className="relative">
                 <MapPin className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="address"
                   placeholder="العنوان التفصيلي"
-                  value={formData.address}
-                  onChange={(e) => handleChange("address", e.target.value)}
+                  value={formData.location}
+                  onChange={(e) => handleChange("location", e.target.value)}
                   className="pr-10"
                   required
                 />
               </div>
             </div>
-          </div>
 
 
           {/* Service Details */}
