@@ -12,7 +12,11 @@ import { MaintenanceFilters } from "./MaintenanceFilters";
 import { MaintenanceExport } from "./MaintenanceExport";
 import { MaintenanceStats } from "../dashboard/MaintenanceStats";
 
-export function MaintenanceRequestsList() {
+interface MaintenanceRequestsListProps {
+  onNewRequestClick?: () => void;
+}
+
+export function MaintenanceRequestsList({ onNewRequestClick }: MaintenanceRequestsListProps) {
   const { requests, loading, error } = useMaintenanceRequests();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -148,7 +152,10 @@ export function MaintenanceRequestsList() {
             requests={requests || []} 
             filteredRequests={filteredRequests}
           />
-          <Button className="gap-2 bg-gradient-primary">
+          <Button 
+            className="gap-2 bg-gradient-primary" 
+            onClick={onNewRequestClick}
+          >
             <Plus className="h-4 w-4" />
             طلب صيانة جديد
           </Button>
