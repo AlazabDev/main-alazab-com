@@ -1,4 +1,4 @@
-import { Settings, User, Menu, LogOut } from "lucide-react";
+import { Settings, User, Menu, LogOut, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -35,42 +35,47 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
     }
   };
   return (
-    <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+    <header className="bg-card/95 backdrop-blur-md border-b border-border/50 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
       {/* Logo and Menu */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         <Button
           variant="ghost"
           size="sm"
           onClick={onMenuToggle}
+          className="hover:bg-primary/10 transition-colors"
         >
           <Menu className="h-5 w-5" />
         </Button>
         
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">A</span>
+        <div className="flex items-center gap-3">
+          {/* Professional Logo with A and Gear */}
+          <div className="relative w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
+            <div className="relative">
+              <span className="text-primary-foreground font-bold text-lg">A</span>
+              <Cog className="absolute -top-1 -right-1 h-3 w-3 text-primary-foreground/80 animate-spin" style={{ animationDuration: '8s' }} />
+            </div>
           </div>
           <div>
-            <h1 className="text-lg font-bold text-primary">azab.services</h1>
-            <p className="text-xs text-muted-foreground">نظام إدارة طلبات الصيانة</p>
+            <h1 className="text-xl font-bold text-primary tracking-tight">azab.services</h1>
+            <p className="text-xs text-muted-foreground font-medium">نظام إدارة طلبات الصيانة المتطور</p>
           </div>
         </div>
       </div>
 
       {/* User Profile */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         {/* Notifications */}
         <NotificationsList />
 
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                <User className="h-4 w-4" />
+            <Button variant="ghost" className="flex items-center gap-3 hover:bg-primary/10 transition-colors p-2 rounded-xl">
+              <div className="w-10 h-10 bg-gradient-secondary rounded-full flex items-center justify-center shadow-md">
+                <User className="h-5 w-5 text-secondary-foreground" />
               </div>
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium">محمد عزب</p>
+                <p className="text-sm font-semibold text-foreground">محمد عزب</p>
                 <p className="text-xs text-muted-foreground">مسؤول الشركة</p>
               </div>
             </Button>
