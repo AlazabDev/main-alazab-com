@@ -53,7 +53,7 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
         // إرسال إشعار لأقرب فني إذا تم تحديد الموقع
         if (formData.latitude && formData.longitude) {
           try {
-            await supabase.functions.invoke('send-notification', {
+            const { data: notificationResult, error: notificationError } = await supabase.functions.invoke('send-notification', {
               body: {
                 maintenanceRequestId: result.id,
                 latitude: formData.latitude,
@@ -63,9 +63,33 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
                 address: formData.location
               }
             });
+
+            if (notificationError) {
+              console.error('Notification error:', notificationError);
+              toast({
+                title: "تحذير",
+                description: "تم إنشاء الطلب لكن فشل في إرسال الإشعارات للفنيين",
+                variant: "destructive",
+              });
+            } else if (notificationResult?.vendor) {
+              toast({
+                title: "تم تعيين فني",
+                description: `تم تعيين ${notificationResult.vendor.name} للطلب (${notificationResult.vendor.distance?.toFixed(1)} كم)`,
+              });
+            }
           } catch (notificationError) {
             console.error('Error sending notification:', notificationError);
+            toast({
+              title: "تحذير", 
+              description: "تم إنشاء الطلب لكن لا يوجد فنيين متاحين في المنطقة",
+              variant: "destructive",
+            });
           }
+        } else {
+          toast({
+            title: "ملاحظة",
+            description: "لم يتم تحديد موقع - سيتم تعيين فني يدوياً",
+          });
         }
 
         setFormData({
