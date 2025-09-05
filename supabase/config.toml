@@ -48,3 +48,6 @@ port = 54327
 
 [functions.send-notification]
 verify_jwt = false
+
+[functions.error-tracking]
+verify_jwt = false
