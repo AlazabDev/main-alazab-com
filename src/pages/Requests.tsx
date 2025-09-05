@@ -2,18 +2,26 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NewRequestForm } from "@/components/forms/NewRequestForm";
 import { MaintenanceRequestsList } from "@/components/maintenance/MaintenanceRequestsList";
+import { MobileMaintenanceList } from "@/components/maintenance/MobileMaintenanceList";
+import { useMediaQuery } from "@/hooks/use-mobile";
 
 const Requests = () => {
   const [isNewRequestOpen, setIsNewRequestOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
-    <div className="space-y-8">
-      <MaintenanceRequestsList onNewRequestClick={() => setIsNewRequestOpen(true)} />
+    <div className="space-y-4 sm:space-y-8">
+      {/* عرض النسخة المحمولة للهواتف والتابلت، والنسخة العادية للحاسوب */}
+      {isMobile ? (
+        <MobileMaintenanceList onNewRequestClick={() => setIsNewRequestOpen(true)} />
+      ) : (
+        <MaintenanceRequestsList onNewRequestClick={() => setIsNewRequestOpen(true)} />
+      )}
 
       <Dialog open={isNewRequestOpen} onOpenChange={setIsNewRequestOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto mx-2 sm:mx-auto">
           <DialogHeader>
-            <DialogTitle className="text-xl">إنشاء طلب صيانة جديد</DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">إنشاء طلب صيانة جديد</DialogTitle>
           </DialogHeader>
           <NewRequestForm onSuccess={() => setIsNewRequestOpen(false)} />
         </DialogContent>

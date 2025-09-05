@@ -3,6 +3,7 @@ import { RecentRequests } from "@/components/dashboard/RecentRequests";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { MaintenanceChart } from "@/components/dashboard/MaintenanceChart";
 import { useStats } from "@/hooks/useSupabaseData";
+import { useMediaQuery } from "@/hooks/use-mobile";
 import { 
   Wrench, 
   CheckCircle, 
@@ -13,21 +14,22 @@ import {
 
 const Dashboard = () => {
   const stats = useStats();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Welcome Section */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold bg-gradient-hero bg-clip-text text-transparent">
-          مرحباً بك في لوحة التحكم
+      <div className="space-y-2 text-center sm:text-right">
+        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+          مرحباً بك في لوحة التحكم 📊
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           نظرة عامة على الميزانية الشهرية وإحصائيات طلبات الصيانة
         </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats Grid - مُحسنة للهواتف */}
+      <div className={`grid gap-3 sm:gap-4 lg:gap-6 ${isMobile ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'}`}>
         <StatsCard
           title="الطلبات المعلقة"
           value={stats.pendingRequests.toString()}
@@ -59,8 +61,8 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Monthly Budget Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      {/* Monthly Budget Overview - مُحسنة للهواتف */}
+      <div className={`grid gap-3 sm:gap-4 lg:gap-6 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-4'}`}>
         <StatsCard
           title="الطلبات هذا الشهر"
           value={stats.thisMonthRequests.toString()}
@@ -99,14 +101,14 @@ const Dashboard = () => {
       {/* Charts */}
       <MaintenanceChart />
 
-      {/* Recent Activity & Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Recent Activity & Quick Actions - مُحسنة للهواتف */}
+      <div className={`grid gap-4 sm:gap-6 ${isMobile ? 'grid-cols-1 space-y-2' : 'grid-cols-1 lg:grid-cols-2'}`}>
         <RecentRequests />
         <QuickActions />
       </div>
 
-      {/* Performance Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* Performance Stats - مُحسنة للهواتف */}
+      <div className={`grid gap-3 sm:gap-4 lg:gap-6 ${isMobile ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-4'}`}>
         <div className="text-center p-6 bg-card rounded-lg border card-elegant">
           <div className="text-3xl font-bold text-primary">{stats.activeVendors}</div>
           <div className="text-sm text-muted-foreground">الموردون النشطون</div>

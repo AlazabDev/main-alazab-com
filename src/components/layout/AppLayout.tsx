@@ -23,8 +23,8 @@ export function AppLayout({ children }: AppLayoutProps) {
           {/* Header - only once for the entire app */}
           <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
           
-          {/* Page Content */}
-          <main className="p-6">
+          {/* Page Content - Responsive padding for mobile */}
+          <main className="p-3 sm:p-4 lg:p-6">
             {children}
           </main>
         </div>

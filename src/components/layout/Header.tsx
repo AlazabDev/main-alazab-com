@@ -36,53 +36,57 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
     }
   };
   return (
-    <header className="bg-card/95 backdrop-blur-md border-b border-border/50 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+    <header className="bg-card/95 backdrop-blur-md border-b border-border/50 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
       {/* Logo and Menu */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 sm:gap-6">
         <Button
           variant="ghost"
           size="sm"
           onClick={onMenuToggle}
-          className="hover:bg-primary/10 transition-colors"
+          className="hover:bg-primary/10 transition-colors p-2 sm:p-3"
         >
           <Menu className="h-5 w-5" />
         </Button>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Professional Logo with A and Gear */}
-          <div className="relative w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
+          <div className="relative w-8 h-8 sm:w-12 sm:h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
             <div className="relative">
-              <span className="text-primary-foreground font-bold text-lg">A</span>
-              <Cog className="absolute -top-1 -right-1 h-3 w-3 text-primary-foreground/80 animate-spin" style={{ animationDuration: '8s' }} />
+              <span className="text-primary-foreground font-bold text-sm sm:text-lg">A</span>
+              <Cog className="absolute -top-1 -right-1 h-2 w-2 sm:h-3 sm:w-3 text-primary-foreground/80 animate-spin" style={{ animationDuration: '8s' }} />
             </div>
           </div>
-          <div>
+          <div className="hidden sm:block">
             <h1 className="text-xl font-bold text-primary tracking-tight">azab.services</h1>
             <p className="text-xs text-muted-foreground font-medium">نظام إدارة طلبات الصيانة المتطور</p>
+          </div>
+          {/* Mobile Logo Text */}
+          <div className="block sm:hidden">
+            <h1 className="text-sm font-bold text-primary tracking-tight">azab.services</h1>
           </div>
         </div>
       </div>
 
       {/* User Profile */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         {/* Notifications */}
         <NotificationsList />
 
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-3 hover:bg-primary/10 transition-colors p-2 rounded-xl">
-              <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-md">
+            <Button variant="ghost" className="flex items-center gap-2 sm:gap-3 hover:bg-primary/10 transition-colors p-1 sm:p-2 rounded-xl">
+              <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-primary/20 shadow-md">
                 <AvatarImage 
                   src="/lovable-uploads/fb9d438e-077d-4ce0-997b-709c295e2b35.png" 
                   alt="محمد عزب" 
                   className="object-cover"
                 />
-                <AvatarFallback className="bg-gradient-secondary text-secondary-foreground font-semibold">
+                <AvatarFallback className="bg-gradient-secondary text-secondary-foreground font-semibold text-xs sm:text-sm">
                   م ع
                 </AvatarFallback>
               </Avatar>
-              <div className="hidden sm:block text-right">
+              <div className="hidden md:block text-right">
                 <p className="text-sm font-semibold text-foreground">محمد عزب</p>
                 <p className="text-xs text-muted-foreground">مسؤول الشركة</p>
               </div>
