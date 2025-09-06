@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface NewPropertyFormProps {
   onClose: () => void;
@@ -21,6 +21,7 @@ interface NewPropertyFormProps {
 }
 
 export const NewPropertyForm = ({ onClose, onSuccess }: NewPropertyFormProps) => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     type: "",
@@ -45,6 +46,8 @@ export const NewPropertyForm = ({ onClose, onSuccess }: NewPropertyFormProps) =>
     { value: "residential", label: "سكني" },
     { value: "commercial", label: "تجاري" },
     { value: "industrial", label: "صناعي" },
+    { value: "office", label: "مكتبي" },
+    { value: "retail", label: "تجزئة" },
     { value: "mixed_use", label: "مختلط الاستخدام" }
   ];
 
@@ -82,22 +85,38 @@ export const NewPropertyForm = ({ onClose, onSuccess }: NewPropertyFormProps) =>
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from('properties')
-        .insert([{
-          ...formData,
-          area: formData.area ? parseFloat(formData.area) : null,
-          value: formData.value ? parseFloat(formData.value) : null,
-          floors: formData.floors ? parseInt(formData.floors) : null,
-          rooms: formData.rooms ? parseInt(formData.rooms) : null,
-          bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
-          parking_spaces: formData.parking_spaces ? parseInt(formData.parking_spaces) : null,
-          amenities: amenities.length > 0 ? amenities : null,
-          last_inspection_date: lastInspectionDate?.toISOString().split('T')[0] || null,
-          next_inspection_date: nextInspectionDate?.toISOString().split('T')[0] || null
-        }]);
+      const propertyData = {
+        name: formData.name,
+        type: formData.type,
+        address: formData.address,
+        status: 'active',
+        area: formData.area ? parseFloat(formData.area) : null,
+        value: formData.value ? parseFloat(formData.value) : null,
+        floors: formData.floors ? parseInt(formData.floors) : null,
+        rooms: formData.rooms ? parseInt(formData.rooms) : null,
+        bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
+        parking_spaces: formData.parking_spaces ? parseInt(formData.parking_spaces) : null,
+        description: formData.description || null,
+        amenities: amenities.length > 0 ? amenities : null,
+        maintenance_schedule: formData.maintenance_schedule || null,
+        last_inspection_date: lastInspectionDate?.toISOString().split('T')[0] || null,
+        next_inspection_date: nextInspectionDate?.toISOString().split('T')[0] || null
+      };
 
-      if (error) throw error;
+      console.log('Submitting property data:', propertyData);
+      
+      const { data, error } = await supabase
+        .from('properties')
+        .insert([propertyData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Property added successfully:', data);
 
       toast({
         title: "تم بنجاح",
@@ -106,11 +125,11 @@ export const NewPropertyForm = ({ onClose, onSuccess }: NewPropertyFormProps) =>
 
       onSuccess?.();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding property:', error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ في إضافة العقار",
+        description: error.message || "حدث خطأ في إضافة العقار",
         variant: "destructive"
       });
     } finally {
@@ -176,7 +195,7 @@ export const NewPropertyForm = ({ onClose, onSuccess }: NewPropertyFormProps) =>
               />
             </div>
             <div>
-              <Label htmlFor="value">القيمة (ريال)</Label>
+              <Label htmlFor="value">القيمة (جنيه مصري)</Label>
               <Input
                 id="value"
                 type="number"

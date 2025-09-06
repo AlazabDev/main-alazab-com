@@ -11,47 +11,6 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewPropertyForm } from "@/components/forms/NewPropertyForm";
 import { useProperties } from "@/hooks/useProperties";
 
-const mockProperties = [
-  {
-    id: "PROP-001",
-    name: "مجمع العزب التجاري",
-    type: "تجاري",
-    location: "المنصورة، شارع الجمهورية",
-    area: "500 م²",
-    value: "2,500,000 ج.م",
-    status: "active",
-    maintenanceRequests: 5,
-    lastMaintenance: "2025-01-15",
-    manager: "أحمد محمد",
-    description: "مجمع تجاري يحتوي على 8 محلات تجارية"
-  },
-  {
-    id: "PROP-002", 
-    name: "برج السكن الفاخر",
-    type: "سكني",
-    location: "القاهرة، مصر الجديدة",
-    area: "1200 م²",
-    value: "8,000,000 ج.م",
-    status: "active",
-    maintenanceRequests: 3,
-    lastMaintenance: "2025-01-20",
-    manager: "فاطمة أحمد",
-    description: "برج سكني مكون من 15 طابق"
-  },
-  {
-    id: "PROP-003",
-    name: "مصنع الإنتاج",
-    type: "صناعي", 
-    location: "الإسكندرية، برج العرب",
-    area: "2000 م²",
-    value: "5,000,000 ج.م",
-    status: "maintenance",
-    maintenanceRequests: 8,
-    lastMaintenance: "2025-01-10",
-    manager: "محمد عزب",
-    description: "مصنع لإنتاج المواد الغذائية"
-  }
-];
 
 export default function Properties() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -66,9 +25,9 @@ export default function Properties() {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const filteredProperties = mockProperties.filter(property => {
+  const filteredProperties = properties.filter(property => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.location.toLowerCase().includes(searchTerm.toLowerCase());
+                         property.address.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = typeFilter === "all" || property.type === typeFilter;
     const matchesStatus = statusFilter === "all" || property.status === statusFilter;
     
@@ -82,10 +41,49 @@ export default function Properties() {
   };
 
   const typeConfig = {
-    "تجاري": { className: "bg-blue-500 text-white" },
-    "سكني": { className: "bg-green-500 text-white" },
-    "صناعي": { className: "bg-orange-500 text-white" }
+    commercial: { label: "تجاري", className: "bg-blue-500 text-white" },
+    residential: { label: "سكني", className: "bg-green-500 text-white" },
+    industrial: { label: "صناعي", className: "bg-orange-500 text-white" },
+    office: { label: "مكتبي", className: "bg-purple-500 text-white" },
+    retail: { label: "تجزئة", className: "bg-teal-500 text-white" }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header onMenuToggle={toggleSidebar} />
+        <div className="flex">
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <main className="flex-1 p-6">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                <p className="mt-2 text-muted-foreground">جاري تحميل العقارات...</p>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header onMenuToggle={toggleSidebar} />
+        <div className="flex">
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <main className="flex-1 p-6">
+            <Card>
+              <CardContent className="py-6">
+                <p className="text-center text-destructive">خطأ في تحميل العقارات: {error}</p>
+              </CardContent>
+            </Card>
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -124,10 +122,10 @@ export default function Properties() {
                     <div className="p-2 bg-primary/10 rounded-lg">
                       <Building2 className="h-5 w-5 text-primary" />
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">إجمالي العقارات</p>
-                      <p className="text-2xl font-bold text-primary">{mockProperties.length}</p>
-                    </div>
+                     <div>
+                       <p className="text-sm text-muted-foreground">إجمالي العقارات</p>
+                       <p className="text-2xl font-bold text-primary">{properties.length}</p>
+                     </div>
                   </div>
                 </CardContent>
               </Card>
@@ -140,9 +138,9 @@ export default function Properties() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">نشطة</p>
-                      <p className="text-2xl font-bold text-green-500">
-                        {mockProperties.filter(p => p.status === "active").length}
-                      </p>
+                       <p className="text-2xl font-bold text-green-500">
+                         {properties.filter(p => p.status === "active").length}
+                       </p>
                     </div>
                   </div>
                 </CardContent>
@@ -156,9 +154,9 @@ export default function Properties() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">تحت الصيانة</p>
-                      <p className="text-2xl font-bold text-yellow-500">
-                        {mockProperties.filter(p => p.status === "maintenance").length}
-                      </p>
+                       <p className="text-2xl font-bold text-yellow-500">
+                         {properties.filter(p => p.status === "maintenance").length}
+                       </p>
                     </div>
                   </div>
                 </CardContent>
@@ -170,10 +168,12 @@ export default function Properties() {
                     <div className="p-2 bg-orange-500/10 rounded-lg">
                       <DollarSign className="h-5 w-5 text-orange-500" />
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">القيمة الإجمالية</p>
-                      <p className="text-lg font-bold text-orange-500">15.5M ج.م</p>
-                    </div>
+                     <div>
+                       <p className="text-sm text-muted-foreground">القيمة الإجمالية</p>
+                       <p className="text-lg font-bold text-orange-500">
+                         {properties.reduce((total, p) => total + (p.value || 0), 0).toLocaleString()} ج.م
+                       </p>
+                     </div>
                   </div>
                 </CardContent>
               </Card>
@@ -200,12 +200,14 @@ export default function Properties() {
                     <SelectTrigger>
                       <SelectValue placeholder="نوع العقار" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">جميع الأنواع</SelectItem>
-                      <SelectItem value="تجاري">تجاري</SelectItem>
-                      <SelectItem value="سكني">سكني</SelectItem>
-                      <SelectItem value="صناعي">صناعي</SelectItem>
-                    </SelectContent>
+                     <SelectContent>
+                       <SelectItem value="all">جميع الأنواع</SelectItem>
+                       <SelectItem value="commercial">تجاري</SelectItem>
+                       <SelectItem value="residential">سكني</SelectItem>
+                       <SelectItem value="industrial">صناعي</SelectItem>
+                       <SelectItem value="office">مكتبي</SelectItem>
+                       <SelectItem value="retail">تجزئة</SelectItem>
+                     </SelectContent>
                   </Select>
 
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -241,15 +243,15 @@ export default function Properties() {
                               <h3 className="text-lg font-semibold text-foreground">
                                 {property.name}
                               </h3>
-                              <Badge className={typeConfig[property.type as keyof typeof typeConfig].className}>
-                                {property.type}
+                              <Badge className={typeConfig[property.type as keyof typeof typeConfig]?.className || "bg-gray-500 text-white"}>
+                                {typeConfig[property.type as keyof typeof typeConfig]?.label || property.type}
                               </Badge>
                             </div>
-                            <p className="text-sm text-primary font-medium">{property.id}</p>
+                            <p className="text-sm text-primary font-medium">#{property.id.slice(0, 8)}</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge className={statusConfig[property.status as keyof typeof statusConfig].className}>
-                              {statusConfig[property.status as keyof typeof statusConfig].label}
+                            <Badge className={statusConfig[property.status as keyof typeof statusConfig]?.className || "bg-gray-500 text-white"}>
+                              {statusConfig[property.status as keyof typeof statusConfig]?.label || property.status}
                             </Badge>
                             <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
@@ -261,42 +263,69 @@ export default function Properties() {
                         </div>
 
                         {/* Description */}
-                        <p className="text-sm text-muted-foreground">
-                          {property.description}
-                        </p>
+                        {property.description && (
+                          <p className="text-sm text-muted-foreground">
+                            {property.description}
+                          </p>
+                        )}
 
                         {/* Details Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <MapPin className="h-4 w-4" />
-                            <span>{property.location}</span>
+                            <span>{property.address}</span>
                           </div>
                           
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Building2 className="h-4 w-4" />
-                            <span>{property.area}</span>
-                          </div>
+                          {property.area && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Building2 className="h-4 w-4" />
+                              <span>{property.area} م²</span>
+                            </div>
+                          )}
 
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Calendar className="h-4 w-4" />
-                            <span>آخر صيانة: {property.lastMaintenance}</span>
-                          </div>
+                          {property.last_inspection_date && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Calendar className="h-4 w-4" />
+                              <span>آخر فحص: {new Date(property.last_inspection_date).toLocaleDateString('ar-SA')}</span>
+                            </div>
+                          )}
 
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <DollarSign className="h-4 w-4" />
-                            <span>{property.value}</span>
-                          </div>
+                          {property.value && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <DollarSign className="h-4 w-4" />
+                              <span>{property.value.toLocaleString()} ج.م</span>
+                            </div>
+                          )}
                         </div>
+
+                        {/* Additional Details */}
+                        {(property.rooms || property.bathrooms || property.floors) && (
+                          <div className="grid grid-cols-3 gap-4 text-sm text-muted-foreground">
+                            {property.rooms && (
+                              <div>غرف: {property.rooms}</div>
+                            )}
+                            {property.bathrooms && (
+                              <div>حمامات: {property.bathrooms}</div>
+                            )}
+                            {property.floors && (
+                              <div>طوابق: {property.floors}</div>
+                            )}
+                          </div>
+                        )}
 
                         {/* Footer */}
                         <div className="flex items-center justify-between pt-4 border-t border-border">
                           <div className="text-sm text-muted-foreground">
-                            المسؤول: {property.manager}
+                            تاريخ الإنشاء: {new Date(property.created_at).toLocaleDateString('ar-SA')}
                           </div>
-                          <div className="text-sm">
-                            <span className="text-muted-foreground">طلبات الصيانة: </span>
-                            <span className="font-semibold text-primary">{property.maintenanceRequests}</span>
-                          </div>
+                          {property.next_inspection_date && (
+                            <div className="text-sm">
+                              <span className="text-muted-foreground">الفحص القادم: </span>
+                              <span className="font-semibold text-primary">
+                                {new Date(property.next_inspection_date).toLocaleDateString('ar-SA')}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -307,7 +336,21 @@ export default function Properties() {
               {filteredProperties.length === 0 && (
                 <Card>
                   <CardContent className="text-center py-12">
-                    <p className="text-muted-foreground text-lg">لا توجد عقارات تطابق معايير البحث</p>
+                    <div className="space-y-3">
+                      <div className="text-4xl opacity-50">🏢</div>
+                      <p className="text-muted-foreground text-lg">
+                        {properties.length === 0 
+                          ? "لا توجد عقارات مسجلة بعد" 
+                          : "لا توجد عقارات تطابق معايير البحث"
+                        }
+                      </p>
+                      {properties.length === 0 && (
+                        <Button onClick={() => setShowNewPropertyForm(true)} className="mt-3">
+                          <Plus className="h-4 w-4 ml-2" />
+                          إضافة أول عقار
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               )}

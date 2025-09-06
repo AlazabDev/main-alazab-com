@@ -66,15 +66,21 @@ export const useProperties = () => {
 
   const addProperty = async (propertyData: Omit<Property, 'id' | 'created_at' | 'updated_at'>) => {
     try {
+      console.log('Adding property with data:', propertyData);
       const { data, error } = await supabase
         .from('properties')
         .insert([propertyData])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      console.log('Property added successfully:', data);
       return { success: true, data };
     } catch (err) {
+      console.error('Add property error:', err);
       return { success: false, error: err instanceof Error ? err.message : 'خطأ في إضافة العقار' };
     }
   };
