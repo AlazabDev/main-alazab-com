@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
+import { ChatBot } from "@/components/chatbot/ChatBot";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -29,6 +30,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           </main>
         </div>
       </div>
+      
+      {/* ChatBot */}
+      <ChatBot />
     </div>
   );
 }

@@ -51,3 +51,6 @@ verify_jwt = false
 
 [functions.error-tracking]
 verify_jwt = false
+
+[functions.chatbot]
+verify_jwt = false
