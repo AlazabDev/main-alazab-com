@@ -20,6 +20,7 @@ import Invoices from "./pages/Invoices";
 import Map from "./pages/Map";
 import Documentation from "./pages/Documentation";
 import Settings from "./pages/Settings";
+import ProductionReport from "./pages/ProductionReport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -108,6 +109,13 @@ const App = () => (
               <AuthWrapper>
                 <AppLayout>
                   <Settings />
+                </AppLayout>
+              </AuthWrapper>
+            } />
+            <Route path="/production-report" element={
+              <AuthWrapper>
+                <AppLayout>
+                  <ProductionReport />
                 </AppLayout>
               </AuthWrapper>
             } />

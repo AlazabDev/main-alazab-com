@@ -71,6 +71,11 @@ const menuItems = [
     icon: Settings,
     label: "الإعدادات",
     href: "/settings"
+  },
+  {
+    icon: BarChart3,
+    label: "تقرير الإنتاج",
+    href: "/production-report"
   }
 ];
 
