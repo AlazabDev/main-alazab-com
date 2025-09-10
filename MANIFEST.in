@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include azab_shop_revive *.css
+recursive-include azab_shop_revive *.csv
+recursive-include azab_shop_revive *.html
+recursive-include azab_shop_revive *.ico
+recursive-include azab_shop_revive *.js
+recursive-include azab_shop_revive *.json
+recursive-include azab_shop_revive *.md
+recursive-include azab_shop_revive *.png
+recursive-include azab_shop_revive *.py
+recursive-include azab_shop_revive *.svg
+recursive-include azab_shop_revive *.txt
+recursive-exclude azab_shop_revive *.pyc

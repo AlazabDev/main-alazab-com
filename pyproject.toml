@@ -1,0 +1,21 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "azab_shop_revive"
+authors = [
+    {name = "Azab Solutions", email = "admin@azabsolutions.com"}
+]
+dynamic = ["version", "description"]
+readme = "README.md"
+dependencies = [
+    # frappe is installed via 'bench init'
+]
+
+[project.urls]
+Home = "https://github.com/azab-solutions/azab-shop-revive"
+Documentation = "https://docs.azabsolutions.com"
+
+[tool.bench.dev-dependencies]
+# Development dependencies for Frappe development
