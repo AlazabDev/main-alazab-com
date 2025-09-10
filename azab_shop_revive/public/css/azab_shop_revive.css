@@ -1,0 +1,20 @@
+/* Custom styles for Azab Shop Revive */
+
+.azab-app-container {
+	width: 100%;
+	min-height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+/* Override Frappe's default page styles for our React app */
+.page-content .azab-app-container {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+/* Ensure React app takes full width */
+#azab-react-app {
+	width: 100% !important;
+	max-width: none !important;
+}
