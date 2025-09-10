@@ -12,7 +12,8 @@ import {
   Settings,
   Building2,
   Calendar,
-  DollarSign
+  DollarSign,
+  PlayCircle
 } from "lucide-react";
 
 interface SidebarProps {
@@ -71,6 +72,11 @@ const menuItems = [
     icon: Settings,
     label: "الإعدادات",
     href: "/settings"
+  },
+  {
+    icon: PlayCircle,
+    label: "اختبار النظام",
+    href: "/testing"
   },
   {
     icon: BarChart3,

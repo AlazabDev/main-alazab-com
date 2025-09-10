@@ -20,6 +20,7 @@ import Invoices from "./pages/Invoices";
 import Map from "./pages/Map";
 import Documentation from "./pages/Documentation";
 import Settings from "./pages/Settings";
+import Testing from "./pages/Testing";
 import ProductionReport from "./pages/ProductionReport";
 import NotFound from "./pages/NotFound";
 
@@ -105,20 +106,27 @@ const App = () => (
                 </AppLayout>
               </AuthWrapper>
             } />
-            <Route path="/settings" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Settings />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/production-report" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <ProductionReport />
-                </AppLayout>
-              </AuthWrapper>
-            } />
+          <Route path="/settings" element={
+            <AuthWrapper>
+              <AppLayout>
+                <Settings />
+              </AppLayout>
+            </AuthWrapper>
+          } />
+          <Route path="/testing" element={
+            <AuthWrapper>
+              <AppLayout>
+                <Testing />
+              </AppLayout>
+            </AuthWrapper>
+          } />
+          <Route path="/production-report" element={
+            <AuthWrapper>
+              <AppLayout>
+                <ProductionReport />
+              </AppLayout>
+            </AuthWrapper>
+          } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
