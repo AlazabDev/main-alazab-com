@@ -1292,6 +1292,107 @@ export type Database = {
         }
         Relationships: []
       }
+      safe_maintenance_requests: {
+        Row: {
+          actual_completion: string | null
+          actual_cost: number | null
+          address: string | null
+          assigned_vendor_id: string | null
+          client_email: string | null
+          client_name: string | null
+          client_phone: string | null
+          completion_photos: string[] | null
+          created_at: string | null
+          customer_notes: string | null
+          description: string | null
+          estimated_completion: string | null
+          estimated_cost: number | null
+          id: string | null
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          phone: string | null
+          preferred_date: string | null
+          preferred_time: string | null
+          priority: string | null
+          rating: number | null
+          requested_by: string | null
+          service_type: string | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          vendor_notes: string | null
+        }
+        Insert: {
+          actual_completion?: string | null
+          actual_cost?: number | null
+          address?: string | null
+          assigned_vendor_id?: string | null
+          client_email?: never
+          client_name?: never
+          client_phone?: never
+          completion_photos?: string[] | null
+          created_at?: string | null
+          customer_notes?: string | null
+          description?: string | null
+          estimated_completion?: string | null
+          estimated_cost?: number | null
+          id?: string | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          phone?: never
+          preferred_date?: string | null
+          preferred_time?: string | null
+          priority?: string | null
+          rating?: number | null
+          requested_by?: string | null
+          service_type?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_notes?: string | null
+        }
+        Update: {
+          actual_completion?: string | null
+          actual_cost?: number | null
+          address?: string | null
+          assigned_vendor_id?: string | null
+          client_email?: never
+          client_name?: never
+          client_phone?: never
+          completion_photos?: string[] | null
+          created_at?: string | null
+          customer_notes?: string | null
+          description?: string | null
+          estimated_completion?: string | null
+          estimated_cost?: number | null
+          id?: string | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          phone?: never
+          preferred_date?: string | null
+          preferred_time?: string | null
+          priority?: string | null
+          rating?: number | null
+          requested_by?: string | null
+          service_type?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
+            columns: ["assigned_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       calculate_distance: {
@@ -1316,6 +1417,39 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_safe_maintenance_requests: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          actual_completion: string
+          actual_cost: number
+          address: string
+          assigned_vendor_id: string
+          client_email: string
+          client_name: string
+          client_phone: string
+          completion_photos: string[]
+          created_at: string
+          customer_notes: string
+          description: string
+          estimated_completion: string
+          estimated_cost: number
+          id: string
+          latitude: number
+          location: string
+          longitude: number
+          phone: string
+          preferred_date: string
+          preferred_time: string
+          priority: string
+          rating: number
+          requested_by: string
+          service_type: string
+          status: string
+          title: string
+          updated_at: string
+          vendor_notes: string
+        }[]
+      }
       is_staff: {
         Args: { uid: string }
         Returns: boolean
@@ -1324,9 +1458,17 @@ export type Database = {
         Args: { uid: string }
         Returns: boolean
       }
+      mask_sensitive_data: {
+        Args: { mask_type: string; text_to_mask: string }
+        Returns: string
+      }
       recalc_request_totals: {
         Args: { p_request_id: string }
         Returns: undefined
+      }
+      should_mask_data: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
