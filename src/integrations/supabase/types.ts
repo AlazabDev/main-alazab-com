@@ -551,13 +551,6 @@ export type Database = {
             foreignKeyName: "payments_request_id_fkey"
             columns: ["request_id"]
             isOneToOne: false
-            referencedRelation: "request_list_vw"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "payments_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
             referencedRelation: "service_requests"
             referencedColumns: ["id"]
           },
@@ -806,13 +799,6 @@ export type Database = {
             foreignKeyName: "request_attachments_request_id_fkey"
             columns: ["request_id"]
             isOneToOne: false
-            referencedRelation: "request_list_vw"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "request_attachments_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
             referencedRelation: "service_requests"
             referencedColumns: ["id"]
           },
@@ -860,13 +846,6 @@ export type Database = {
             foreignKeyName: "request_lines_request_id_fkey"
             columns: ["request_id"]
             isOneToOne: false
-            referencedRelation: "request_list_vw"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "request_lines_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
             referencedRelation: "service_requests"
             referencedColumns: ["id"]
           },
@@ -908,13 +887,6 @@ export type Database = {
           to_status?: Database["public"]["Enums"]["request_status_t"]
         }
         Relationships: [
-          {
-            foreignKeyName: "request_status_history_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "request_list_vw"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "request_status_history_request_id_fkey"
             columns: ["request_id"]
@@ -1062,6 +1034,13 @@ export type Database = {
             columns: ["contact_user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "service_requests_contact_user_id_fkey"
+            columns: ["contact_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
             referencedColumns: ["user_id"]
           },
           {
@@ -1311,129 +1290,42 @@ export type Database = {
           },
         ]
       }
-      request_list_vw: {
+      profiles_public: {
         Row: {
-          branch: string | null
           created_at: string | null
-          created_by: string | null
+          first_name: string | null
           id: string | null
-          property: string | null
-          provider: string | null
-          remaining: number | null
-          request_no: string | null
-          scheduled_at: string | null
-          services: string | null
-          status: Database["public"]["Enums"]["request_status_t"] | null
-          total: number | null
-        }
-        Relationships: []
-      }
-      safe_maintenance_requests: {
-        Row: {
-          actual_completion: string | null
-          actual_cost: number | null
-          address: string | null
-          assigned_vendor_id: string | null
-          client_email: string | null
-          client_name: string | null
-          client_phone: string | null
-          completion_photos: string[] | null
-          created_at: string | null
-          customer_notes: string | null
-          description: string | null
-          estimated_completion: string | null
-          estimated_cost: number | null
-          id: string | null
-          latitude: number | null
-          location: string | null
-          longitude: number | null
-          phone: string | null
-          preferred_date: string | null
-          preferred_time: string | null
-          priority: string | null
-          rating: number | null
-          requested_by: string | null
-          service_type: string | null
-          status: string | null
-          title: string | null
-          updated_at: string | null
-          vendor_notes: string | null
+          last_name: string | null
+          role: string | null
+          user_id: string | null
         }
         Insert: {
-          actual_completion?: string | null
-          actual_cost?: number | null
-          address?: string | null
-          assigned_vendor_id?: string | null
-          client_email?: never
-          client_name?: never
-          client_phone?: never
-          completion_photos?: string[] | null
           created_at?: string | null
-          customer_notes?: string | null
-          description?: string | null
-          estimated_completion?: string | null
-          estimated_cost?: number | null
+          first_name?: string | null
           id?: string | null
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          phone?: never
-          preferred_date?: string | null
-          preferred_time?: string | null
-          priority?: string | null
-          rating?: number | null
-          requested_by?: string | null
-          service_type?: string | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_notes?: string | null
+          last_name?: string | null
+          role?: string | null
+          user_id?: string | null
         }
         Update: {
-          actual_completion?: string | null
-          actual_cost?: number | null
-          address?: string | null
-          assigned_vendor_id?: string | null
-          client_email?: never
-          client_name?: never
-          client_phone?: never
-          completion_photos?: string[] | null
           created_at?: string | null
-          customer_notes?: string | null
-          description?: string | null
-          estimated_completion?: string | null
-          estimated_cost?: number | null
+          first_name?: string | null
           id?: string | null
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          phone?: never
-          preferred_date?: string | null
-          preferred_time?: string | null
-          priority?: string | null
-          rating?: number | null
-          requested_by?: string | null
-          service_type?: string | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_notes?: string | null
+          last_name?: string | null
+          role?: string | null
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
-            columns: ["assigned_vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Functions: {
       calculate_distance: {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
+      }
+      current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       find_nearest_vendor: {
         Args: {
@@ -1453,39 +1345,6 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
-      get_safe_maintenance_requests: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          actual_completion: string
-          actual_cost: number
-          address: string
-          assigned_vendor_id: string
-          client_email: string
-          client_name: string
-          client_phone: string
-          completion_photos: string[]
-          created_at: string
-          customer_notes: string
-          description: string
-          estimated_completion: string
-          estimated_cost: number
-          id: string
-          latitude: number
-          location: string
-          longitude: number
-          phone: string
-          preferred_date: string
-          preferred_time: string
-          priority: string
-          rating: number
-          requested_by: string
-          service_type: string
-          status: string
-          title: string
-          updated_at: string
-          vendor_notes: string
-        }[]
-      }
       is_staff: {
         Args: { uid: string }
         Returns: boolean
@@ -1494,17 +1353,9 @@ export type Database = {
         Args: { uid: string }
         Returns: boolean
       }
-      mask_sensitive_data: {
-        Args: { mask_type: string; text_to_mask: string }
-        Returns: string
-      }
       recalc_request_totals: {
         Args: { p_request_id: string }
         Returns: undefined
-      }
-      should_mask_data: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
       }
     }
     Enums: {
