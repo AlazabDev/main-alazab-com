@@ -622,7 +622,6 @@ export type Database = {
           role: string | null
           updated_at: string
           user_id: string
-          vendor_id: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -634,7 +633,6 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id: string
-          vendor_id?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -646,17 +644,8 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id?: string
-          vendor_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       projects: {
         Row: {
