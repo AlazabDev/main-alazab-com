@@ -1264,6 +1264,53 @@ export type Database = {
       }
     }
     Views: {
+      appointments_public: {
+        Row: {
+          appointment_date: string | null
+          appointment_time: string | null
+          created_at: string | null
+          duration_minutes: number | null
+          id: string | null
+          location: string | null
+          maintenance_request_id: string | null
+          property_id: string | null
+          status: string | null
+          title: string | null
+        }
+        Insert: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          property_id?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Update: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          property_id?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       request_list_vw: {
         Row: {
           branch: string | null
