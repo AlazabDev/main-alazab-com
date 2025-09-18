@@ -1,7 +1,20 @@
 import { supabase } from '@/integrations/supabase/client';
 
-// استخدم الـ URL الأساسي للمشروع
+// استخدم الـ URL الأساسي للمشروع مع تحسينات الإنتاج
 const ORIGIN = window.location.origin;
+
+// إعدادات محسنة للإنتاج
+const AUTH_CONFIG = {
+  emailRedirectTo: `${ORIGIN}/`,
+  redirectTo: `${ORIGIN}/`,
+  cookieOptions: {
+    name: 'azab-auth',
+    lifetime: 60 * 60 * 24 * 7, // أسبوع واحد
+    domain: undefined,
+    path: '/',
+    sameSite: 'lax'
+  }
+};
 
 export interface SmartAuthResult {
   ok: boolean;
@@ -22,7 +35,8 @@ export async function smartSignup(
       password,
       options: { 
         data: { full_name },
-        emailRedirectTo: `${ORIGIN}/`
+        emailRedirectTo: AUTH_CONFIG.emailRedirectTo,
+        captchaToken: undefined // يمكن إضافة CAPTCHA لاحقاً
       }
     });
 
@@ -58,7 +72,7 @@ export async function smartSignup(
             type: 'signup', 
             email,
             options: {
-              emailRedirectTo: `${ORIGIN}/`
+              emailRedirectTo: AUTH_CONFIG.emailRedirectTo
             }
           });
           return { ok: false, mode: 'confirm_resent' };
@@ -67,7 +81,8 @@ export async function smartSignup(
         // 2.c كلمة المرور غير صحيحة → أرسل رابط إعادة التعيين
         if (em.includes('invalid login credentials')) {
           await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${ORIGIN}/auth/update-password`
+            redirectTo: `${ORIGIN}/auth/update-password`,
+            captchaToken: undefined
           });
           return { ok: false, mode: 'reset_sent' };
         }
@@ -77,7 +92,8 @@ export async function smartSignup(
       await supabase.auth.signInWithOtp({
         email,
         options: { 
-          emailRedirectTo: `${ORIGIN}/` 
+          emailRedirectTo: AUTH_CONFIG.emailRedirectTo,
+          shouldCreateUser: false // لا ننشئ مستخدم جديد عبر OTP
         }
       });
       return { ok: false, mode: 'otp_sent' };
@@ -114,7 +130,7 @@ export async function smartLogin(email: string, password: string): Promise<Smart
         type: 'signup', 
         email,
         options: {
-          emailRedirectTo: `${ORIGIN}/`
+          emailRedirectTo: AUTH_CONFIG.emailRedirectTo
         }
       });
       return { ok: false, mode: 'confirm_resent' };

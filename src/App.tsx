@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthWrapper } from "@/components/auth/AuthWrapper";
+import { useProductionOptimizations } from "@/hooks/useProductionOptimizations";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -22,12 +23,26 @@ import Documentation from "./pages/Documentation";
 import Settings from "./pages/Settings";
 import Testing from "./pages/Testing";
 import ProductionReport from "./pages/ProductionReport";
+import ProductionMonitor from "./pages/ProductionMonitor";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 دقائق
+      gcTime: 10 * 60 * 1000, // 10 دقائق (cacheTime جديد)
+      retry: 3,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+  },
+});
 
-const App = () => (
-  <ErrorBoundary>
+const App = () => {
+  // تطبيق تحسينات الإنتاج
+  useProductionOptimizations();
+
+  return (
+    <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
         attribute="class"
@@ -127,13 +142,21 @@ const App = () => (
               </AppLayout>
             </AuthWrapper>
           } />
+          <Route path="/production-monitor" element={
+            <AuthWrapper>
+              <AppLayout>
+                <ProductionMonitor />
+              </AppLayout>
+            </AuthWrapper>
+          } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
-  </QueryClientProvider>
-  </ErrorBoundary>
-);
+    </QueryClientProvider>
+    </ErrorBoundary>
+  );
+};
 
 export default App;

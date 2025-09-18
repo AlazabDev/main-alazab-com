@@ -13,7 +13,8 @@ import {
   Building2,
   Calendar,
   DollarSign,
-  PlayCircle
+  PlayCircle,
+  Activity
 } from "lucide-react";
 
 interface SidebarProps {
@@ -82,6 +83,11 @@ const menuItems = [
     icon: BarChart3,
     label: "تقرير الإنتاج",
     href: "/production-report"
+  },
+  {
+    icon: Activity,
+    label: "مراقب الإنتاج",
+    href: "/production-monitor"
   }
 ];
 

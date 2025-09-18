@@ -1297,6 +1297,24 @@ export type Database = {
           },
         ]
       }
+      appointments_summary: {
+        Row: {
+          appointment_count: number | null
+          month: string | null
+          status: string | null
+        }
+        Relationships: []
+      }
+      maintenance_requests_summary: {
+        Row: {
+          avg_actual_cost: number | null
+          avg_estimated_cost: number | null
+          month: string | null
+          request_count: number | null
+          status: string | null
+        }
+        Relationships: []
+      }
       profiles_public: {
         Row: {
           created_at: string | null
