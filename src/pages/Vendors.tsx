@@ -1,12 +1,10 @@
+// src/pages/Vendors.tsx - النسخة المُصححة (بدون Header/Sidebar مكررة)
 import { useState } from "react";
-import { Header } from "@/components/layout/Header";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { VendorCard } from "@/components/vendors/VendorCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Search, Filter, Plus, Users, Star, Clock } from "lucide-react";
 import { NewVendorForm } from "@/components/forms/NewVendorForm";
@@ -16,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 const mockVendors = [
   {
     id: "1",
-    name: "أحمد محمد",
+    name: "أحمد محمد علي",
     specialty: "سباك محترف",
     rating: 4.8,
     completedJobs: 125,
@@ -69,7 +67,6 @@ const mockVendors = [
 ];
 
 export default function Vendors() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -77,11 +74,7 @@ export default function Vendors() {
   
   const { vendors, loading, error } = useVendors();
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  // Use real data if available, fallback to mock data
+  // استخدام البيانات الحقيقية إذا كانت متاحة، وإلا استخدام البيانات التجريبية
   const vendorList = loading ? [] : vendors.length > 0 ? vendors : mockVendors;
   
   const filteredVendors = vendorList.filter((vendor: any) => {
@@ -117,183 +110,175 @@ export default function Vendors() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header onMenuToggle={toggleSidebar} />
-      <div className="flex">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 p-6">
-          <div className="max-w-6xl mx-auto space-y-6">
-            {/* Page Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground">الموردين والفنيين</h1>
-                <p className="text-muted-foreground">إدارة شبكة الموردين والفنيين</p>
-              </div>
-              <Dialog open={showNewVendorForm} onOpenChange={setShowNewVendorForm}>
-                <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary/90">
-                    <Plus className="h-4 w-4 ml-2" />
-                    إضافة مورد جديد
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <NewVendorForm 
-                    onClose={() => setShowNewVendorForm(false)}
-                    onSuccess={() => {
-                      setShowNewVendorForm(false);
-                      toast({
-                        title: "تم بنجاح",
-                        description: "تم إضافة المورد الجديد بنجاح"
-                      });
-                    }}
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Users className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">إجمالي الموردين</p>
-                      <p className="text-2xl font-bold text-primary">{stats.total}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-500/10 rounded-lg">
-                      <Clock className="h-5 w-5 text-green-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">متاحين الآن</p>
-                      <p className="text-2xl font-bold text-green-500">{stats.available}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-yellow-500/10 rounded-lg">
-                      <Clock className="h-5 w-5 text-yellow-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">مشغولين</p>
-                      <p className="text-2xl font-bold text-yellow-500">{stats.busy}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-orange-500/10 rounded-lg">
-                      <Star className="h-5 w-5 text-orange-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">متوسط التقييم</p>
-                      <p className="text-2xl font-bold text-orange-500">{stats.avgRating}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Filters */}
-            <Card>
-              <CardHeader>
-                <CardTitle>البحث والتصفية</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="relative">
-                    <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="البحث في الموردين..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pr-9"
-                    />
-                  </div>
-                  
-                  <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="التخصص" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">جميع التخصصات</SelectItem>
-                      <SelectItem value="سباك">سباكة</SelectItem>
-                      <SelectItem value="كهربائي">كهرباء</SelectItem>
-                      <SelectItem value="تكييف">تكييف</SelectItem>
-                      <SelectItem value="نجار">نجارة</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="الحالة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">جميع الحالات</SelectItem>
-                      <SelectItem value="available">متاح</SelectItem>
-                      <SelectItem value="busy">مشغول</SelectItem>
-                      <SelectItem value="offline">غير متاح</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Button variant="outline">
-                    <Filter className="h-4 w-4 ml-2" />
-                    تصفية متقدمة
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Vendors Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredVendors.map((vendor: any) => (
-                <VendorCard
-                  key={vendor.id}
-                  vendor={{
-                    id: vendor.id,
-                    name: vendor.name,
-                    specialty: vendor.specialty,
-                    rating: vendor.rating,
-                    completedJobs: vendor.completedJobs || 0,
-                    location: vendor.address || vendor.location || 'غير محدد',
-                    phone: vendor.phone || '',
-                    status: vendor.status,
-                    hourlyRate: vendor.hourly_rate ? `${vendor.hourly_rate} ريال/ساعة` : vendor.hourlyRate || '0 ريال/ساعة',
-                    verified: vendor.certifications ? vendor.certifications.length > 0 : vendor.verified || false,
-                    responseTime: vendor.responseTime || '30 دقيقة'
-                  }}
-                  onContact={handleContact}
-                  onAssign={handleAssign}
-                />
-              ))}
-            </div>
-
-            {filteredVendors.length === 0 && (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <p className="text-muted-foreground text-lg">لا توجد موردين تطابق معايير البحث</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </main>
+    <div className="space-y-6 p-6">
+      {/* Page Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">الموردين والفنيين</h1>
+          <p className="text-muted-foreground">إدارة شبكة الموردين والفنيين</p>
+        </div>
+        <Dialog open={showNewVendorForm} onOpenChange={setShowNewVendorForm}>
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90">
+              <Plus className="h-4 w-4 ml-2" />
+              إضافة مورد جديد
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <NewVendorForm 
+              onClose={() => setShowNewVendorForm(false)}
+              onSuccess={() => {
+                setShowNewVendorForm(false);
+                toast({
+                  title: "تم بنجاح",
+                  description: "تم إضافة المورد الجديد بنجاح"
+                });
+              }}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Users className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">إجمالي الموردين</p>
+                <p className="text-2xl font-bold text-primary">{stats.total}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <Clock className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">متاحين الآن</p>
+                <p className="text-2xl font-bold text-green-500">{stats.available}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-yellow-500/10 rounded-lg">
+                <Clock className="h-5 w-5 text-yellow-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">مشغولين</p>
+                <p className="text-2xl font-bold text-yellow-500">{stats.busy}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-500/10 rounded-lg">
+                <Star className="h-5 w-5 text-orange-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">متوسط التقييم</p>
+                <p className="text-2xl font-bold text-orange-500">{stats.avgRating}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle>البحث والتصفية</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="البحث في الموردين..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pr-9"
+              />
+            </div>
+            
+            <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="التخصص" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع التخصصات</SelectItem>
+                <SelectItem value="سباك">سباكة</SelectItem>
+                <SelectItem value="كهربائي">كهرباء</SelectItem>
+                <SelectItem value="تكييف">تكييف</SelectItem>
+                <SelectItem value="نجار">نجارة</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="الحالة" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع الحالات</SelectItem>
+                <SelectItem value="available">متاح</SelectItem>
+                <SelectItem value="busy">مشغول</SelectItem>
+                <SelectItem value="offline">غير متاح</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Button variant="outline">
+              <Filter className="h-4 w-4 ml-2" />
+              تصفية متقدمة
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Vendors Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredVendors.map((vendor: any) => (
+          <VendorCard
+            key={vendor.id}
+            vendor={{
+              id: vendor.id,
+              name: vendor.name,
+              specialty: vendor.specialty,
+              rating: vendor.rating,
+              completedJobs: vendor.completedJobs || 0,
+              location: vendor.address || vendor.location || 'غير محدد',
+              phone: vendor.phone || '',
+              status: vendor.status,
+              hourlyRate: vendor.hourly_rate ? `${vendor.hourly_rate} ريال/ساعة` : vendor.hourlyRate || '0 ريال/ساعة',
+              verified: vendor.certifications ? vendor.certifications.length > 0 : vendor.verified || false,
+              responseTime: vendor.responseTime || '30 دقيقة'
+            }}
+            onContact={handleContact}
+            onAssign={handleAssign}
+          />
+        ))}
+      </div>
+
+      {filteredVendors.length === 0 && (
+        <Card>
+          <CardContent className="text-center py-12">
+            <p className="text-muted-foreground text-lg">لا توجد موردين تطابق معايير البحث</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
