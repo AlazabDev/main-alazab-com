@@ -197,7 +197,7 @@ export function QuickStats() {
       </div>
       {/* ChatBot - مع التأكد من عدم تداخله مع العناصر الأخرى */}
       <ChatBot />    
-    </>
+    </div>
   );
 }
 
