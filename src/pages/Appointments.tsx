@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Header } from "@/components/layout/Header";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -9,7 +7,6 @@ import { NewAppointmentForm } from "@/components/forms/NewAppointmentForm";
 import { useAppointments } from "@/hooks/useAppointments";
 
 export default function Appointments() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNewAppointmentForm, setShowNewAppointmentForm] = useState(false);
   
   const { appointments, loading, error } = useAppointments();
@@ -34,12 +31,7 @@ export default function Appointments() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header onMenuToggle={() => setSidebarOpen(true)} />
-      <div className="flex">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 p-6 lg:pr-64">
-          <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-foreground">المواعيد</h1>
               <Dialog open={showNewAppointmentForm} onOpenChange={setShowNewAppointmentForm}>
@@ -93,9 +85,6 @@ export default function Appointments() {
                 </Card>
               ))}
             </div>
-          </div>
-        </main>
-      </div>
     </div>
   );
 }

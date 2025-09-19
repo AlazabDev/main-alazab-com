@@ -1,4 +1,3 @@
-// src/pages/Vendors.tsx - النسخة المُصححة (بدون Header/Sidebar مكررة)
 import { useState } from "react";
 import { VendorCard } from "@/components/vendors/VendorCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -110,7 +109,7 @@ export default function Vendors() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>

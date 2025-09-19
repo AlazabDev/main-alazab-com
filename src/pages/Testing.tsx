@@ -430,7 +430,7 @@ const Testing = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">اختبار النظام</h1>
         <Button 
           onClick={runAllTests} 

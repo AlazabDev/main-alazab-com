@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Header } from "@/components/layout/Header";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,17 +11,12 @@ import { useProperties } from "@/hooks/useProperties";
 
 
 export default function Properties() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showNewPropertyForm, setShowNewPropertyForm] = useState(false);
   
   const { properties, loading, error } = useProperties();
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,18 +43,10 @@ export default function Properties() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header onMenuToggle={toggleSidebar} />
-        <div className="flex">
-          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-          <main className="flex-1 p-6">
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="mt-2 text-muted-foreground">جاري تحميل العقارات...</p>
-              </div>
-            </div>
-          </main>
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">جاري تحميل العقارات...</p>
         </div>
       </div>
     );
@@ -69,29 +54,16 @@ export default function Properties() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header onMenuToggle={toggleSidebar} />
-        <div className="flex">
-          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-          <main className="flex-1 p-6">
-            <Card>
-              <CardContent className="py-6">
-                <p className="text-center text-destructive">خطأ في تحميل العقارات: {error}</p>
-              </CardContent>
-            </Card>
-          </main>
-        </div>
-      </div>
+      <Card>
+        <CardContent className="py-6">
+          <p className="text-center text-destructive">خطأ في تحميل العقارات: {error}</p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header onMenuToggle={toggleSidebar} />
-      <div className="flex">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 p-6">
-          <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
             {/* Page Header */}
             <div className="flex items-center justify-between">
               <div>
@@ -355,9 +327,6 @@ export default function Properties() {
                 </Card>
               )}
             </div>
-          </div>
-        </main>
-      </div>
     </div>
   );
 }

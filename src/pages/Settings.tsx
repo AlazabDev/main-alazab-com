@@ -1,5 +1,3 @@
-import { Header } from "@/components/layout/Header";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -7,22 +5,16 @@ import { useState } from "react";
 import { Settings as SettingsIcon, User, Bell, Shield } from "lucide-react";
 
 export default function Settings() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header onMenuToggle={() => setSidebarOpen(true)} />
-      <div className="flex">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 p-6 lg:pr-64">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-foreground">الإعدادات</h1>
-            </div>
-            
-            <div className="grid gap-6">
+    <div className="max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-foreground">الإعدادات</h1>
+      </div>
+      
+      <div className="grid gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -86,9 +78,6 @@ export default function Settings() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        </main>
       </div>
     </div>
   );

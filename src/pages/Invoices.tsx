@@ -1,5 +1,4 @@
-import { Header } from "@/components/layout/Header";
-import { Sidebar } from "@/components/layout/Sidebar";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -26,7 +25,6 @@ type Invoice = {
 };
 
 export default function Invoices() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -88,12 +86,7 @@ export default function Invoices() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header onMenuToggle={() => setSidebarOpen(true)} />
-      <div className="flex">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 p-6 lg:pr-64">
-          <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-foreground">الفواتير</h1>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -177,9 +170,6 @@ export default function Invoices() {
                 ))}
               </div>
             )}
-          </div>
-        </main>
-      </div>
     </div>
   );
 }

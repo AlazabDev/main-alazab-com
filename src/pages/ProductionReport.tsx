@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { Header } from "@/components/layout/Header";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -108,13 +106,7 @@ export default function ProductionReport() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="flex">
-        <Sidebar isOpen={false} onClose={() => {}} />
-        <div className="flex-1 lg:mr-64">
-          <Header onMenuToggle={() => {}} />
-          
-          <main className="p-6">
+    <div className="space-y-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">تقرير حالة الإنتاج</h1>
@@ -482,9 +474,6 @@ export default function ProductionReport() {
                 </div>
               </TabsContent>
             </Tabs>
-          </main>
-        </div>
-      </div>
     </div>
   );
 }
