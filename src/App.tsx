@@ -1,3 +1,4 @@
+// src/App.tsx - النسخة المُصححة
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,8 +30,8 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 دقائق
-      gcTime: 10 * 60 * 1000, // 10 دقائق (cacheTime جديد)
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
       retry: 3,
       retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
@@ -38,123 +39,137 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  // تطبيق تحسينات الإنتاج
   useProductionOptimizations();
 
   return (
     <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Dashboard />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/requests" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Requests />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/vendors" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Vendors />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/reports" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Reports />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/properties" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Properties />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/appointments" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Appointments />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/invoices" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Invoices />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/map" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Map />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-            <Route path="/documentation" element={
-              <AuthWrapper>
-                <AppLayout>
-                  <Documentation />
-                </AppLayout>
-              </AuthWrapper>
-            } />
-          <Route path="/settings" element={
-            <AuthWrapper>
-              <AppLayout>
-                <Settings />
-              </AppLayout>
-            </AuthWrapper>
-          } />
-          <Route path="/testing" element={
-            <AuthWrapper>
-              <AppLayout>
-                <Testing />
-              </AppLayout>
-            </AuthWrapper>
-          } />
-          <Route path="/production-report" element={
-            <AuthWrapper>
-              <AppLayout>
-                <ProductionReport />
-              </AppLayout>
-            </AuthWrapper>
-          } />
-          <Route path="/production-monitor" element={
-            <AuthWrapper>
-              <AppLayout>
-                <ProductionMonitor />
-              </AppLayout>
-            </AuthWrapper>
-          } />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                {/* الصفحات العامة بدون Layout */}
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="*" element={<NotFound />} />
+
+                {/* الصفحات المحمية بـ Layout واحد فقط */}
+                <Route path="/dashboard" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Dashboard />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/requests" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Requests />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/vendors" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Vendors />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/reports" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Reports />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/properties" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Properties />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/appointments" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Appointments />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/invoices" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Invoices />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/map" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Map />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/documentation" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Documentation />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/settings" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Settings />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/testing" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <Testing />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/production-report" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <ProductionReport />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/production-monitor" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <ProductionMonitor />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 };
