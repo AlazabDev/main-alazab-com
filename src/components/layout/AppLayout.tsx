@@ -1,6 +1,7 @@
 import { Plus, FileText, Users, BarChart3, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ChatBot } from "@/components/chatbot/ChatBot";
 import { cn } from "@/lib/utils";
 
 // مكون البطاقة الأساسي
@@ -182,20 +183,29 @@ export function QuickStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat, index) => (
-        <SmallCard
-          key={index}
-          title={stat.title}
-          count={stat.count}
-          icon={stat.icon}
-          color={stat.color}
-        />
-      ))}
-     </div>
-       {/* ChatBot - مع التأكد من عدم تداخله مع العناصر الأخرى */}
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat, index) => (
+          <SmallCard
+            key={index}
+            title={stat.title}
+            count={stat.count}
+            icon={stat.icon}
+            color={stat.color}
+          />
+        ))}
+      </div>
+      {/* ChatBot - مع التأكد من عدم تداخله مع العناصر الأخرى */}
       <ChatBot />    
+    </>
+  );
+}
+
+// Export AppLayout as the default layout wrapper
+export function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="container mx-auto p-4">
+      {children}
     </div>
   );
 }
-   

@@ -1397,6 +1397,26 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_appointments_for_staff: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          description: string
+          duration_minutes: number
+          id: string
+          location: string
+          maintenance_request_id: string
+          notes: string
+          property_id: string
+          reminder_sent: boolean
+          status: string
+          title: string
+          updated_at: string
+          vendor_id: string
+        }[]
+      }
       is_staff: {
         Args: { uid: string }
         Returns: boolean
