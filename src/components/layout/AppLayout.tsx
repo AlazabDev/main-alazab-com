@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
+import { ChatBot } from "@/components/chatbot/ChatBot";
 import { cn } from "@/lib/utils";
 
 interface AppLayoutProps {
@@ -127,8 +128,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           </main>
         </div>       
       </div>
-      {/* ChatBot */}
-     <ChatBot />       
+      
+      {/* ChatBot - مع التأكد من عدم تداخله مع العناصر الأخرى */}
+      <ChatBot />       
     </div>
   );
 }
