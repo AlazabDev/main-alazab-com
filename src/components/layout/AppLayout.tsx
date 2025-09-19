@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
-import { ChatBot } from "@/components/chatbot/ChatBot";
+import { cn } from "@/lib/utils";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -64,30 +64,53 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="flex relative">
-        {/* Sidebar */}
-        <Sidebar 
-          isOpen={sidebarOpen} 
-          onClose={closeSidebar}
-          isMobile={isMobile}
-        />
-        
-        {/* Overlay للهاتف المحمول */}
-        {sidebarOpen && isMobile && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300"
-            onClick={handleOverlayClick}
-            aria-hidden="true"
-          />
+      <div className="flex">
+        {/* Sidebar - Desktop */}
+        <div 
+          className={cn(
+            "hidden lg:block transition-all duration-300 ease-in-out",
+            sidebarOpen ? "w-64" : "w-0"
+          )}
+        >
+          <div className={cn(
+            "fixed top-0 right-0 h-full w-64 bg-card border-l border-border shadow-lg transition-transform duration-300 ease-in-out z-30",
+            sidebarOpen ? "translate-x-0" : "translate-x-full"
+          )}>
+            <Sidebar 
+              isOpen={sidebarOpen} 
+              onClose={closeSidebar}
+              isMobile={false}
+            />
+          </div>
+        </div>
+
+        {/* Sidebar - Mobile */}
+        {isMobile && (
+          <>
+            <div className={cn(
+              "fixed top-0 right-0 h-full w-64 bg-card border-l border-border shadow-lg transition-transform duration-300 ease-in-out z-50",
+              sidebarOpen ? "translate-x-0" : "translate-x-full"
+            )}>
+              <Sidebar 
+                isOpen={sidebarOpen} 
+                onClose={closeSidebar}
+                isMobile={true}
+              />
+            </div>
+            
+            {/* Overlay للهاتف المحمول */}
+            {sidebarOpen && (
+              <div 
+                className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
+                onClick={handleOverlayClick}
+                aria-hidden="true"
+              />
+            )}
+          </>
         )}
         
         {/* Main Content */}
-        <div 
-          className={`
-            flex-1 transition-all duration-300 ease-in-out
-            ${sidebarOpen && !isMobile ? 'lg:ml-64' : ''}
-          `}
-        >
+        <div className="flex-1 transition-all duration-300 ease-in-out">
           {/* Header */}
           <Header 
             onMenuToggle={toggleSidebar}
@@ -103,10 +126,9 @@ export function AppLayout({ children }: AppLayoutProps) {
             {children}
           </main>
         </div>
-      </div>
-      
       {/* ChatBot */}
-      <ChatBot />
+      <ChatBot />        
+      </div>
     </div>
   );
 }
