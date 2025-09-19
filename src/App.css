@@ -40,3 +40,197 @@
 .read-the-docs {
   color: #888;
 }
+/* styles/arabic-layout.css */
+
+/* إعدادات عامة للنصوص العربية */
+.arabic-text {
+  font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+/* منع تجاوز النص للحاويات */
+.text-container {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* تحسين عرض البطاقات */
+.maintenance-card {
+  @apply relative overflow-hidden;
+  min-height: 100px;
+  max-height: 140px;
+}
+
+.maintenance-card .card-content {
+  @apply p-4 h-full flex flex-col justify-between;
+}
+
+.maintenance-card .card-title {
+  @apply font-semibold text-sm leading-tight mb-1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.maintenance-card .card-subtitle {
+  @apply text-xs opacity-90 leading-relaxed;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* تحسين الشبكة للشاشات المختلفة */
+.maintenance-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* تحسين البطاقات الصغيرة */
+.stat-card {
+  @apply bg-card border border-border rounded-lg p-4 transition-all duration-200 hover:shadow-md;
+  min-height: 80px;
+}
+
+.stat-card .stat-number {
+  @apply text-2xl font-bold text-foreground tabular-nums;
+}
+
+.stat-card .stat-label {
+  @apply text-sm text-muted-foreground mt-1;
+  word-break: break-word;
+}
+
+/* تحسين التباعد والمحاذاة للعربية */
+.rtl-container {
+  direction: rtl;
+}
+
+.rtl-container * {
+  text-align: right;
+}
+
+.rtl-flex {
+  @apply flex items-center;
+  flex-direction: row-reverse;
+}
+
+.rtl-grid {
+  @apply grid;
+  direction: rtl;
+}
+
+/* تحسين الأزرار للعربية */
+.arabic-button {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  min-height: 40px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* تحسين النوافذ المنبثقة */
+.modal-rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.modal-rtl .modal-header {
+  @apply border-b border-border p-4;
+}
+
+.modal-rtl .modal-content {
+  @apply p-4;
+}
+
+.modal-rtl .modal-footer {
+  @apply border-t border-border p-4 flex justify-start gap-2;
+}
+
+/* تحسين الجداول */
+.arabic-table {
+  direction: rtl;
+}
+
+.arabic-table th,
+.arabic-table td {
+  text-align: right;
+  padding: 8px 12px;
+}
+
+/* تحسين النماذج */
+.arabic-form .form-group {
+  @apply mb-4;
+  direction: rtl;
+}
+
+.arabic-form label {
+  @apply block text-sm font-medium text-foreground mb-1;
+  text-align: right;
+}
+
+.arabic-form input,
+.arabic-form textarea,
+.arabic-form select {
+  @apply w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground;
+  direction: rtl;
+  text-align: right;
+}
+
+/* تحسين القوائم */
+.arabic-list {
+  direction: rtl;
+}
+
+.arabic-list li {
+  text-align: right;
+  margin-bottom: 8px;
+}
+
+/* تحسين الإشعارات */
+.notification-rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+/* استعلامات الوسائط للتجاوب */
+@media (max-width: 640px) {
+  .maintenance-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .maintenance-card {
+    min-height: 80px;
+    max-height: 120px;
+  }
+  
+  .maintenance-card .card-title {
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+  
+  .maintenance-card .card-subtitle {
+    font-size: 0.75rem;
+    -webkit-line-clamp: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    min-height: 70px;
+  }
+  
+  .stat-card .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .stat-card .stat-label {
+    font-size: 0.75rem;
+  }
+}
