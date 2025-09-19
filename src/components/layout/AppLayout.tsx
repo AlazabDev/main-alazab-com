@@ -192,9 +192,10 @@ export function QuickStats() {
           color={stat.color}
         />
       ))}
-    </div>
+     </div>
        {/* ChatBot - مع التأكد من عدم تداخله مع العناصر الأخرى */}
       <ChatBot />    
+    </div>
   );
 }
    
