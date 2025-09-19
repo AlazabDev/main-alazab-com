@@ -125,10 +125,10 @@ export function AppLayout({ children }: AppLayoutProps) {
           >
             {children}
           </main>
-        </div>
-      {/* ChatBot */}
-      <ChatBot />        
+        </div>       
       </div>
+      {/* ChatBot */}
+     <ChatBot />       
     </div>
   );
 }
