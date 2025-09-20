@@ -95,84 +95,61 @@ export const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
   const location = useLocation();
 
   return (
-    <>
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
-          onClick={onClose}
-        />
-      )}
-      
-      {/* Sidebar */}
-      <aside className={cn(
-        "fixed top-0 right-0 z-50 h-full w-80 sm:w-64 bg-card border-l border-border transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:z-auto lg:block",
-        isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
-      )}>
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="p-4 sm:p-6 border-b border-border lg:hidden">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">A</span>
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-primary">azab.services</h2>
-                  <p className="text-xs text-muted-foreground">نظام الصيانة</p>
-                </div>
-              </div>
-              {/* Close button for mobile */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="lg:hidden"
-              >
-                ×
-              </Button>
-            </div>
+    <aside className="w-64 h-full bg-card border-l border-border shadow-lg flex flex-col">
+      {/* Header - Mobile only */}
+      <div className="flex items-center justify-between p-4 border-b border-border lg:hidden">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-sm">A</span>
           </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 p-3 sm:p-4 space-y-1 sm:space-y-2 overflow-y-auto">
-            {menuItems.map((item, index) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Button
-                  key={index}
-                  variant={isActive ? "default" : "ghost"}
-                  className={cn(
-                    "w-full justify-start gap-3 h-12 sm:h-12 text-right text-sm sm:text-base transition-colors",
-                    isActive && "bg-primary text-primary-foreground shadow-sm",
-                    !isActive && "hover:bg-muted/50"
-                  )}
-                  asChild
-                >
-                  <Link to={item.href} onClick={onClose}>
-                    <item.icon className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                    <span className="flex-1 text-right">{item.label}</span>
-                    {item.badge && (
-                      <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full min-w-[1.5rem] text-center">
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                </Button>
-              );
-            })}
-          </nav>
-
-          {/* Footer */}
-          <div className="p-3 sm:p-4 border-t border-border">
-            <div className="text-center text-xs text-muted-foreground space-y-1">
-              <p>الإصدار 2.0.0 📱</p>
-              <p>© 2025 azab.services</p>
-              <p className="text-[10px] opacity-75">مُحسن للهواتف المحمولة</p>
-            </div>
-          </div>
+          <span className="font-semibold text-foreground">azab.services</span>
         </div>
-      </aside>
-    </>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="p-2 hover:bg-accent rounded-lg"
+          aria-label="إغلاق القائمة"
+        >
+          ×
+        </Button>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 overflow-y-auto">
+        <ul className="space-y-1">
+          {menuItems.map((item) => (
+            <li key={item.href}>
+              <Link
+                to={item.href}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200",
+                  location.pathname === item.href
+                    ? 'bg-primary text-primary-foreground shadow-md'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/70 hover:translate-x-1'
+                )}
+                onClick={onClose}
+              >
+                <item.icon className="h-5 w-5 flex-shrink-0" />
+                <span className="flex-1">{item.label}</span>
+                {item.badge && (
+                  <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full font-semibold">
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-border mt-auto">
+        <div className="text-xs text-muted-foreground text-center space-y-1">
+          <p className="font-medium">نسخة 1.0.0</p>
+          <p>© 2024 azab.services</p>
+        </div>
+      </div>
+    </aside>
   );
 };

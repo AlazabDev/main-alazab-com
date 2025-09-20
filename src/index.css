@@ -126,6 +126,30 @@
   body {
     @apply bg-background text-foreground font-sans;
     direction: rtl;
+    overflow-x: hidden;
+  }
+
+  /* Ensure proper RTL layout */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Scrollbar styles for better appearance */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
   }
 }
 
@@ -152,11 +176,26 @@
   .card-elegant {
     box-shadow: var(--shadow-card);
     transition: var(--transition-smooth);
+    border: 1px solid hsl(var(--border));
   }
 
   .card-elegant:hover {
     box-shadow: var(--shadow-elegant);
     transform: translateY(-2px);
+    border-color: hsl(var(--primary) / 0.2);
+  }
+
+  /* Container improvements */
+  .page-container {
+    @apply min-h-screen bg-background;
+  }
+
+  .content-wrapper {
+    @apply flex-1 overflow-auto;
+  }
+
+  .main-content {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-7xl;
   }
 
   /* Status indicators */

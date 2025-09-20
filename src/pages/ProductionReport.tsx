@@ -106,15 +106,15 @@ export default function ProductionReport() {
   };
 
   return (
-    <div className="space-y-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground">تقرير حالة الإنتاج</h1>
-                <p className="text-muted-foreground mt-2">
-                  آخر تحديث: {lastUpdated.toLocaleString('ar-EG')}
-                </p>
-              </div>
-              <div className="flex gap-3">
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">تقرير حالة الإنتاج</h1>
+          <p className="text-muted-foreground">
+            آخر تحديث: {lastUpdated.toLocaleString('ar-EG')}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
                 <Button 
                   variant="outline" 
                   onClick={handleRefresh}
@@ -130,37 +130,37 @@ export default function ProductionReport() {
                 >
                   <Download className="h-4 w-4" />
                   تحميل التقرير
-                </Button>
-              </div>
-            </div>
+          </Button>
+        </div>
+      </div>
 
-            <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
-                <TabsTrigger value="performance">الأداء</TabsTrigger>
-                <TabsTrigger value="database">قاعدة البيانات</TabsTrigger>
-                <TabsTrigger value="security">الأمان</TabsTrigger>
-              </TabsList>
+      <Tabs defaultValue="overview" className="space-y-8">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+          <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
+          <TabsTrigger value="performance">الأداء</TabsTrigger>
+          <TabsTrigger value="database">قاعدة البيانات</TabsTrigger>
+          <TabsTrigger value="security">الأمان</TabsTrigger>
+        </TabsList>
 
-              <TabsContent value="overview" className="space-y-6">
-                {/* System Status Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">معدل التشغيل</CardTitle>
-                      <Activity className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-primary">{systemMetrics.uptime}%</div>
-                      <div className="mt-2">
-                        <Progress value={systemMetrics.uptime} className="h-2" />
-                      </div>
-                      <Badge variant="secondary" className="mt-2">
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        نشط
-                      </Badge>
-                    </CardContent>
-                  </Card>
+        <TabsContent value="overview" className="space-y-8">
+          {/* System Status Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">معدل التشغيل</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">{systemMetrics.uptime}%</div>
+                <div className="mt-2">
+                  <Progress value={systemMetrics.uptime} className="h-2" />
+                </div>
+                <Badge variant="secondary" className="mt-2">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  نشط
+                </Badge>
+              </CardContent>
+            </Card>
 
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
