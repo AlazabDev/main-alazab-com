@@ -4,7 +4,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 const DEEPSEEK_API_KEY = Deno.env.get('DEEPSEEK_API_KEY');
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://www.alazab.online',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -36,6 +36,8 @@ const KNOWLEDGE_BASE = `
 - كن مفيداً ومساعداً
 - قدم إجابات واضحة ومفصلة
 - إذا لم تعرف الإجابة، اطلب المزيد من التفاصيل
+- لا تقدم معلومات حساسة أو شخصية
+- تجنب الإجابة على أسئلة خارج نطاق النظام
 
 /** 
  * ملاحظة للمطور: 
@@ -56,11 +58,21 @@ serve(async (req) => {
   }
 
   try {
-    const { message } = await req.json();
+    // Validate request method
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
 
-    if (!message) {
+    const body = await req.json();
+    const { message } = body;
+
+    // Enhanced input validation
+    if (!message || typeof message !== 'string') {
       return new Response(
-        JSON.stringify({ error: 'الرسالة مطلوبة' }),
+        JSON.stringify({ error: 'الرسالة مطلوبة ويجب أن تكون نص صحيح' }),
         { 
           status: 400, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -68,7 +80,21 @@ serve(async (req) => {
       );
     }
 
-    console.log('User message:', message);
+    // Limit message length to prevent abuse
+    if (message.length > 2000) {
+      return new Response(
+        JSON.stringify({ error: 'الرسالة طويلة جداً. الحد الأقصى 2000 حرف' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Sanitize message
+    const sanitizedMessage = message.slice(0, 2000).trim();
+
+    console.log('User message received and sanitized');
 
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
@@ -85,7 +111,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: message
+            content: sanitizedMessage
           }
         ],
         max_tokens: 1000,
@@ -100,7 +126,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('DeepSeek response:', data);
+    console.log('DeepSeek response received');
 
     const botResponse = data.choices?.[0]?.message?.content || 'عذراً، لم أتمكن من فهم طلبك. يرجى المحاولة مرة أخرى.';
 
@@ -115,8 +141,7 @@ serve(async (req) => {
     
     return new Response(
       JSON.stringify({ 
-        error: 'حدث خطأ في المساعد الذكي',
-        details: error.message 
+        error: 'حدث خطأ في المساعد الذكي. يرجى المحاولة لاحقاً'
       }),
       {
         status: 500,

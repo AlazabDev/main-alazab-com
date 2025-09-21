@@ -1,7 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.56.1';
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://www.alazab.online',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -22,11 +22,39 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Validate request method
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const errorData: ErrorLog = await req.json();
+    const body = await req.json();
+    
+    // Enhanced input validation
+    if (!body.message || typeof body.message !== 'string') {
+      return new Response(JSON.stringify({ error: 'Valid message is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Sanitize and validate input with length limits
+    const errorData: ErrorLog = {
+      message: body.message.slice(0, 1000),
+      stack: body.stack ? body.stack.slice(0, 5000) : undefined,
+      url: body.url ? body.url.slice(0, 500) : '',
+      user_id: body.user_id || undefined,
+      user_agent: body.user_agent ? body.user_agent.slice(0, 500) : undefined,
+      level: ['error', 'warning', 'info'].includes(body.level) ? body.level : 'error',
+      metadata: body.metadata || undefined,
+      timestamp: new Date().toISOString()
+    };
 
     // تسجيل الخطأ في قاعدة البيانات
     const { error } = await supabase
@@ -39,13 +67,13 @@ Deno.serve(async (req) => {
         user_agent: errorData.user_agent,
         level: errorData.level,
         metadata: errorData.metadata,
-        created_at: new Date().toISOString()
+        created_at: errorData.timestamp
       }]);
 
     if (error) {
       console.error('Error saving log:', error);
       return new Response(
-        JSON.stringify({ success: false, error: error.message }),
+        JSON.stringify({ success: false, error: 'Failed to save log' }),
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -60,13 +88,14 @@ Deno.serve(async (req) => {
         const { data: admins } = await supabase
           .from('profiles')
           .select('user_id')
-          .eq('role', 'admin');
+          .eq('role', 'admin')
+          .limit(10); // Limit to prevent abuse
 
         if (admins && admins.length > 0) {
           const notifications = admins.map(admin => ({
             recipient_id: admin.user_id,
             title: 'خطأ تقني في النظام',
-            message: `حدث خطأ تقني: ${errorData.message}`,
+            message: `حدث خطأ تقني: ${errorData.message.slice(0, 100)}...`,
             type: 'error',
             entity_type: 'system_error',
             entity_id: null
