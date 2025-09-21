@@ -93,13 +93,6 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "appointments_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_basic"
-            referencedColumns: ["id"]
-          },
         ]
       }
       branches: {
@@ -458,13 +451,6 @@ export type Database = {
             columns: ["assigned_vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
-            columns: ["assigned_vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_basic"
             referencedColumns: ["id"]
           },
         ]
@@ -960,13 +946,6 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "service_prices_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_basic"
-            referencedColumns: ["id"]
-          },
         ]
       }
       service_requests: {
@@ -1090,13 +1069,6 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_requests_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_basic"
             referencedColumns: ["id"]
           },
         ]
@@ -1397,45 +1369,6 @@ export type Database = {
         }
         Relationships: []
       }
-      vendors_basic: {
-        Row: {
-          company_name: string | null
-          created_at: string | null
-          experience_years: number | null
-          id: string | null
-          name: string | null
-          rating: number | null
-          specialization: string[] | null
-          status: string | null
-          total_jobs: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          company_name?: string | null
-          created_at?: string | null
-          experience_years?: number | null
-          id?: string | null
-          name?: string | null
-          rating?: number | null
-          specialization?: string[] | null
-          status?: string | null
-          total_jobs?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          company_name?: string | null
-          created_at?: string | null
-          experience_years?: number | null
-          id?: string | null
-          name?: string | null
-          rating?: number | null
-          specialization?: string[] | null
-          status?: string | null
-          total_jobs?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
     }
     Functions: {
       calculate_distance: {
@@ -1483,6 +1416,10 @@ export type Database = {
           updated_at: string
           vendor_id: string
         }[]
+      }
+      get_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       is_staff: {
         Args: { uid: string }
