@@ -50,7 +50,7 @@ export const useVendors = () => {
         .from('profiles')
         .select('role')
         .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .single();
+        .maybeSingle();
 
       const userRole = profileData?.role;
 
