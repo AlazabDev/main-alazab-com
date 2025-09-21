@@ -12,7 +12,7 @@ const quickActions = [
   },
   {
     icon: FileText,
-    label: "تقرير المصروفات والمدفوعات",
+    label: "تقرير المصروفات",
     description: "تحليل تفصيلي للميزانية",
     color: "bg-secondary text-secondary-foreground",
     variant: "secondary" as const
@@ -26,14 +26,14 @@ const quickActions = [
   },
   {
     icon: Users,
-    label: "تقرير المستخدمين والنشاط",
+    label: "تقرير المستخدمين",
     description: "إحصائيات المستخدمين والنشاط",
     color: "bg-warning text-warning-foreground",
     variant: "default" as const
   },
   {
     icon: BarChart3,
-    label: "تقرير العقارات وإحصائيات العقارات والوحدات",
+    label: "تقرير العقارات",
     description: "إحصائيات العقارات والوحدات",
     color: "bg-muted text-muted-foreground",
     variant: "outline" as const
@@ -59,15 +59,15 @@ export const QuickActions = () => {
             <Button
               key={index}
               variant={action.variant}
-              className="h-auto p-4 justify-start gap-3 text-right"
+              className="h-auto p-4 justify-start gap-3 text-right min-h-[80px]"
             >
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${action.color}`}>
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${action.color} flex-shrink-0`}>
                 <action.icon className="h-5 w-5" />
               </div>
-              <div className="flex-1 text-right">
-                <p className="font-medium text-sm leading-tight">{action.label}</p>
+              <div className="flex-1 text-right min-w-0">
+                <p className="font-medium text-sm leading-tight break-words">{action.label}</p>
                 {action.description && (
-                  <p className="text-xs text-muted-foreground mt-1">{action.description}</p>
+                  <p className="text-xs text-muted-foreground mt-1 break-words leading-relaxed">{action.description}</p>
                 )}
               </div>
             </Button>
