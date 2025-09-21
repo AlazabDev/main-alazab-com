@@ -50,7 +50,7 @@ port = 54327
 verify_jwt = false
 
 [functions.error-tracking]
-verify_jwt = false
+verify_jwt = true
 
 [functions.chatbot]
-verify_jwt = false
+verify_jwt = true
