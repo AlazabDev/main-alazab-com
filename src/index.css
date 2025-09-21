@@ -214,4 +214,34 @@
   .status-in-progress {
     @apply bg-primary text-primary-foreground;
   }
+
+  /* RTL Sidebar Fixes */
+  [dir="rtl"] [data-sidebar] {
+    border-left: 1px solid hsl(var(--border));
+    border-right: none;
+  }
+
+  [dir="rtl"] [data-sidebar="sidebar"][data-state="collapsed"] {
+    transform: translateX(0);
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  [dir="rtl"] [data-sidebar="sidebar"][data-state="expanded"] {
+    transform: translateX(0);
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  /* RTL Sidebar Content Alignment */
+  [dir="rtl"] [data-sidebar="sidebar"] {
+    right: 0;
+    left: auto;
+  }
+
+  /* RTL Sidebar Trigger */
+  [dir="rtl"] [data-sidebar="trigger"] {
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
 }
