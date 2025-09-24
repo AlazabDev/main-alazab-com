@@ -1330,6 +1330,87 @@ export type Database = {
           },
         ]
       }
+      appointments_secure: {
+        Row: {
+          appointment_date: string | null
+          appointment_time: string | null
+          created_at: string | null
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string | null
+          location: string | null
+          maintenance_request_id: string | null
+          notes: string | null
+          property_id: string | null
+          reminder_sent: boolean | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: never
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: never
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments_summary: {
         Row: {
           appointment_count: number | null
@@ -1430,6 +1511,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_appointment_customer_info: {
+        Args: { appointment_id: string }
+        Returns: {
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+        }[]
+      }
       get_appointments_for_staff: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -1465,6 +1554,10 @@ export type Database = {
       is_vendor: {
         Args: { uid: string }
         Returns: boolean
+      }
+      mask_customer_phone: {
+        Args: { phone: string; user_role: string }
+        Returns: string
       }
       recalc_request_totals: {
         Args: { p_request_id: string }
