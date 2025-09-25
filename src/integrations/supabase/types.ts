@@ -392,6 +392,7 @@ export type Database = {
           actual_completion: string | null
           actual_cost: number | null
           address: string | null
+          archived_at: string | null
           assigned_vendor_id: string | null
           client_email: string | null
           client_name: string
@@ -400,8 +401,11 @@ export type Database = {
           created_at: string
           customer_notes: string | null
           description: string | null
+          escalation_level: number | null
           estimated_completion: string | null
           estimated_cost: number | null
+          follow_up_date: string | null
+          follow_up_required: boolean | null
           id: string
           latitude: number | null
           location: string
@@ -410,18 +414,24 @@ export type Database = {
           preferred_date: string | null
           preferred_time: string | null
           priority: string | null
+          quality_score: number | null
           rating: number | null
           requested_by: string | null
           service_type: string
+          sla_due_date: string | null
           status: string | null
           title: string
           updated_at: string
           vendor_notes: string | null
+          workflow_stage:
+            | Database["public"]["Enums"]["maintenance_status"]
+            | null
         }
         Insert: {
           actual_completion?: string | null
           actual_cost?: number | null
           address?: string | null
+          archived_at?: string | null
           assigned_vendor_id?: string | null
           client_email?: string | null
           client_name: string
@@ -430,8 +440,11 @@ export type Database = {
           created_at?: string
           customer_notes?: string | null
           description?: string | null
+          escalation_level?: number | null
           estimated_completion?: string | null
           estimated_cost?: number | null
+          follow_up_date?: string | null
+          follow_up_required?: boolean | null
           id?: string
           latitude?: number | null
           location: string
@@ -440,18 +453,24 @@ export type Database = {
           preferred_date?: string | null
           preferred_time?: string | null
           priority?: string | null
+          quality_score?: number | null
           rating?: number | null
           requested_by?: string | null
           service_type: string
+          sla_due_date?: string | null
           status?: string | null
           title: string
           updated_at?: string
           vendor_notes?: string | null
+          workflow_stage?:
+            | Database["public"]["Enums"]["maintenance_status"]
+            | null
         }
         Update: {
           actual_completion?: string | null
           actual_cost?: number | null
           address?: string | null
+          archived_at?: string | null
           assigned_vendor_id?: string | null
           client_email?: string | null
           client_name?: string
@@ -460,8 +479,11 @@ export type Database = {
           created_at?: string
           customer_notes?: string | null
           description?: string | null
+          escalation_level?: number | null
           estimated_completion?: string | null
           estimated_cost?: number | null
+          follow_up_date?: string | null
+          follow_up_required?: boolean | null
           id?: string
           latitude?: number | null
           location?: string
@@ -470,13 +492,18 @@ export type Database = {
           preferred_date?: string | null
           preferred_time?: string | null
           priority?: string | null
+          quality_score?: number | null
           rating?: number | null
           requested_by?: string | null
           service_type?: string
+          sla_due_date?: string | null
           status?: string | null
           title?: string
           updated_at?: string
           vendor_notes?: string | null
+          workflow_stage?:
+            | Database["public"]["Enums"]["maintenance_status"]
+            | null
         }
         Relationships: [
           {
@@ -837,6 +864,39 @@ export type Database = {
           },
         ]
       }
+      request_lifecycle: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          request_id: string
+          status: Database["public"]["Enums"]["maintenance_status"]
+          update_notes: string | null
+          update_type: Database["public"]["Enums"]["update_type"]
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          request_id: string
+          status: Database["public"]["Enums"]["maintenance_status"]
+          update_notes?: string | null
+          update_type: Database["public"]["Enums"]["update_type"]
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          request_id?: string
+          status?: Database["public"]["Enums"]["maintenance_status"]
+          update_notes?: string | null
+          update_type?: Database["public"]["Enums"]["update_type"]
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       request_lines: {
         Row: {
           amount: number
@@ -891,6 +951,51 @@ export type Database = {
           },
         ]
       }
+      request_reviews: {
+        Row: {
+          created_at: string
+          feedback_text: string | null
+          id: string
+          overall_rating: number | null
+          photos: string[] | null
+          professionalism: number | null
+          request_id: string
+          reviewer_id: string | null
+          reviewer_type: string | null
+          service_quality: number | null
+          timeliness: number | null
+          would_recommend: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          overall_rating?: number | null
+          photos?: string[] | null
+          professionalism?: number | null
+          request_id: string
+          reviewer_id?: string | null
+          reviewer_type?: string | null
+          service_quality?: number | null
+          timeliness?: number | null
+          would_recommend?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          overall_rating?: number | null
+          photos?: string[] | null
+          professionalism?: number | null
+          request_id?: string
+          reviewer_id?: string | null
+          reviewer_type?: string | null
+          service_quality?: number | null
+          timeliness?: number | null
+          would_recommend?: boolean | null
+        }
+        Relationships: []
+      }
       request_status_history: {
         Row: {
           changed_at: string
@@ -928,6 +1033,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      scheduled_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message_template: string
+          notification_type: string
+          recipient_id: string
+          request_id: string
+          scheduled_for: string
+          sent_at: string | null
+          status: string | null
+          variables: Json | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_template: string
+          notification_type: string
+          recipient_id: string
+          request_id: string
+          scheduled_for: string
+          sent_at?: string | null
+          status?: string | null
+          variables?: Json | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_template?: string
+          notification_type?: string
+          recipient_id?: string
+          request_id?: string
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string | null
+          variables?: Json | null
+        }
+        Relationships: []
       }
       service_prices: {
         Row: {
@@ -1281,6 +1425,57 @@ export type Database = {
         }
         Relationships: []
       }
+      work_tasks: {
+        Row: {
+          actual_duration: number | null
+          assigned_to: string | null
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          estimated_duration: number | null
+          id: string
+          materials_needed: string[] | null
+          notes: string | null
+          request_id: string
+          sort_order: number | null
+          status: string | null
+          task_name: string
+          updated_at: string
+        }
+        Insert: {
+          actual_duration?: number | null
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_duration?: number | null
+          id?: string
+          materials_needed?: string[] | null
+          notes?: string | null
+          request_id: string
+          sort_order?: number | null
+          status?: string | null
+          task_name: string
+          updated_at?: string
+        }
+        Update: {
+          actual_duration?: number | null
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          estimated_duration?: number | null
+          id?: string
+          materials_needed?: string[] | null
+          notes?: string | null
+          request_id?: string
+          sort_order?: number | null
+          status?: string | null
+          task_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       appointments_public: {
@@ -1489,6 +1684,14 @@ export type Database = {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
       }
+      calculate_sla_due_date: {
+        Args: {
+          created_at: string
+          priority_level: string
+          service_type: string
+        }
+        Returns: string
+      }
       current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1566,6 +1769,21 @@ export type Database = {
     }
     Enums: {
       currency_t: "EGP" | "USD" | "EUR" | "SAR" | "AED"
+      maintenance_status:
+        | "draft"
+        | "submitted"
+        | "acknowledged"
+        | "assigned"
+        | "scheduled"
+        | "in_progress"
+        | "inspection"
+        | "waiting_parts"
+        | "completed"
+        | "billed"
+        | "paid"
+        | "closed"
+        | "cancelled"
+        | "on_hold"
       payment_status_t:
         | "draft"
         | "pending"
@@ -1582,6 +1800,15 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      update_type:
+        | "status_change"
+        | "assignment"
+        | "scheduling"
+        | "cost_estimate"
+        | "completion"
+        | "feedback"
+        | "payment"
+        | "note"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1710,6 +1937,22 @@ export const Constants = {
   public: {
     Enums: {
       currency_t: ["EGP", "USD", "EUR", "SAR", "AED"],
+      maintenance_status: [
+        "draft",
+        "submitted",
+        "acknowledged",
+        "assigned",
+        "scheduled",
+        "in_progress",
+        "inspection",
+        "waiting_parts",
+        "completed",
+        "billed",
+        "paid",
+        "closed",
+        "cancelled",
+        "on_hold",
+      ],
       payment_status_t: [
         "draft",
         "pending",
@@ -1727,6 +1970,16 @@ export const Constants = {
         "in_progress",
         "completed",
         "cancelled",
+      ],
+      update_type: [
+        "status_change",
+        "assignment",
+        "scheduling",
+        "cost_estimate",
+        "completion",
+        "feedback",
+        "payment",
+        "note",
       ],
     },
   },
