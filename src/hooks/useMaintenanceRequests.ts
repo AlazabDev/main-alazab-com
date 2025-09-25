@@ -2,6 +2,22 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+export type WorkflowStage = 
+  | 'draft'
+  | 'submitted'
+  | 'acknowledged'
+  | 'assigned'
+  | 'scheduled'
+  | 'in_progress'
+  | 'inspection'
+  | 'waiting_parts'
+  | 'completed'
+  | 'billed'
+  | 'paid'
+  | 'closed'
+  | 'cancelled'
+  | 'on_hold';
+
 export interface MaintenanceRequest {
   id: string;
   title: string;
@@ -29,6 +45,14 @@ export interface MaintenanceRequest {
   assigned_vendor_id?: string;
   estimated_completion?: string;
   actual_completion?: string;
+  // New lifecycle fields
+  workflow_stage?: WorkflowStage;
+  sla_due_date?: string;
+  escalation_level?: number;
+  quality_score?: number;
+  follow_up_required?: boolean;
+  follow_up_date?: string;
+  archived_at?: string;
 }
 
 export function useMaintenanceRequests() {
@@ -90,7 +114,7 @@ export function useMaintenanceRequests() {
     try {
       const { data, error } = await supabase
         .from('maintenance_requests')
-        .update(updates)
+        .update(updates as any)
         .eq('id', id)
         .select()
         .single();

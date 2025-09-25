@@ -2,7 +2,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, DollarSign, MapPin, Phone, User, FileText, Image as ImageIcon } from "lucide-react";
+import { RequestLifecycleTracker } from "./RequestLifecycleTracker";
 
 interface MaintenanceRequestDetailsProps {
   request: any;
@@ -68,6 +70,15 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
       </div>
 
       <Separator />
+
+      {/* Enhanced Details with Lifecycle */}
+      <Tabs defaultValue="details" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="details">تفاصيل الطلب</TabsTrigger>
+          <TabsTrigger value="lifecycle">دورة الحياة</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="details" className="space-y-6 mt-6">
 
       {/* Basic Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -249,6 +260,16 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
           </CardContent>
         </Card>
       )}
+        </TabsContent>
+        
+        <TabsContent value="lifecycle" className="mt-6">
+          <RequestLifecycleTracker 
+            requestId={request.id}
+            requestStatus={request.status}
+            requestTitle={request.title}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
