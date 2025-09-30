@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MapPin, Navigation, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 // إضافة تعريفات TypeScript لـ Google Maps
 /// <reference types="google.maps" />
@@ -49,29 +50,26 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   const fetchApiKey = async () => {
     try {
       // محاولة جلب API key من Supabase Edge Function
-      const response = await fetch('/api/get-maps-key');
-      if (response.ok) {
-        const data = await response.json();
-        setApiKey(data.apiKey);
+      const response = await supabase.functions.invoke('get-maps-key');
+      if (response.data && response.data.apiKey) {
+        setApiKey(response.data.apiKey);
+        return;
       } else {
-        // إذا لم نجد API key، نطلب من المستخدم إدخاله
-        const userApiKey = prompt('الرجاء إدخال Google Maps API Key:');
-        if (userApiKey) {
-          setApiKey(userApiKey);
-          localStorage.setItem('google_maps_api_key', userApiKey);
-        }
+        console.warn('Failed to fetch API key from Supabase function:', response.error);
       }
     } catch (error) {
-      // استخدام API key من localStorage كبديل
-      const storedKey = localStorage.getItem('google_maps_api_key');
-      if (storedKey) {
-        setApiKey(storedKey);
-      } else {
-        const userApiKey = prompt('الرجاء إدخال Google Maps API Key:');
-        if (userApiKey) {
-          setApiKey(userApiKey);
-          localStorage.setItem('google_maps_api_key', userApiKey);
-        }
+      console.warn('Error fetching API key from Supabase:', error);
+    }
+    
+    // استخدام API key من localStorage كبديل
+    const storedKey = localStorage.getItem('google_maps_api_key');
+    if (storedKey) {
+      setApiKey(storedKey);
+    } else {
+      const userApiKey = prompt('الرجاء إدخال Google Maps API Key:');
+      if (userApiKey) {
+        setApiKey(userApiKey);
+        localStorage.setItem('google_maps_api_key', userApiKey);
       }
     }
   };
