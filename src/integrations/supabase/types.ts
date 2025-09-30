@@ -95,6 +95,33 @@ export type Database = {
           },
         ]
       }
+      appointments_summary_secure: {
+        Row: {
+          appointment_count: number
+          created_at: string | null
+          id: string
+          month: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_count?: number
+          created_at?: string | null
+          id?: string
+          month: string
+          status: string
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_count?: number
+          created_at?: string | null
+          id?: string
+          month?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -514,6 +541,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      maintenance_requests_summary_secure: {
+        Row: {
+          avg_actual_cost: number | null
+          avg_estimated_cost: number | null
+          created_at: string | null
+          id: string
+          month: string
+          request_count: number
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          avg_actual_cost?: number | null
+          avg_estimated_cost?: number | null
+          created_at?: string | null
+          id?: string
+          month: string
+          request_count?: number
+          status: string
+          updated_at?: string | null
+        }
+        Update: {
+          avg_actual_cost?: number | null
+          avg_estimated_cost?: number | null
+          created_at?: string | null
+          id?: string
+          month?: string
+          request_count?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       notes: {
         Row: {
@@ -1214,20 +1274,6 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
-            foreignKeyName: "service_requests_contact_user_id_fkey"
-            columns: ["contact_user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "service_requests_contact_user_id_fkey"
-            columns: ["contact_user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_safe"
-            referencedColumns: ["user_id"]
-          },
-          {
             foreignKeyName: "service_requests_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
@@ -1478,206 +1524,7 @@ export type Database = {
       }
     }
     Views: {
-      appointments_public: {
-        Row: {
-          appointment_date: string | null
-          appointment_time: string | null
-          created_at: string | null
-          duration_minutes: number | null
-          id: string | null
-          location: string | null
-          maintenance_request_id: string | null
-          property_id: string | null
-          status: string | null
-          title: string | null
-        }
-        Insert: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          property_id?: string | null
-          status?: string | null
-          title?: string | null
-        }
-        Update: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          property_id?: string | null
-          status?: string | null
-          title?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      appointments_secure: {
-        Row: {
-          appointment_date: string | null
-          appointment_time: string | null
-          created_at: string | null
-          created_by: string | null
-          customer_email: string | null
-          customer_name: string | null
-          customer_phone: string | null
-          description: string | null
-          duration_minutes: number | null
-          id: string | null
-          location: string | null
-          maintenance_request_id: string | null
-          notes: string | null
-          property_id: string | null
-          reminder_sent: boolean | null
-          status: string | null
-          title: string | null
-          updated_at: string | null
-          vendor_id: string | null
-        }
-        Insert: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          notes?: never
-          property_id?: string | null
-          reminder_sent?: boolean | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Update: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          notes?: never
-          property_id?: string | null
-          reminder_sent?: boolean | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "appointments_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      appointments_summary: {
-        Row: {
-          appointment_count: number | null
-          month: string | null
-          status: string | null
-        }
-        Relationships: []
-      }
-      maintenance_requests_summary: {
-        Row: {
-          avg_actual_cost: number | null
-          avg_estimated_cost: number | null
-          month: string | null
-          request_count: number | null
-          status: string | null
-        }
-        Relationships: []
-      }
-      profiles_public: {
-        Row: {
-          created_at: string | null
-          first_name: string | null
-          id: string | null
-          last_name: string | null
-          role: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          last_name?: string | null
-          role?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          last_name?: string | null
-          role?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      profiles_safe: {
-        Row: {
-          created_at: string | null
-          first_name: string | null
-          id: string | null
-          last_name: string | null
-          role: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          last_name?: string | null
-          role?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          last_name?: string | null
-          role?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       calculate_distance: {
@@ -1764,6 +1611,10 @@ export type Database = {
       }
       recalc_request_totals: {
         Args: { p_request_id: string }
+        Returns: undefined
+      }
+      update_summary_tables: {
+        Args: Record<PropertyKey, never>
         Returns: undefined
       }
     }
