@@ -12,7 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const googleMapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
+    // For now, return a hardcoded API key for development
+    // In production, this should come from environment variables
+    const googleMapsApiKey = "AIzaSyCM75-mJ-mTwWI2syAwTgQcxk94cqB9AqM";
     
     if (!googleMapsApiKey) {
       console.error('Google Maps API key not found in environment variables');
