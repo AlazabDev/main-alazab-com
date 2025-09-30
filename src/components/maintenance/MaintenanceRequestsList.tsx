@@ -153,8 +153,8 @@ export function MaintenanceRequestsList({ onNewRequestClick }: MaintenanceReques
             filteredRequests={filteredRequests}
           />
           <Button 
-            className="gap-2 bg-gradient-primary" 
-            onClick={onNewRequestClick}
+            className="gap-2 bg-gradient-primary hover:bg-gradient-primary/90" 
+            onClick={() => onNewRequestClick?.()}
           >
             <Plus className="h-4 w-4" />
             طلب صيانة جديد
