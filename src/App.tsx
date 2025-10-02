@@ -26,6 +26,11 @@ import Testing from "./pages/Testing";
 import ProductionReport from "./pages/ProductionReport";
 import ProductionMonitor from "./pages/ProductionMonitor";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Gallery from "./pages/Gallery";
+import Projects from "./pages/Projects";
+import Blog from "./pages/Blog";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,6 +64,11 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/blog" element={<Blog />} />
                 <Route path="*" element={<NotFound />} />
 
                 {/* الصفحات المحمية بـ Layout واحد فقط */}
