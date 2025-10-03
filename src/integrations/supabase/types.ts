@@ -1736,6 +1736,10 @@ export type Database = {
         }
         Returns: string
       }
+      can_access_service_request: {
+        Args: { request_id: string }
+        Returns: boolean
+      }
       current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1801,6 +1805,27 @@ export type Database = {
       get_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_vendor_appointments: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          customer_name: string
+          description: string
+          duration_minutes: number
+          id: string
+          location: string
+          maintenance_request_id: string
+          notes: string
+          property_id: string
+          reminder_sent: boolean
+          status: string
+          title: string
+          updated_at: string
+          vendor_id: string
+        }[]
       }
       is_staff: {
         Args: { uid: string }
