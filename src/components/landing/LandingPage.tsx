@@ -1,5 +1,6 @@
 import { LandingHeader } from "./LandingHeader";
 import { HeroSection } from "./HeroSection";
+import { ServicesSection } from "./ServicesSection";
 import { StatsSection } from "./StatsSection";
 import { FeaturesSection } from "./FeaturesSection";
 import { TestimonialsSection } from "./TestimonialsSection";
@@ -10,6 +11,7 @@ export const LandingPage = () => {
     <div className="min-h-screen">
       <LandingHeader />
       <HeroSection />
+      <ServicesSection />
       <StatsSection />
       <FeaturesSection />
       <TestimonialsSection />

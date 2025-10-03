@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Play, CheckCircle, Users, Clock, Shield } from "lucide-react";
+import { ArrowLeft, Play, Wrench, Building2, Zap, Droplets } from "lucide-react";
 
 export const HeroSection = () => {
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10 overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-40">
-        <div className="w-full h-full" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f1f5f9' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0">
+        <img 
+          src="https://zrrffsjbfkphridqyais.supabase.co/storage/v1/object/public/az_gallery/images/construction/abuauf_47.jpg"
+          alt="تجهيز المحلات"
+          className="w-full h-full object-cover opacity-10"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-primary/20"></div>
       </div>
       
       <div className="container mx-auto px-4 py-20 relative z-10">
@@ -19,30 +22,30 @@ export const HeroSection = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <Badge variant="secondary" className="w-fit">
-                <Shield className="h-3 w-3 mr-1" />
-                نظام إدارة الصيانة الذكي
+                <Wrench className="h-3 w-3 mr-1" />
+                خبراء الصيانة وتجهيز المحلات
               </Badge>
               
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                منصة ذكية لإدارة الصيانة
+                حلول شاملة للصيانة
                 <span className="bg-gradient-to-l from-primary to-primary/60 bg-clip-text text-transparent block">
-                  والعقارات بكفاءة معاصرة
+                  وتجهيز المحلات التجارية
                 </span>
               </h1>
               
               <p className="text-lg text-muted-foreground leading-relaxed">
-                نظام شامل لإدارة طلبات الصيانة والعقارات مع إمكانيات متقدمة للتحكم والمتابعة.
-                احصل على تجربة سلسة وفعالة لإدارة جميع احتياجاتك من مكان واحد.
+                نوفر خدمات الصيانة الكاملة من كهرباء وسباكة وتكييف، بالإضافة إلى تجهيز المحلات التجارية 
+                بأعلى معايير الجودة والاحترافية. فريق متخصص متاح على مدار الساعة.
               </p>
             </div>
 
             {/* Features List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { icon: CheckCircle, text: "إدارة طلبات الصيانة" },
-                { icon: Users, text: "إدارة الموردين والفنيين" },
-                { icon: Clock, text: "متابعة المواعيد" },
-                { icon: Shield, text: "نظام أمان متقدم" }
+                { icon: Zap, text: "أعمال الكهرباء" },
+                { icon: Droplets, text: "السباكة وإصلاح التسريبات" },
+                { icon: Wrench, text: "تركيب وصيانة المكيفات" },
+                { icon: Building2, text: "تجهيز المحلات التجارية" }
               ].map((feature, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -56,96 +59,76 @@ export const HeroSection = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="group" onClick={() => window.location.href = '/login'}>
-                دخول للنظام
+                اطلب خدمة الآن
                 <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               
               <Button variant="outline" size="lg" className="group" onClick={() => window.location.href = '/register'}>
                 <Play className="h-4 w-4 ml-2" />
-                إنشاء حساب جديد
+                عرض أعمالنا
               </Button>
             </div>
 
             {/* Trust Indicators */}
             <div className="flex items-center gap-6 pt-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">+500</div>
-                <div className="text-xs text-muted-foreground">عميل راضي</div>
+                <div className="text-2xl font-bold text-primary">+1000</div>
+                <div className="text-xs text-muted-foreground">مشروع منجز</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">99.9%</div>
-                <div className="text-xs text-muted-foreground">وقت التشغيل</div>
+                <div className="text-2xl font-bold text-primary">15+</div>
+                <div className="text-xs text-muted-foreground">سنة خبرة</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">24/7</div>
-                <div className="text-xs text-muted-foreground">دعم فني</div>
+                <div className="text-xs text-muted-foreground">خدمة متواصلة</div>
               </div>
             </div>
           </div>
 
-          {/* Dashboard Preview */}
+          {/* Services Showcase */}
           <div className="relative">
-            <Card className="p-6 shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
-              <div className="space-y-4">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                      <span className="text-primary-foreground font-bold text-sm">A</span>
-                    </div>
-                    <span className="font-semibold">لوحة التحكم</span>
-                  </div>
-                  <Badge variant="secondary">مباشر</Badge>
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="p-4 shadow-xl border-0 overflow-hidden group cursor-pointer">
+                <img 
+                  src="https://zrrffsjbfkphridqyais.supabase.co/storage/v1/object/public/az_gallery/images/maintenance/00451-klima-montaj.jpg"
+                  alt="تركيب مكيفات"
+                  className="w-full h-32 object-cover rounded-lg mb-3 group-hover:scale-110 transition-transform duration-300"
+                />
+                <h3 className="font-semibold text-sm mb-1">تركيب المكيفات</h3>
+                <p className="text-xs text-muted-foreground">تركيب وصيانة جميع أنواع المكيفات</p>
+              </Card>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-2 gap-4">
-                  <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100">
-                    <div className="text-2xl font-bold text-blue-600">142</div>
-                    <div className="text-sm text-blue-600/70">طلبات جديدة</div>
-                  </Card>
-                  <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100">
-                    <div className="text-2xl font-bold text-green-600">89</div>
-                    <div className="text-sm text-green-600/70">مكتملة</div>
-                  </Card>
-                </div>
+              <Card className="p-4 shadow-xl border-0 overflow-hidden group cursor-pointer">
+                <img 
+                  src="https://zrrffsjbfkphridqyais.supabase.co/storage/v1/object/public/az_gallery/images/maintenance/62294-establish-electricity.jpg"
+                  alt="تأسيس كهرباء"
+                  className="w-full h-32 object-cover rounded-lg mb-3 group-hover:scale-110 transition-transform duration-300"
+                />
+                <h3 className="font-semibold text-sm mb-1">أعمال الكهرباء</h3>
+                <p className="text-xs text-muted-foreground">تأسيس وصيانة التمديدات الكهربائية</p>
+              </Card>
 
-                {/* Chart Placeholder */}
-                <Card className="p-4 bg-gradient-to-r from-primary/5 to-primary/10">
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">إحصائيات الأداء</div>
-                    <div className="h-20 bg-gradient-to-r from-primary/20 to-primary/40 rounded-lg flex items-end justify-between p-2">
-                      {[40, 60, 45, 80, 65, 90, 75].map((height, i) => (
-                        <div 
-                          key={i} 
-                          className="bg-primary rounded-sm opacity-80" 
-                          style={{ height: `${height}%`, width: '8px' }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </Card>
+              <Card className="p-4 shadow-xl border-0 overflow-hidden group cursor-pointer">
+                <img 
+                  src="https://zrrffsjbfkphridqyais.supabase.co/storage/v1/object/public/az_gallery/images/maintenance/05214-water-leak-repair.jpg"
+                  alt="إصلاح تسريبات المياه"
+                  className="w-full h-32 object-cover rounded-lg mb-3 group-hover:scale-110 transition-transform duration-300"
+                />
+                <h3 className="font-semibold text-sm mb-1">معالجة التسريبات</h3>
+                <p className="text-xs text-muted-foreground">كشف وإصلاح تسريبات المياه</p>
+              </Card>
 
-                {/* Recent Activity */}
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">النشاط الأخير</div>
-                  {[
-                    { title: "طلب صيانة كهرباء", time: "منذ 5 دقائق", status: "جديد" },
-                    { title: "إكمال صيانة سباكة", time: "منذ 15 دقيقة", status: "مكتمل" }
-                  ].map((activity, i) => (
-                    <div key={i} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-                      <div>
-                        <div className="text-sm font-medium">{activity.title}</div>
-                        <div className="text-xs text-muted-foreground">{activity.time}</div>
-                      </div>
-                      <Badge variant={activity.status === "جديد" ? "default" : "secondary"} className="text-xs">
-                        {activity.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
+              <Card className="p-4 shadow-xl border-0 overflow-hidden group cursor-pointer">
+                <img 
+                  src="https://zrrffsjbfkphridqyais.supabase.co/storage/v1/object/public/az_gallery/images/construction/abuauf_10.jpg"
+                  alt="تجهيز محلات"
+                  className="w-full h-32 object-cover rounded-lg mb-3 group-hover:scale-110 transition-transform duration-300"
+                />
+                <h3 className="font-semibold text-sm mb-1">تجهيز المحلات</h3>
+                <p className="text-xs text-muted-foreground">تجهيز كامل للمحلات التجارية</p>
+              </Card>
+            </div>
 
             {/* Floating Elements */}
             <div className="absolute -top-4 -right-4 w-16 h-16 bg-primary/10 rounded-full animate-pulse"></div>
