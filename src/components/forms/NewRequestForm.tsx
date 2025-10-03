@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,12 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { MapPin, Phone, Loader2 } from "lucide-react";
+import { MapPin, Phone, Loader2, Building2, Plus } from "lucide-react";
 import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import { useToast } from "@/hooks/use-toast";
 import { LocationPicker } from "@/components/forms/LocationPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useRequestLifecycle } from "@/hooks/useRequestLifecycle";
+import { useProperties } from "@/hooks/useProperties";
+import { NewPropertyForm } from "./NewPropertyForm";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface NewRequestFormProps {
   onSuccess?: () => void;
@@ -22,8 +25,10 @@ interface NewRequestFormProps {
 export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
   const { createRequest } = useMaintenanceRequests();
   const { addLifecycleEvent } = useRequestLifecycle();
+  const { properties, loading: propertiesLoading } = useProperties();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -36,9 +41,17 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     preferred_time: "",
     customer_notes: "",
     latitude: null as number | null,
-    longitude: null as number | null
+    longitude: null as number | null,
+    property_id: "" as string
   });
   const [showLocationPicker, setShowLocationPicker] = useState(false);
+
+  // التحقق من وجود عقارات عند تحميل المكون
+  useEffect(() => {
+    if (!propertiesLoading && properties.length === 0) {
+      setShowPropertyForm(true);
+    }
+  }, [propertiesLoading, properties]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,7 +149,8 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
           preferred_time: "",
           customer_notes: "",
           latitude: null,
-          longitude: null
+          longitude: null,
+          property_id: ""
         });
         onSuccess?.();
       }
@@ -169,6 +183,40 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handlePropertyAdded = () => {
+    setShowPropertyForm(false);
+    toast({
+      title: "تم إضافة العقار بنجاح",
+      description: "يمكنك الآن تقديم طلب الصيانة",
+    });
+  };
+
+  // عرض نموذج إضافة عقار إذا لم يكن لدى المستخدم عقارات
+  if (showPropertyForm) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold text-primary">إضافة عقار</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert className="mb-4">
+            <Building2 className="h-4 w-4" />
+            <AlertDescription>
+              يجب إضافة عقار أولاً قبل تقديم طلب الصيانة. يساعدنا ذلك في تقديم خدمة أفضل لك.
+            </AlertDescription>
+          </Alert>
+          <NewPropertyForm 
+            onClose={() => {
+              setShowPropertyForm(false);
+              onCancel?.();
+            }}
+            onSuccess={handlePropertyAdded}
+          />
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -176,6 +224,52 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Property Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="property_id">العقار *</Label>
+            <div className="flex gap-2">
+              <Select 
+                value={formData.property_id} 
+                onValueChange={(value) => handleChange("property_id", value)}
+                required
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="اختر العقار" />
+                </SelectTrigger>
+                <SelectContent>
+                  {properties.map((property) => (
+                    <SelectItem key={property.id} value={property.id}>
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4" />
+                        <span>{property.name} - {property.address}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button type="button" variant="outline" size="icon">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>إضافة عقار جديد</DialogTitle>
+                  </DialogHeader>
+                  <NewPropertyForm 
+                    onClose={() => {}}
+                    onSuccess={() => {
+                      toast({
+                        title: "تم إضافة العقار بنجاح",
+                      });
+                    }}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
