@@ -12,6 +12,7 @@ import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import { useToast } from "@/hooks/use-toast";
 import { LocationPicker } from "@/components/forms/LocationPicker";
 import { supabase } from "@/integrations/supabase/client";
+import { useRequestLifecycle } from "@/hooks/useRequestLifecycle";
 
 interface NewRequestFormProps {
   onSuccess?: () => void;
@@ -20,6 +21,7 @@ interface NewRequestFormProps {
 
 export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
   const { createRequest } = useMaintenanceRequests();
+  const { addLifecycleEvent } = useRequestLifecycle();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -45,6 +47,36 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     try {
       const result = await createRequest(formData);
       if (result) {
+        // إنشاء حدث دورة حياة للطلب الجديد
+        try {
+          await addLifecycleEvent(
+            result.id,
+            'submitted',
+            'status_change',
+            'تم إنشاء الطلب بنجاح',
+            { 
+              service_type: formData.service_type,
+              priority: formData.priority,
+              has_location: !!(formData.latitude && formData.longitude)
+            }
+          );
+
+          // إنشاء إشعار للمستخدم
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase.from('notifications').insert({
+              recipient_id: user.id,
+              title: 'تم استلام طلبك',
+              message: `تم استلام طلب الصيانة: ${formData.title}`,
+              type: 'success',
+              entity_type: 'maintenance_request',
+              entity_id: result.id
+            });
+          }
+        } catch (lifecycleError) {
+          console.error('Error creating lifecycle event:', lifecycleError);
+        }
+
         toast({
           title: "تم إرسال الطلب بنجاح",
           description: "سيتم التواصل معك قريباً",

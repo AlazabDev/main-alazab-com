@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Edit, Trash2, UserCheck, DollarSign, CheckCircle, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useRequestLifecycle } from "@/hooks/useRequestLifecycle";
 
 interface MaintenanceRequestActionsProps {
   request: any;
@@ -17,6 +18,7 @@ interface MaintenanceRequestActionsProps {
 
 export function MaintenanceRequestActions({ request }: MaintenanceRequestActionsProps) {
   const { toast } = useToast();
+  const { addLifecycleEvent } = useRequestLifecycle();
   const [isUpdating, setIsUpdating] = useState(false);
   const [showStatusDialog, setShowStatusDialog] = useState(false);
   const [showCostDialog, setShowCostDialog] = useState(false);
@@ -34,15 +36,45 @@ export function MaintenanceRequestActions({ request }: MaintenanceRequestActions
         .from('maintenance_requests')
         .update({ 
           status: newStatus,
+          workflow_stage: newStatus,
           updated_at: new Date().toISOString()
         })
         .eq('id', request.id);
 
       if (error) throw error;
 
+      // إنشاء حدث دورة حياة
+      await addLifecycleEvent(
+        request.id,
+        newStatus,
+        'status_change',
+        `تغيير الحالة من ${request.status} إلى ${newStatus}`,
+        { old_status: request.status, new_status: newStatus }
+      );
+
+      // إنشاء إشعار للمستخدم
+      if (request.requested_by) {
+        const statusMessages: Record<string, string> = {
+          'pending': 'طلبك في الانتظار',
+          'scheduled': 'تم جدولة طلبك',
+          'in_progress': 'جاري العمل على طلبك',
+          'completed': 'تم إكمال طلبك',
+          'cancelled': 'تم إلغاء طلبك'
+        };
+
+        await supabase.from('notifications').insert({
+          recipient_id: request.requested_by,
+          title: 'تحديث حالة الطلب',
+          message: statusMessages[newStatus] || 'تم تحديث حالة طلبك',
+          type: newStatus === 'completed' ? 'success' : 'info',
+          entity_type: 'maintenance_request',
+          entity_id: request.id
+        });
+      }
+
       toast({
         title: "تم تحديث الحالة",
-        description: "تم تحديث حالة الطلب بنجاح",
+        description: "تم تحديث حالة الطلب بنجاح وإرسال إشعار للعميل",
       });
 
       setShowStatusDialog(false);
@@ -71,6 +103,30 @@ export function MaintenanceRequestActions({ request }: MaintenanceRequestActions
         .eq('id', request.id);
 
       if (error) throw error;
+
+      // إنشاء حدث دورة حياة
+      await addLifecycleEvent(
+        request.id,
+        request.workflow_stage || request.status,
+        'cost_update',
+        'تم تحديث التكلفة',
+        { 
+          estimated_cost: estimatedCost ? parseFloat(estimatedCost) : null,
+          actual_cost: actualCost ? parseFloat(actualCost) : null
+        }
+      );
+
+      // إشعار للعميل بالتكلفة المقدرة
+      if (estimatedCost && request.requested_by) {
+        await supabase.from('notifications').insert({
+          recipient_id: request.requested_by,
+          title: 'تقدير تكلفة الطلب',
+          message: `التكلفة المقدرة لطلبك: ${estimatedCost} جنيه`,
+          type: 'info',
+          entity_type: 'maintenance_request',
+          entity_id: request.id
+        });
+      }
 
       toast({
         title: "تم تحديث التكلفة",
@@ -102,6 +158,15 @@ export function MaintenanceRequestActions({ request }: MaintenanceRequestActions
         .eq('id', request.id);
 
       if (error) throw error;
+
+      // إنشاء حدث دورة حياة
+      await addLifecycleEvent(
+        request.id,
+        request.workflow_stage || request.status,
+        'note_added',
+        'تم إضافة ملاحظات من الفني',
+        { notes_length: vendorNotes.length }
+      );
 
       toast({
         title: "تم تحديث الملاحظات",
