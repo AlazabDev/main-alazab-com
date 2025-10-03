@@ -3,9 +3,9 @@ requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "azab_shop_revive"
+name = "alazab_shop"
 authors = [
-    {name = "Azab Solutions", email = "admin@azabsolutions.com"}
+    {name = "Alazab Solutions", email = "alazab.architecture@outlook.com"}
 ]
 dynamic = ["version", "description"]
 readme = "README.md"
@@ -14,8 +14,8 @@ dependencies = [
 ]
 
 [project.urls]
-Home = "https://github.com/azab-solutions/azab-shop-revive"
-Documentation = "https://docs.azabsolutions.com"
+Home = "https://github.com/alazab-solutions/alazab-shop"
+Documentation = "https://docs.alazabsolutions.com"
 
 [tool.bench.dev-dependencies]
 # Development dependencies for Frappe development

@@ -1,0 +1,42 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ _("Property Management Dashboard") }}{% endblock %}
+
+{% block page_content %}
+<div id="alazab-react-app" class="min-h-screen">
+    <!-- React app will be mounted here -->
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p class="text-muted-foreground">جاري التحميل...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Pass server-side data to React app
+    window.__FRAPPE_CONTEXT__ = {
+        user: {
+            name: "{{ frappe.session.user }}",
+            full_name: "{{ frappe.db.get_value('User', frappe.session.user, 'full_name') }}",
+            email: "{{ frappe.session.user }}"
+        },
+        csrf_token: "{{ frappe.session.csrf_token }}"
+    };
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+    .page-content-wrapper {
+        padding: 0 !important;
+    }
+    .page-container {
+        max-width: 100% !important;
+    }
+    #alazab-react-app {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+</style>
+{% endblock %}

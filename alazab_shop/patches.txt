@@ -1,0 +1,4 @@
+# Patches for Alazab Shop
+# Format: module.path.to.patch.function
+# Example:
+# alazab_shop.patches.v1_0.update_property_status
