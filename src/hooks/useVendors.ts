@@ -45,46 +45,14 @@ export const useVendors = () => {
 
   const fetchVendors = async () => {
     try {
-      // Get current user role to determine what data to fetch
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .maybeSingle();
+      // RLS policies handle access control - no client-side filtering needed
+      const { data, error } = await supabase
+        .from('vendors')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      const userRole = profileData?.role;
-
-      // For technicians, exclude sensitive contact information
-      if (userRole === 'technician') {
-        const { data, error } = await supabase
-          .from('vendors')
-          .select(`
-            id,
-            name,
-            company_name,
-            specialization,
-            rating,
-            status,
-            hourly_rate,
-            experience_years,
-            profile_image,
-            total_jobs,
-            created_at,
-            updated_at
-          `)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setVendors((data || []) as Vendor[]);
-      } else {
-        const { data, error } = await supabase
-          .from('vendors')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setVendors((data || []) as Vendor[]);
-      }
+      if (error) throw error;
+      setVendors((data || []) as Vendor[]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'خطأ في تحميل البيانات');
     } finally {
