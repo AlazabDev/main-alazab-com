@@ -1501,6 +1501,30 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       vendor_locations: {
         Row: {
           address: string | null
@@ -1722,6 +1746,87 @@ export type Database = {
           },
         ]
       }
+      appointments_safe: {
+        Row: {
+          appointment_date: string | null
+          appointment_time: string | null
+          created_at: string | null
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string | null
+          location: string | null
+          maintenance_request_id: string | null
+          notes: string | null
+          property_id: string | null
+          reminder_sent: boolean | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       calculate_distance: {
@@ -1761,6 +1866,14 @@ export type Database = {
       generate_invoice_number: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_appointment_contact_info: {
+        Args: { appointment_id: string }
+        Returns: {
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+        }[]
       }
       get_appointment_customer_info: {
         Args: { appointment_id: string }
@@ -1827,6 +1940,13 @@ export type Database = {
           vendor_id: string
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_staff: {
         Args: { uid: string }
         Returns: boolean
@@ -1853,6 +1973,13 @@ export type Database = {
       }
     }
     Enums: {
+      app_role:
+        | "admin"
+        | "manager"
+        | "staff"
+        | "technician"
+        | "vendor"
+        | "customer"
       currency_t: "EGP" | "USD" | "EUR" | "SAR" | "AED"
       maintenance_status:
         | "draft"
@@ -2021,6 +2148,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: [
+        "admin",
+        "manager",
+        "staff",
+        "technician",
+        "vendor",
+        "customer",
+      ],
       currency_t: ["EGP", "USD", "EUR", "SAR", "AED"],
       maintenance_status: [
         "draft",
