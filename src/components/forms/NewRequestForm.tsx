@@ -55,6 +55,64 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // التحقق من صحة البيانات
+    if (!formData.title.trim()) {
+      toast({
+        title: "خطأ في البيانات",
+        description: "يرجى إدخال عنوان الطلب",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.client_name.trim()) {
+      toast({
+        title: "خطأ في البيانات",
+        description: "يرجى إدخال اسم العميل",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.client_phone.trim()) {
+      toast({
+        title: "خطأ في البيانات",
+        description: "يرجى إدخال رقم الهاتف",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // التحقق من صحة رقم الهاتف (11 رقم يبدأ ب 01)
+    const phoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
+    if (!phoneRegex.test(formData.client_phone)) {
+      toast({
+        title: "خطأ في رقم الهاتف",
+        description: "يرجى إدخال رقم هاتف مصري صحيح (01xxxxxxxxx)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.location.trim()) {
+      toast({
+        title: "خطأ في البيانات",
+        description: "يرجى إدخال العنوان",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.property_id) {
+      toast({
+        title: "خطأ في البيانات",
+        description: "يرجى اختيار العقار",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -155,9 +213,10 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
         onSuccess?.();
       }
     } catch (error) {
+      console.error("Submit error:", error);
       toast({
         title: "خطأ في إرسال الطلب",
-        description: "حدث خطأ غير متوقع",
+        description: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
         variant: "destructive",
       });
     } finally {

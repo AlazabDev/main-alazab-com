@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, DollarSign, MapPin, Phone, User, FileText, Image as ImageIcon } from "lucide-react";
+import { Calendar, Clock, DollarSign, MapPin, Phone, User, FileText, Image as ImageIcon, AlertCircle, TrendingUp } from "lucide-react";
 import { RequestLifecycleTracker } from "./RequestLifecycleTracker";
+import { SLAIndicator } from "./SLAIndicator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { RequestStatusTimeline } from "./RequestStatusTimeline";
 
 interface MaintenanceRequestDetailsProps {
   request: any;
@@ -71,14 +74,43 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
 
       <Separator />
 
+      {/* SLA Indicator */}
+      {request.sla_due_date && (
+        <SLAIndicator 
+          dueDate={request.sla_due_date}
+          createdAt={request.created_at}
+          status={request.status}
+          priority={request.priority}
+        />
+      )}
+
+      {/* Follow-up Alert */}
+      {request.follow_up_required && request.follow_up_date && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            يتطلب متابعة في {new Date(request.follow_up_date).toLocaleDateString('ar-SA')}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Enhanced Details with Lifecycle */}
       <Tabs defaultValue="details" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="details">تفاصيل الطلب</TabsTrigger>
           <TabsTrigger value="lifecycle">دورة الحياة</TabsTrigger>
+          <TabsTrigger value="analytics">التحليلات</TabsTrigger>
         </TabsList>
         
         <TabsContent value="details" className="space-y-6 mt-6">
+
+      {/* Status Timeline */}
+      <RequestStatusTimeline 
+        currentStatus={request.status}
+        workflowStage={request.workflow_stage}
+        createdAt={request.created_at}
+        updatedAt={request.updated_at}
+      />
 
       {/* Basic Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -268,6 +300,63 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
             requestStatus={request.status}
             requestTitle={request.title}
           />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <TrendingUp className="h-5 w-5" />
+                  مؤشرات الأداء
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {request.quality_score !== undefined && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">نقاط الجودة</span>
+                    <Badge variant="outline">{request.quality_score}/100</Badge>
+                  </div>
+                )}
+                {request.escalation_level !== undefined && request.escalation_level > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">مستوى التصعيد</span>
+                    <Badge variant="destructive">المستوى {request.escalation_level}</Badge>
+                  </div>
+                )}
+                {request.workflow_stage && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">مرحلة العمل</span>
+                    <Badge>{request.workflow_stage}</Badge>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">الأوقات</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">وقت الإنشاء</span>
+                  <span className="text-sm">{new Date(request.created_at).toLocaleString('ar-SA')}</span>
+                </div>
+                {request.updated_at && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">آخر تحديث</span>
+                    <span className="text-sm">{new Date(request.updated_at).toLocaleString('ar-SA')}</span>
+                  </div>
+                )}
+                {request.actual_completion && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">تاريخ الإنجاز</span>
+                    <span className="text-sm">{new Date(request.actual_completion).toLocaleString('ar-SA')}</span>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
