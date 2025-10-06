@@ -21,6 +21,9 @@ import Appointments from "./pages/Appointments";
 import Invoices from "./pages/Invoices";
 import Map from "./pages/Map";
 import Documentation from "./pages/Documentation";
+import UserGuide from "./pages/UserGuide";
+import FAQ from "./pages/FAQ";
+import MaintenanceProcedures from "./pages/MaintenanceProcedures";
 import Settings from "./pages/Settings";
 import Testing from "./pages/Testing";
 import ProductionReport from "./pages/ProductionReport";
@@ -140,6 +143,30 @@ const App = () => {
                   <AuthWrapper>
                     <AppLayout>
                       <Documentation />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/user-guide" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <UserGuide />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/faq" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <FAQ />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/maintenance-procedures" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <MaintenanceProcedures />
                     </AppLayout>
                   </AuthWrapper>
                 } />
