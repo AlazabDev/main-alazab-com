@@ -1,19 +1,48 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ArrowRight, Cog } from "lucide-react";
+import { Loader2, ArrowRight, Cog, Shield, Users, Wrench } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const selectedRole = searchParams.get("role") || "customer";
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const roleConfig = {
+    admin: {
+      title: "الإدارة",
+      description: "تسجيل الدخول لحساب الإدارة",
+      icon: Shield,
+      color: "purple",
+      bgGradient: "from-purple-50/50 to-background dark:from-purple-950/20"
+    },
+    vendor: {
+      title: "الموظفين",
+      description: "تسجيل الدخول لحساب الموظفين",
+      icon: Wrench,
+      color: "green",
+      bgGradient: "from-green-50/50 to-background dark:from-green-950/20"
+    },
+    customer: {
+      title: "العملاء",
+      description: "تسجيل الدخول لحساب العملاء",
+      icon: Users,
+      color: "blue",
+      bgGradient: "from-blue-50/50 to-background dark:from-blue-950/20"
+    }
+  };
+
+  const currentRole = roleConfig[selectedRole as keyof typeof roleConfig] || roleConfig.customer;
+  const IconComponent = currentRole.icon;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,11 +109,16 @@ export default function Login() {
           <p className="text-muted-foreground mt-2">نظام إدارة طلبات الصيانة المتطور</p>
         </div>
 
-        <Card>
+        <Card className={`bg-gradient-to-br ${currentRole.bgGradient} border-2`}>
           <CardHeader>
-            <CardTitle className="text-center">تسجيل الدخول</CardTitle>
+            <div className="flex items-center justify-center mb-4">
+              <div className={`w-16 h-16 bg-${currentRole.color}-100 dark:bg-${currentRole.color}-900/30 rounded-full flex items-center justify-center`}>
+                <IconComponent className={`h-8 w-8 text-${currentRole.color}-600 dark:text-${currentRole.color}-400`} />
+              </div>
+            </div>
+            <CardTitle className="text-center text-2xl">{currentRole.title}</CardTitle>
             <CardDescription className="text-center">
-              ادخل بياناتك للوصول إلى لوحة التحكم
+              {currentRole.description}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -143,8 +177,13 @@ export default function Login() {
             <div className="mt-6 text-center space-y-2">
               <p className="text-sm text-muted-foreground">
                 ليس لديك حساب؟{" "}
-                <Link to="/register" className="text-primary hover:underline font-medium">
+                <Link to={`/register?role=${selectedRole}`} className="text-primary hover:underline font-medium">
                   إنشاء حساب جديد
+                </Link>
+              </p>
+              <p className="text-sm">
+                <Link to="/role-selection" className="text-muted-foreground hover:text-primary transition-colors">
+                  اختيار نوع حساب آخر
                 </Link>
               </p>
               <p className="text-sm">

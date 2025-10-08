@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,8 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const selectedRole = searchParams.get("role") || "customer";
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -156,8 +158,13 @@ export default function Register() {
             <div className="mt-6 text-center space-y-2">
               <p className="text-sm text-muted-foreground">
                 لديك حساب بالفعل؟{" "}
-                <Link to="/login" className="text-primary hover:underline font-medium">
+                <Link to={`/login?role=${selectedRole}`} className="text-primary hover:underline font-medium">
                   تسجيل الدخول
+                </Link>
+              </p>
+              <p className="text-sm">
+                <Link to="/role-selection" className="text-muted-foreground hover:text-primary transition-colors">
+                  اختيار نوع حساب آخر
                 </Link>
               </p>
               <p className="text-sm">

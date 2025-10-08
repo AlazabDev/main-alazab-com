@@ -10,6 +10,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthWrapper } from "@/components/auth/AuthWrapper";
 import { useProductionOptimizations } from "@/hooks/useProductionOptimizations";
 import Index from "./pages/Index";
+import RoleSelection from "./pages/RoleSelection";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -65,6 +66,7 @@ const App = () => {
               <Routes>
                 {/* الصفحات العامة بدون Layout */}
                 <Route path="/" element={<Index />} />
+                <Route path="/role-selection" element={<RoleSelection />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/about" element={<About />} />
