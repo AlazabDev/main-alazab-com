@@ -1,16 +1,16 @@
-# Welcome to your Lovable project
+# Welcome to Alazab project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/c6adaf51-0eef-43e8-bf45-d65ac7ebe1aa
+**URL**: [https://projects](https://alazab-shop.lovable.app/projects)
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use Alazab**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c6adaf51-0eef-43e8-bf45-d65ac7ebe1aa) and start prompting.
+Simply visit the [Azab Project]([https://alazab.dev](https://alazab-shop.lovable.app/projects)) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
@@ -62,12 +62,16 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/c6adaf51-0eef-43e8-bf45-d65ac7ebe1aa) and click on Share -> Publish.
+Deploying your application is a key aspect of software development. Typically, having an app on your local system isn't enough – it needs to be accessible online. So choosing a suitable and user-friendly hosting and deployment plan is vital.
 
-## Can I connect a custom domain to my Lovable project?
+<br>
+<br>
+<div align="center">
+	<a href="https://alazab.dev" target="_blank">
+		<picture>
+			<source media="(prefers-color-scheme: dark)" srcset="https://al-azab.co/b.png">
+			<img src="[https://al-azab.co/b.png](https://alazab.dev)" alt="Frappe Technologies" height="36"/>
+		</picture>
+	</a>
+</div>
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
