@@ -8,6 +8,11 @@ import { RequestLifecycleTracker } from "./RequestLifecycleTracker";
 import { SLAIndicator } from "./SLAIndicator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RequestStatusTimeline } from "./RequestStatusTimeline";
+import { WorkflowDiagram } from "@/components/workflow/WorkflowDiagram";
+import { MaterialRequestForm } from "@/components/workflow/MaterialRequestForm";
+import { ApprovalManager } from "@/components/workflow/ApprovalManager";
+import { ReportGenerator } from "@/components/workflow/ReportGenerator";
+import { toast } from "sonner";
 
 interface MaintenanceRequestDetailsProps {
   request: any;
@@ -96,11 +101,13 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
 
       {/* Enhanced Details with Lifecycle */}
       <Tabs defaultValue="details" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="details">تفاصيل الطلب</TabsTrigger>
-          <TabsTrigger value="lifecycle">دورة الحياة</TabsTrigger>
-          <TabsTrigger value="analytics">التحليلات</TabsTrigger>
-        </TabsList>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-1">
+            <TabsTrigger value="details">تفاصيل</TabsTrigger>
+            <TabsTrigger value="workflow">سير العمل</TabsTrigger>
+            <TabsTrigger value="materials">المواد</TabsTrigger>
+            <TabsTrigger value="approvals">الموافقات</TabsTrigger>
+            <TabsTrigger value="reports">التقارير</TabsTrigger>
+          </TabsList>
         
         <TabsContent value="details" className="space-y-6 mt-6">
 
@@ -302,61 +309,59 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
           />
         </TabsContent>
 
-        <TabsContent value="analytics" className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <TrendingUp className="h-5 w-5" />
-                  مؤشرات الأداء
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {request.quality_score !== undefined && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">نقاط الجودة</span>
-                    <Badge variant="outline">{request.quality_score}/100</Badge>
-                  </div>
-                )}
-                {request.escalation_level !== undefined && request.escalation_level > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">مستوى التصعيد</span>
-                    <Badge variant="destructive">المستوى {request.escalation_level}</Badge>
-                  </div>
-                )}
-                {request.workflow_stage && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">مرحلة العمل</span>
-                    <Badge>{request.workflow_stage}</Badge>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+        {/* Workflow Tab */}
+        <TabsContent value="workflow" className="mt-6 space-y-4">
+          <WorkflowDiagram 
+            currentStage={request.workflow_stage || request.status} 
+            requestData={request}
+          />
+          
+          <RequestStatusTimeline
+            currentStatus={request.status}
+            workflowStage={request.workflow_stage}
+            createdAt={request.created_at}
+            updatedAt={request.updated_at}
+          />
+        </TabsContent>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">الأوقات</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">وقت الإنشاء</span>
-                  <span className="text-sm">{new Date(request.created_at).toLocaleString('ar-SA')}</span>
-                </div>
-                {request.updated_at && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">آخر تحديث</span>
-                    <span className="text-sm">{new Date(request.updated_at).toLocaleString('ar-SA')}</span>
-                  </div>
-                )}
-                {request.actual_completion && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">تاريخ الإنجاز</span>
-                    <span className="text-sm">{new Date(request.actual_completion).toLocaleString('ar-SA')}</span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+        {/* Materials Tab */}
+        <TabsContent value="materials" className="mt-6 space-y-4">
+          <MaterialRequestForm 
+            requestId={request.id}
+            onSuccess={() => {
+              toast.success('تم إضافة طلب المواد بنجاح');
+            }}
+          />
+        </TabsContent>
+
+        {/* Approvals Tab */}
+        <TabsContent value="approvals" className="mt-6 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ApprovalManager 
+              requestId={request.id}
+              approvalType="request"
+            />
+            <ApprovalManager 
+              requestId={request.id}
+              approvalType="materials"
+            />
+            <ApprovalManager 
+              requestId={request.id}
+              approvalType="completion"
+            />
+            <ApprovalManager 
+              requestId={request.id}
+              approvalType="billing"
+            />
           </div>
+        </TabsContent>
+
+        {/* Reports Tab */}
+        <TabsContent value="reports" className="mt-6 space-y-4">
+          <ReportGenerator 
+            requestId={request.id}
+            requestData={request}
+          />
         </TabsContent>
       </Tabs>
     </div>
