@@ -69,8 +69,8 @@ Deploying your application is a key aspect of software development. Typically, h
 <div align="center">
 	<a href="https://alazab.dev" target="_blank">
 		<picture>
-			<source media="(prefers-color-scheme: dark)" srcset="https://al-azab.co/b.png">
-			<img src="[https://al-azab.co/b.png](https://alazab.dev)" alt="Frappe Technologies" height="36"/>
+			<source media="(prefers-color-scheme: dark)" srcset="https://al-azab.co/images/logaz.gif">
+			<img src="[https://al-azab.co/images/logaz.gif](https://alazab.dev)" alt="Alazab.dev" height="36"/>
 		</picture>
 	</a>
 </div>
