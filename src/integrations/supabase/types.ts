@@ -498,6 +498,59 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_reports: {
+        Row: {
+          approved_by: string | null
+          attachments: string[] | null
+          content: Json
+          created_at: string
+          data_analysis: Json | null
+          id: string
+          prepared_by: string | null
+          report_type: string
+          request_id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by?: string | null
+          attachments?: string[] | null
+          content?: Json
+          created_at?: string
+          data_analysis?: Json | null
+          id?: string
+          prepared_by?: string | null
+          report_type: string
+          request_id: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by?: string | null
+          attachments?: string[] | null
+          content?: Json
+          created_at?: string
+          data_analysis?: Json | null
+          id?: string
+          prepared_by?: string | null
+          report_type?: string
+          request_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_reports_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maintenance_requests: {
         Row: {
           actual_completion: string | null
@@ -691,6 +744,68 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      material_requests: {
+        Row: {
+          actual_cost: number | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          estimated_cost: number | null
+          id: string
+          issued_at: string | null
+          issued_by: string | null
+          material_name: string
+          notes: string | null
+          quantity: number
+          request_id: string
+          status: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          actual_cost?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          estimated_cost?: number | null
+          id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          material_name: string
+          notes?: string | null
+          quantity: number
+          request_id: string
+          status?: string
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          actual_cost?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          estimated_cost?: number | null
+          id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          material_name?: string
+          notes?: string | null
+          quantity?: number
+          request_id?: string
+          status?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_requests_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notes: {
         Row: {
@@ -999,6 +1114,47 @@ export type Database = {
           value?: number | null
         }
         Relationships: []
+      }
+      request_approvals: {
+        Row: {
+          approval_type: string
+          approved_at: string | null
+          approver_id: string
+          comments: string | null
+          created_at: string
+          id: string
+          request_id: string
+          status: string
+        }
+        Insert: {
+          approval_type: string
+          approved_at?: string | null
+          approver_id: string
+          comments?: string | null
+          created_at?: string
+          id?: string
+          request_id: string
+          status: string
+        }
+        Update: {
+          approval_type?: string
+          approved_at?: string | null
+          approver_id?: string
+          comments?: string | null
+          created_at?: string
+          id?: string
+          request_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_approvals_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       request_attachments: {
         Row: {
@@ -1665,7 +1821,78 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      vendor_appointments: {
+        Row: {
+          appointment_date: string | null
+          appointment_time: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string | null
+          location: string | null
+          maintenance_request_id: string | null
+          notes: string | null
+          property_id: string | null
+          reminder_sent: boolean | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       calculate_distance: {
@@ -1783,7 +2010,7 @@ export type Database = {
         Returns: boolean
       }
       is_staff: {
-        Args: { uid: string }
+        Args: Record<PropertyKey, never> | { uid: string }
         Returns: boolean
       }
       is_vendor: {
@@ -1806,6 +2033,27 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      vendor_appointments_func: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          created_by: string
+          description: string
+          duration_minutes: number
+          id: string
+          location: string
+          maintenance_request_id: string
+          notes: string
+          property_id: string
+          reminder_sent: boolean
+          status: string
+          title: string
+          updated_at: string
+          vendor_id: string
+        }[]
+      }
     }
     Enums: {
       app_role:
@@ -1815,6 +2063,9 @@ export type Database = {
         | "technician"
         | "vendor"
         | "customer"
+        | "warehouse"
+        | "accounting"
+        | "engineering"
       currency_t: "EGP" | "USD" | "EUR" | "SAR" | "AED"
       maintenance_status:
         | "draft"
@@ -1990,6 +2241,9 @@ export const Constants = {
         "technician",
         "vendor",
         "customer",
+        "warehouse",
+        "accounting",
+        "engineering",
       ],
       currency_t: ["EGP", "USD", "EUR", "SAR", "AED"],
       maintenance_status: [
