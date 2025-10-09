@@ -33,6 +33,7 @@ export default function Gallery() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("الكل");
   const [categories, setCategories] = useState<{ name: string; count: number }[]>([]);
+  const [importing, setImporting] = useState(false);
 
   useEffect(() => {
     fetchImages();
@@ -69,6 +70,22 @@ export default function Gallery() {
       console.error('Error fetching gallery images:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const importImages = async () => {
+    try {
+      setImporting(true);
+      const { data, error } = await supabase.functions.invoke('import-gallery-images');
+      
+      if (error) throw error;
+      
+      console.log('Import result:', data);
+      await fetchImages(); // Refresh the gallery
+    } catch (error) {
+      console.error('Error importing images:', error);
+    } finally {
+      setImporting(false);
     }
   };
 
@@ -161,7 +178,14 @@ export default function Gallery() {
             <div className="text-center py-20">
               <Camera className="h-20 w-20 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-2xl font-bold mb-2">لا توجد صور</h3>
-              <p className="text-muted-foreground">لم يتم العثور على صور في هذه الفئة</p>
+              <p className="text-muted-foreground mb-6">لم يتم العثور على صور في هذه الفئة</p>
+              <Button 
+                onClick={importImages}
+                disabled={importing}
+                className="mx-auto"
+              >
+                {importing ? "جاري استيراد الصور..." : "استيراد الصور من المخزن"}
+              </Button>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
