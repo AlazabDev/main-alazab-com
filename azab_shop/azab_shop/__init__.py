@@ -1,0 +1,1 @@
+# Azab Shop DocTypes module

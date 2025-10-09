@@ -3,7 +3,7 @@ import frappe
 def get_context(context):
     """Set page context for Frappe"""
     context.no_cache = 1
-    context.title = "Property Management Dashboard"
+    context.title = "لوحة تحكم إدارة العقارات"
     context.show_sidebar = False
     context.full_width = True
     
@@ -18,7 +18,7 @@ def get_context(context):
     else:
         context.user_info = {
             "name": "Guest",
-            "full_name": "Guest User",
+            "full_name": "زائر",
             "email": "",
         }
     

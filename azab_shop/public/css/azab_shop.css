@@ -1,4 +1,4 @@
-/* Alazab Shop Custom Styles */
+/* Azab Shop Custom Styles */
 
 /* Remove Frappe's default padding for our SPA */
 .page-container {
@@ -11,7 +11,7 @@
 }
 
 /* Full-width React app container */
-#alazab-react-app {
+#azab-react-app {
     min-height: 100vh;
     margin: 0;
     padding: 0;
@@ -34,11 +34,11 @@
 }
 
 /* Hide Frappe's default navigation when in app */
-.alazab-fullscreen .navbar,
-.alazab-fullscreen .page-head {
+.azab-fullscreen .navbar,
+.azab-fullscreen .page-head {
     display: none !important;
 }
 
-.alazab-fullscreen .page-container {
+.azab-fullscreen .page-container {
     margin-top: 0 !important;
 }

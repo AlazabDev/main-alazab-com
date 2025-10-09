@@ -9,7 +9,7 @@ def get_properties():
         return {
             "status": "success",
             "data": [],
-            "message": _("Properties loaded successfully")
+            "message": _("تم تحميل العقارات بنجاح")
         }
     except Exception as e:
         frappe.log_error(f"Error getting properties: {str(e)}", "API Error")
@@ -23,7 +23,7 @@ def get_maintenance_requests():
         return {
             "status": "success",
             "data": [],
-            "message": _("Maintenance requests loaded successfully")
+            "message": _("تم تحميل طلبات الصيانة بنجاح")
         }
     except Exception as e:
         frappe.log_error(f"Error getting maintenance requests: {str(e)}", "API Error")
