@@ -17,52 +17,46 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get all files from az_gallery bucket
-    const { data: files, error: listError } = await supabaseClient
-      .storage
-      .from('az_gallery')
-      .list('', {
-        limit: 1000,
-        sortBy: { column: 'name', order: 'asc' }
-      });
+    // Define the actual folders with images
+    const imageFolders = [
+      'images/commercial',
+      'images/construction',
+      'images/cuate',
+      'images/live_edge',
+      'images/maintenance',
+      'images/residential',
+      'images/shops'
+    ];
 
-    if (listError) {
-      throw listError;
-    }
-
-    // Get all folders
-    const folders = files?.filter(f => f.id === null) || [];
     let allImages: any[] = [];
 
-    // Get images from root
-    const rootImages = files?.filter(f => f.id !== null && isImage(f.name)) || [];
-    allImages = allImages.concat(rootImages.map(f => ({
-      name: f.name,
-      folder: 'عام',
-      path: f.name
-    })));
-
     // Get images from each folder
-    for (const folder of folders) {
-      if (!folder.name) continue;
+    for (const folderPath of imageFolders) {
+      console.log(`Scanning folder: ${folderPath}`);
       
       const { data: folderFiles, error: folderError } = await supabaseClient
         .storage
         .from('az_gallery')
-        .list(folder.name, {
+        .list(folderPath, {
           limit: 1000,
           sortBy: { column: 'name', order: 'asc' }
         });
 
-      if (!folderError && folderFiles) {
+      if (folderError) {
+        console.error(`Error reading folder ${folderPath}:`, folderError);
+        continue;
+      }
+
+      if (folderFiles) {
         const images = folderFiles
           .filter(f => f.id !== null && isImage(f.name))
           .map(f => ({
             name: f.name,
-            folder: getCategoryFromFolder(folder.name),
-            path: `${folder.name}/${f.name}`
+            folder: getCategoryFromFolder(folderPath.split('/')[1]),
+            path: `${folderPath}/${f.name}`
           }));
         
+        console.log(`Found ${images.length} images in ${folderPath}`);
         allImages = allImages.concat(images);
       }
     }
@@ -143,17 +137,13 @@ function isImage(filename: string): boolean {
 
 function getCategoryFromFolder(folderName: string): string {
   const categoryMap: { [key: string]: string } = {
-    'projects': 'مشاريع',
-    'plumbing': 'سباكة',
-    'electrical': 'كهرباء',
-    'painting': 'دهانات',
-    'tiles': 'تركيبات',
-    'ac': 'تكييف',
-    'carpentry': 'نجارة',
-    'insulation': 'عزل',
+    'commercial': 'تجاري',
+    'construction': 'إنشاءات',
+    'cuate': 'كواتيه',
+    'live_edge': 'حواف حية',
     'maintenance': 'صيانة',
-    'renovation': 'تجديدات',
-    'construction': 'إنشاءات'
+    'residential': 'سكني',
+    'shops': 'محلات'
   };
 
   return categoryMap[folderName.toLowerCase()] || folderName;
