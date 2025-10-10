@@ -177,10 +177,12 @@ export default function Blog() {
                     </div>
                   </div>
 
-                  <Button className="w-full group">
-                    اقرأ المزيد
-                    <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <Link to={`/blog/${post.title.replace(/\s+/g, '-').toLowerCase()}`}>
+                    <Button className="w-full group">
+                      اقرأ المزيد
+                      <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             ))}

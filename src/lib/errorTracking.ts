@@ -8,48 +8,14 @@ interface ErrorTrackingData {
 }
 
 class ErrorTracker {
-  private isEnabled = process.env.NODE_ENV === 'production';
+  private isEnabled = false; // تعطيل تتبع الأخطاء مؤقتاً لتحسين الأداء
 
   async track(error: Error | string, data?: Partial<ErrorTrackingData>) {
-    if (!this.isEnabled) {
+    // تسجيل في console فقط بدون إرسال للسيرفر
+    if (process.env.NODE_ENV !== 'production') {
       console.error('Error tracked:', error, data);
-      return;
     }
-
-    try {
-      const errorMessage = error instanceof Error ? error.message : error;
-      const stack = error instanceof Error ? error.stack : undefined;
-
-      const payload: ErrorTrackingData & { 
-        url: string; 
-        user_agent: string; 
-        timestamp: string;
-        user_id?: string;
-      } = {
-        message: errorMessage,
-        stack,
-        url: window.location.href,
-        user_agent: navigator.userAgent,
-        timestamp: new Date().toISOString(),
-        level: data?.level || 'error',
-        metadata: data?.metadata,
-        ...data
-      };
-
-      // إضافة معرف المستخدم إذا كان متصلاً
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        payload.user_id = user.id;
-      }
-
-      // إرسال الخطأ إلى edge function
-      await supabase.functions.invoke('error-tracking', {
-        body: payload
-      });
-
-    } catch (trackingError) {
-      console.error('Failed to track error:', trackingError);
-    }
+    return; // إيقاف الإرسال للسيرفر مؤقتاً
   }
 
   trackApiError(error: any, endpoint: string, method: string) {
@@ -91,24 +57,13 @@ class ErrorTracker {
 
 export const errorTracker = new ErrorTracker();
 
-// إعداد تتبع الأخطاء العامة
-if (typeof window !== 'undefined') {
+// إعداد تتبع الأخطاء العامة (معطل مؤقتاً)
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
   window.addEventListener('error', (event) => {
-    errorTracker.track(event.error || event.message, {
-      metadata: {
-        type: 'uncaught_error',
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno
-      }
-    });
+    console.error('Global error:', event.error || event.message);
   });
 
   window.addEventListener('unhandledrejection', (event) => {
-    errorTracker.track(event.reason, {
-      metadata: {
-        type: 'unhandled_rejection'
-      }
-    });
+    console.error('Unhandled rejection:', event.reason);
   });
 }

@@ -35,6 +35,7 @@ import Services from "./pages/Services";
 import Gallery from "./pages/Gallery";
 import Projects from "./pages/Projects";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +75,7 @@ const App = () => {
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="*" element={<NotFound />} />
 
                 {/* الصفحات المحمية بـ Layout واحد فقط */}
