@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 with open("requirements.txt") as f:
 	install_requires = f.read().strip().split("\n")
 
-# get version from __version__ variable in azab_shop/__init__.py
+# get version from __version__ variable in alazab_shop/__init__.py
 from alazab_shop import __version__ as version
 
 setup(
