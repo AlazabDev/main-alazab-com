@@ -1681,6 +1681,21 @@ export type Database = {
         }
         Relationships: []
       }
+      user_vendor_map: {
+        Row: {
+          user_id: string
+          vendor_id: string
+        }
+        Insert: {
+          user_id: string
+          vendor_id: string
+        }
+        Update: {
+          user_id?: string
+          vendor_id?: string
+        }
+        Relationships: []
+      }
       vendor_locations: {
         Row: {
           address: string | null
@@ -1895,6 +1910,22 @@ export type Database = {
       }
     }
     Functions: {
+      app_is_admin: {
+        Args: { uid: string }
+        Returns: boolean
+      }
+      app_is_owner: {
+        Args: { row_user_id: string }
+        Returns: boolean
+      }
+      app_is_staff: {
+        Args: { uid: string }
+        Returns: boolean
+      }
+      app_is_vendor: {
+        Args: { uid: string }
+        Returns: boolean
+      }
       calculate_distance: {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
@@ -1972,6 +2003,18 @@ export type Database = {
           customer_name: string
           customer_phone: string
         }[]
+      }
+      get_customer_email: {
+        Args: { appointment_id: string }
+        Returns: string
+      }
+      get_customer_name: {
+        Args: { appointment_id: string }
+        Returns: string
+      }
+      get_customer_phone: {
+        Args: { appointment_id: string }
+        Returns: string
       }
       get_full_customer_info: {
         Args: { appointment_id: string }
