@@ -7,10 +7,10 @@ with open("requirements.txt") as f:
 from alazab_shop import __version__ as version
 
 setup(
-	name="alazab_shop",
+	name="azab_shop",
 	version=version,
 	description="Property Management and Maintenance System",
-	author="Alazab Solutions",
+	author="Azab Solutions",
 	author_email="alazab.architecture@outlook.com",
 	packages=find_packages(),
 	zip_safe=False,
