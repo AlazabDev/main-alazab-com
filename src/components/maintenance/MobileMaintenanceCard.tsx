@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ interface MobileMaintenanceCardProps {
 }
 
 export function MobileMaintenanceCard({ request }: MobileMaintenanceCardProps) {
+  const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(false);
   const [showActions, setShowActions] = useState(false);
 
@@ -161,20 +163,15 @@ export function MobileMaintenanceCard({ request }: MobileMaintenanceCardProps) {
 
         {/* الإجراءات */}
         <div className="flex gap-2 pt-2">
-          <Dialog open={showDetails} onOpenChange={setShowDetails}>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="flex-1">
-                <Eye className="h-4 w-4 mr-1" />
-                التفاصيل
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="text-xl text-right">تفاصيل طلب الصيانة</DialogTitle>
-              </DialogHeader>
-              <MaintenanceRequestDetails request={request} />
-            </DialogContent>
-          </Dialog>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1"
+            onClick={() => navigate(`/requests/${request.id}`)}
+          >
+            <Eye className="h-4 w-4 mr-1" />
+            التفاصيل
+          </Button>
 
           <Dialog open={showActions} onOpenChange={setShowActions}>
             <DialogTrigger asChild>

@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ interface MaintenanceRequestsListProps {
 }
 
 export function MaintenanceRequestsList({ onNewRequestClick }: MaintenanceRequestsListProps) {
+  const navigate = useNavigate();
   const { requests, loading, error } = useMaintenanceRequests();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -297,28 +299,14 @@ export function MaintenanceRequestsList({ onNewRequestClick }: MaintenanceReques
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => setSelectedRequest(request)}
-                              className="hover:bg-primary/10"
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                              <DialogTitle className="text-xl">
-                                تفاصيل طلب الصيانة #{request.id.slice(0, 8)}
-                              </DialogTitle>
-                            </DialogHeader>
-                            {selectedRequest && (
-                              <MaintenanceRequestDetails request={selectedRequest} />
-                            )}
-                          </DialogContent>
-                        </Dialog>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => navigate(`/requests/${request.id}`)}
+                          className="hover:bg-primary/10"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
                         
                         <MaintenanceRequestActions request={request} />
                       </div>

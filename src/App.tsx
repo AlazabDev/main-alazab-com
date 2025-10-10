@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Requests from "./pages/Requests";
+import RequestDetails from "./pages/RequestDetails";
 import Vendors from "./pages/Vendors";
 import Reports from "./pages/Reports";
 import Properties from "./pages/Properties";
@@ -91,6 +92,14 @@ const App = () => {
                   <AuthWrapper>
                     <AppLayout>
                       <Requests />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/requests/:id" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <RequestDetails />
                     </AppLayout>
                   </AuthWrapper>
                 } />

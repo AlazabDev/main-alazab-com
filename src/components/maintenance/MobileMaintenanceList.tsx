@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ interface MobileMaintenanceListProps {
 }
 
 export function MobileMaintenanceList({ onNewRequestClick }: MobileMaintenanceListProps) {
+  const navigate = useNavigate();
   const { requests, loading, error, refetch } = useMaintenanceRequests();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
