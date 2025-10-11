@@ -244,4 +244,18 @@
     margin-left: 0.5rem;
     margin-right: 0;
   }
+
+  /* Gallery animations */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
 }
