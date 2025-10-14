@@ -1295,6 +1295,8 @@ export type Database = {
           name: string
           next_inspection_date: string | null
           parking_spaces: number | null
+          qr_code_data: string | null
+          qr_code_generated_at: string | null
           region_id: string | null
           rooms: number | null
           status: string
@@ -1317,6 +1319,8 @@ export type Database = {
           name: string
           next_inspection_date?: string | null
           parking_spaces?: number | null
+          qr_code_data?: string | null
+          qr_code_generated_at?: string | null
           region_id?: string | null
           rooms?: number | null
           status?: string
@@ -1339,6 +1343,8 @@ export type Database = {
           name?: string
           next_inspection_date?: string | null
           parking_spaces?: number | null
+          qr_code_data?: string | null
+          qr_code_generated_at?: string | null
           region_id?: string | null
           rooms?: number | null
           status?: string
@@ -1347,6 +1353,69 @@ export type Database = {
           value?: number | null
         }
         Relationships: []
+      }
+      quick_maintenance_requests: {
+        Row: {
+          contact_email: string | null
+          contact_name: string
+          contact_phone: string
+          converted_to_request_id: string | null
+          created_at: string
+          id: string
+          images: string[] | null
+          issue_description: string
+          location_details: string | null
+          property_id: string
+          status: string
+          updated_at: string
+          urgency_level: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_name: string
+          contact_phone: string
+          converted_to_request_id?: string | null
+          created_at?: string
+          id?: string
+          images?: string[] | null
+          issue_description: string
+          location_details?: string | null
+          property_id: string
+          status?: string
+          updated_at?: string
+          urgency_level?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_name?: string
+          contact_phone?: string
+          converted_to_request_id?: string | null
+          created_at?: string
+          id?: string
+          images?: string[] | null
+          issue_description?: string
+          location_details?: string | null
+          property_id?: string
+          status?: string
+          updated_at?: string
+          urgency_level?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quick_maintenance_requests_converted_to_request_id_fkey"
+            columns: ["converted_to_request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quick_maintenance_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       regions: {
         Row: {

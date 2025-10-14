@@ -39,6 +39,7 @@ import Gallery from "./pages/Gallery";
 import Projects from "./pages/Projects";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import QuickRequest from "./pages/QuickRequest";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,6 +80,7 @@ const App = () => {
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/quick-request/:propertyId" element={<QuickRequest />} />
                 <Route path="*" element={<NotFound />} />
 
                 {/* الصفحات المحمية بـ Layout واحد فقط */}

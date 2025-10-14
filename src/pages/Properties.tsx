@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewPropertyForm } from "@/components/forms/NewPropertyForm";
 import { useProperties } from "@/hooks/useProperties";
 import { useNavigate } from "react-router-dom";
+import { PropertyQRCode } from "@/components/properties/PropertyQRCode";
 
 
 export default function Properties() {
@@ -220,6 +221,10 @@ export default function Properties() {
                             <Badge className={statusConfig[property.status as keyof typeof statusConfig]?.className || "bg-gray-500 text-white"}>
                               {statusConfig[property.status as keyof typeof statusConfig]?.label || property.status}
                             </Badge>
+                            <PropertyQRCode 
+                              propertyId={property.id} 
+                              propertyName={property.name}
+                            />
                             <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
                             </Button>
