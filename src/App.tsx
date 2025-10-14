@@ -19,6 +19,7 @@ import RequestDetails from "./pages/RequestDetails";
 import Vendors from "./pages/Vendors";
 import Reports from "./pages/Reports";
 import Properties from "./pages/Properties";
+import AddProperty from "./pages/properties/AddProperty";
 import Appointments from "./pages/Appointments";
 import Invoices from "./pages/Invoices";
 import Map from "./pages/Map";
@@ -124,6 +125,14 @@ const App = () => {
                   <AuthWrapper>
                     <AppLayout>
                       <Properties />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/properties/add" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <AddProperty />
                     </AppLayout>
                   </AuthWrapper>
                 } />

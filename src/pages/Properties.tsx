@@ -8,6 +8,7 @@ import { Building2, MapPin, Calendar, DollarSign, Search, Plus, Eye, Edit } from
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewPropertyForm } from "@/components/forms/NewPropertyForm";
 import { useProperties } from "@/hooks/useProperties";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Properties() {
@@ -15,6 +16,7 @@ export default function Properties() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showNewPropertyForm, setShowNewPropertyForm] = useState(false);
+  const navigate = useNavigate();
   
   const { properties, loading, error } = useProperties();
 
@@ -70,20 +72,13 @@ export default function Properties() {
                 <h1 className="text-3xl font-bold text-foreground">إدارة العقارات</h1>
                 <p className="text-muted-foreground">إدارة ومتابعة العقارات والممتلكات</p>
               </div>
-              <Dialog open={showNewPropertyForm} onOpenChange={setShowNewPropertyForm}>
-                <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary/90">
-                    <Plus className="h-4 w-4 ml-2" />
-                    إضافة عقار جديد
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <NewPropertyForm 
-                    onClose={() => setShowNewPropertyForm(false)}
-                    onSuccess={() => setShowNewPropertyForm(false)}
-                  />
-                </DialogContent>
-              </Dialog>
+              <Button 
+                className="bg-primary hover:bg-primary/90"
+                onClick={() => navigate("/properties/add")}
+              >
+                <Plus className="h-4 w-4 ml-2" />
+                إضافة عقار جديد
+              </Button>
             </div>
 
             {/* Stats Cards */}
@@ -317,7 +312,7 @@ export default function Properties() {
                         }
                       </p>
                       {properties.length === 0 && (
-                        <Button onClick={() => setShowNewPropertyForm(true)} className="mt-3">
+                        <Button onClick={() => navigate("/properties/add")} className="mt-3">
                           <Plus className="h-4 w-4 ml-2" />
                           إضافة أول عقار
                         </Button>
