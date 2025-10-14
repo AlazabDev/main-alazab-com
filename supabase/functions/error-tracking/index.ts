@@ -84,9 +84,9 @@ Deno.serve(async (req) => {
     // إرسال إشعار للمديرين في حالة الأخطاء الحرجة
     if (errorData.level === 'error') {
       try {
-        // البحث عن المديرين
+        // البحث عن المديرين من جدول user_roles (آمن)
         const { data: admins } = await supabase
-          .from('profiles')
+          .from('user_roles')
           .select('user_id')
           .eq('role', 'admin')
           .limit(10); // Limit to prevent abuse

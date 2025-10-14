@@ -93,6 +93,13 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       appointments_summary: {
@@ -729,6 +736,13 @@ export type Database = {
             columns: ["assigned_vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
+            columns: ["assigned_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -1743,6 +1757,13 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "service_prices_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       service_requests: {
@@ -1855,6 +1876,13 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -2360,6 +2388,13 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       vendor_appointments: {
@@ -2432,7 +2467,68 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors_safe"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      vendors_safe: {
+        Row: {
+          address: string | null
+          company_name: string | null
+          created_at: string | null
+          email: string | null
+          experience_years: number | null
+          hourly_rate: number | null
+          id: string | null
+          name: string | null
+          phone: string | null
+          profile_image: string | null
+          rating: number | null
+          specialization: string[] | null
+          status: string | null
+          total_jobs: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: never
+          company_name?: string | null
+          created_at?: string | null
+          email?: never
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string | null
+          name?: string | null
+          phone?: never
+          profile_image?: string | null
+          rating?: number | null
+          specialization?: string[] | null
+          status?: string | null
+          total_jobs?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: never
+          company_name?: string | null
+          created_at?: string | null
+          email?: never
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string | null
+          name?: string | null
+          phone?: never
+          profile_image?: string | null
+          rating?: number | null
+          specialization?: string[] | null
+          status?: string | null
+          total_jobs?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
