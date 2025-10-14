@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -32,9 +33,6 @@ const propertySchema = z.object({
   address: z.string().min(5, "العنوان يجب أن يكون 5 أحرف على الأقل"),
   area: z.number().min(1, "المساحة يجب أن تكون أكبر من 0"),
   rooms: z.number().min(0).optional(),
-  bathrooms: z.number().min(0).optional(),
-  parking_spaces: z.number().min(0).optional(),
-  floors: z.number().min(0).optional(),
   description: z.string().optional(),
   maintenance_manager: z.string().optional(),
   property_supervisor: z.string().optional(),
@@ -77,7 +75,7 @@ export function PropertyForm() {
   const propertyType = watch("type");
 
   // Fetch cities (level 1 regions)
-  useState(() => {
+  React.useEffect(() => {
     const fetchCities = async () => {
       const { data, error } = await supabase
         .from('regions')
@@ -91,10 +89,10 @@ export function PropertyForm() {
       }
     };
     fetchCities();
-  });
+  }, []);
 
   // Fetch districts when city changes
-  useState(() => {
+  React.useEffect(() => {
     const fetchDistricts = async () => {
       if (!selectedCity) {
         setDistricts([]);
@@ -113,7 +111,7 @@ export function PropertyForm() {
       }
     };
     fetchDistricts();
-  });
+  }, [selectedCity]);
 
   const onSubmit = async (data: PropertyFormData) => {
     if (!location) {
@@ -159,9 +157,6 @@ export function PropertyForm() {
           address: data.address,
           area: data.area,
           rooms: data.rooms,
-          bathrooms: data.bathrooms,
-          parking_spaces: data.parking_spaces,
-          floors: data.floors,
           description: data.description,
           region_id: data.district_id || data.city_id,
           status: "active",
@@ -387,35 +382,6 @@ export function PropertyForm() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="bathrooms">عدد الحمامات</Label>
-            <Input
-              id="bathrooms"
-              type="number"
-              {...register("bathrooms", { valueAsNumber: true })}
-              placeholder="مثال: 2"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="parking">مواقف السيارات</Label>
-            <Input
-              id="parking"
-              type="number"
-              {...register("parking_spaces", { valueAsNumber: true })}
-              placeholder="مثال: 1"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="floors">عدد الطوابق</Label>
-            <Input
-              id="floors"
-              type="number"
-              {...register("floors", { valueAsNumber: true })}
-              placeholder="مثال: 2"
-            />
-          </div>
         </div>
       </div>
 
