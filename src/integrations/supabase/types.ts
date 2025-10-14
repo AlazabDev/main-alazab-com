@@ -311,12 +311,61 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_by_folder: {
+        Row: {
+          commercial: string | null
+          construction: string | null
+          created_at: string | null
+          cuate: string | null
+          id: string
+          image_url: string
+          images: string | null
+          live_edge: string | null
+          maintenance: string | null
+          residential: string | null
+          shops: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          commercial?: string | null
+          construction?: string | null
+          created_at?: string | null
+          cuate?: string | null
+          id?: string
+          image_url: string
+          images?: string | null
+          live_edge?: string | null
+          maintenance?: string | null
+          residential?: string | null
+          shops?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          commercial?: string | null
+          construction?: string | null
+          created_at?: string | null
+          cuate?: string | null
+          id?: string
+          image_url?: string
+          images?: string | null
+          live_edge?: string | null
+          maintenance?: string | null
+          residential?: string | null
+          shops?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
           category: string
           created_at: string
           description: string | null
           display_order: number | null
+          folder: string | null
           id: string
           image_url: string
           is_featured: boolean | null
@@ -330,6 +379,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           display_order?: number | null
+          folder?: string | null
           id?: string
           image_url: string
           is_featured?: boolean | null
@@ -343,6 +393,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           display_order?: number | null
+          folder?: string | null
           id?: string
           image_url?: string
           is_featured?: boolean | null
@@ -1406,6 +1457,101 @@ export type Database = {
         }
         Relationships: []
       }
+      service_categories: {
+        Row: {
+          code: string
+          created_at: string | null
+          description_ar: string | null
+          description_en: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean | null
+          name_ar: string
+          name_en: string | null
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name_ar: string
+          name_en?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name_ar?: string
+          name_en?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      service_price_tiers: {
+        Row: {
+          created_at: string | null
+          id: string
+          label_ar: string
+          label_en: string | null
+          note: string | null
+          price: number
+          qty_from: number | null
+          qty_to: number | null
+          service_id: string
+          sort_order: number | null
+          tier_code: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          label_ar: string
+          label_en?: string | null
+          note?: string | null
+          price: number
+          qty_from?: number | null
+          qty_to?: number | null
+          service_id: string
+          sort_order?: number | null
+          tier_code: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          label_ar?: string
+          label_en?: string | null
+          note?: string | null
+          price?: number
+          qty_from?: number | null
+          qty_to?: number | null
+          service_id?: string
+          sort_order?: number | null
+          tier_code?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_price_tiers_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_prices: {
         Row: {
           branch_id: string | null
@@ -1443,13 +1589,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "service_prices_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "service_prices_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
@@ -1473,6 +1612,7 @@ export type Database = {
           property_id: string | null
           provider_type: Database["public"]["Enums"]["provider_type_t"]
           scheduled_at: string | null
+          service_id: string | null
           status: Database["public"]["Enums"]["request_status_t"]
           subtotal: number
           team_id: string | null
@@ -1497,6 +1637,7 @@ export type Database = {
           property_id?: string | null
           provider_type?: Database["public"]["Enums"]["provider_type_t"]
           scheduled_at?: string | null
+          service_id?: string | null
           status?: Database["public"]["Enums"]["request_status_t"]
           subtotal?: number
           team_id?: string | null
@@ -1521,6 +1662,7 @@ export type Database = {
           property_id?: string | null
           provider_type?: Database["public"]["Enums"]["provider_type_t"]
           scheduled_at?: string | null
+          service_id?: string | null
           status?: Database["public"]["Enums"]["request_status_t"]
           subtotal?: number
           team_id?: string | null
@@ -1554,6 +1696,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "service_requests_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "service_requests_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
@@ -1569,55 +1718,120 @@ export type Database = {
           },
         ]
       }
-      services: {
+      service_subcategories: {
         Row: {
-          base_price: number
-          code: string | null
-          default_vat_rate: number
-          description: string | null
+          category_id: string
+          code: string
+          created_at: string | null
+          description_ar: string | null
+          description_en: string | null
           id: string
-          is_active: boolean
-          max_qty: number | null
-          min_qty: number | null
-          name: string
-          search_keywords: unknown | null
-          subcategory_id: string
-          unit: string | null
+          is_active: boolean | null
+          name_ar: string
+          name_en: string | null
+          sort_order: number | null
+          updated_at: string | null
         }
         Insert: {
-          base_price?: number
-          code?: string | null
-          default_vat_rate?: number
-          description?: string | null
+          category_id: string
+          code: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
           id?: string
-          is_active?: boolean
-          max_qty?: number | null
-          min_qty?: number | null
-          name: string
-          search_keywords?: unknown | null
-          subcategory_id: string
-          unit?: string | null
+          is_active?: boolean | null
+          name_ar: string
+          name_en?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
         }
         Update: {
-          base_price?: number
-          code?: string | null
-          default_vat_rate?: number
-          description?: string | null
+          category_id?: string
+          code?: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
           id?: string
-          is_active?: boolean
+          is_active?: boolean | null
+          name_ar?: string
+          name_en?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_subcategories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          base_price: number | null
+          code: string
+          created_at: string | null
+          description_ar: string | null
+          description_en: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean | null
+          max_qty: number | null
+          min_qty: number | null
+          name_ar: string
+          name_en: string | null
+          pricing_type: string
+          sort_order: number | null
+          subcategory_id: string
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          base_price?: number | null
+          code: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
           max_qty?: number | null
           min_qty?: number | null
-          name?: string
-          search_keywords?: unknown | null
+          name_ar: string
+          name_en?: string | null
+          pricing_type?: string
+          sort_order?: number | null
+          subcategory_id: string
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          base_price?: number | null
+          code?: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_qty?: number | null
+          min_qty?: number | null
+          name_ar?: string
+          name_en?: string | null
+          pricing_type?: string
+          sort_order?: number | null
           subcategory_id?: string
           unit?: string | null
+          updated_at?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "services_subcategory_id_fkey"
             columns: ["subcategory_id"]
             isOneToOne: false
-            referencedRelation: "subcategories"
+            referencedRelation: "service_subcategories"
             referencedColumns: ["id"]
           },
         ]
@@ -1656,6 +1870,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      units: {
+        Row: {
+          code: string
+          name_ar: string
+          name_en: string | null
+        }
+        Insert: {
+          code: string
+          name_ar: string
+          name_en?: string | null
+        }
+        Update: {
+          code?: string
+          name_ar?: string
+          name_en?: string | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -2218,6 +2450,7 @@ export type Database = {
         | "failed"
         | "refunded"
         | "cancelled"
+      priority_level: "low" | "medium" | "high"
       provider_type_t: "internal_team" | "external_vendor"
       request_status_t:
         | "draft"
@@ -2399,6 +2632,7 @@ export const Constants = {
         "refunded",
         "cancelled",
       ],
+      priority_level: ["low", "medium", "high"],
       provider_type_t: ["internal_team", "external_vendor"],
       request_status_t: [
         "draft",
