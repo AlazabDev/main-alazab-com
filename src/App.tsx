@@ -37,6 +37,7 @@ import Services from "./pages/Services";
 import ServiceRequest from "./pages/ServiceRequest";
 import Gallery from "./pages/Gallery";
 import Projects from "./pages/Projects";
+import ProjectDetails from "./pages/ProjectDetails";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import QuickRequest from "./pages/QuickRequest";
@@ -232,6 +233,14 @@ const App = () => {
                   <AuthWrapper>
                     <AppLayout>
                       <ProductionMonitor />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/projects/:id" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <ProjectDetails />
                     </AppLayout>
                   </AuthWrapper>
                 } />
