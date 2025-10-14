@@ -1477,7 +1477,7 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           icon_url?: string | null
-          id?: string
+          id: string
           is_active?: boolean | null
           name_ar: string
           name_en?: string | null
@@ -1516,7 +1516,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          id?: string
+          id: string
           label_ar: string
           label_en?: string | null
           note?: string | null
@@ -1738,7 +1738,7 @@ export type Database = {
           created_at?: string | null
           description_ar?: string | null
           description_en?: string | null
-          id?: string
+          id: string
           is_active?: boolean | null
           name_ar: string
           name_en?: string | null
@@ -1795,7 +1795,7 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           icon_url?: string | null
-          id?: string
+          id: string
           is_active?: boolean | null
           max_qty?: number | null
           min_qty?: number | null
