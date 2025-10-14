@@ -22,9 +22,13 @@ import { Loader2 } from "lucide-react";
 
 const propertySchema = z.object({
   name: z.string().min(3, "اسم العقار يجب أن يكون 3 أحرف على الأقل"),
-  type: z.enum(["residential", "commercial", "administrative"], {
-    required_error: "يرجى اختيار نوع العقار",
+  code: z.string().optional(),
+  type: z.enum(["project", "branch", "building", "unit", "other"], {
+    required_error: "يرجى اختيار تصنيف العقار",
   }),
+  country_code: z.string().default("EG"),
+  city_id: z.string().optional(),
+  district_id: z.string().optional(),
   address: z.string().min(5, "العنوان يجب أن يكون 5 أحرف على الأقل"),
   area: z.number().min(1, "المساحة يجب أن تكون أكبر من 0"),
   rooms: z.number().min(0).optional(),
@@ -32,6 +36,11 @@ const propertySchema = z.object({
   parking_spaces: z.number().min(0).optional(),
   floors: z.number().min(0).optional(),
   description: z.string().optional(),
+  maintenance_manager: z.string().optional(),
+  property_supervisor: z.string().optional(),
+  temp_contact_name: z.string().optional(),
+  temp_contact_country_code: z.string().optional(),
+  temp_contact_phone: z.string().optional(),
 });
 
 type PropertyFormData = z.infer<typeof propertySchema>;
@@ -44,6 +53,9 @@ export function PropertyForm() {
     address: string;
   } | null>(null);
   const [images, setImages] = useState<File[]>([]);
+  const [cities, setCities] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState<string>("");
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -56,9 +68,52 @@ export function PropertyForm() {
     watch,
   } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
+    defaultValues: {
+      country_code: "EG",
+      temp_contact_country_code: "+20"
+    }
   });
 
   const propertyType = watch("type");
+
+  // Fetch cities (level 1 regions)
+  useState(() => {
+    const fetchCities = async () => {
+      const { data, error } = await supabase
+        .from('regions')
+        .select('*')
+        .eq('level', 1)
+        .eq('is_active', true)
+        .order('name');
+      
+      if (!error && data) {
+        setCities(data);
+      }
+    };
+    fetchCities();
+  });
+
+  // Fetch districts when city changes
+  useState(() => {
+    const fetchDistricts = async () => {
+      if (!selectedCity) {
+        setDistricts([]);
+        return;
+      }
+      
+      const { data, error } = await supabase
+        .from('regions')
+        .select('*')
+        .eq('parent_id', selectedCity)
+        .eq('is_active', true)
+        .order('name');
+      
+      if (!error && data) {
+        setDistricts(data);
+      }
+    };
+    fetchDistricts();
+  });
 
   const onSubmit = async (data: PropertyFormData) => {
     if (!location) {
@@ -108,7 +163,7 @@ export function PropertyForm() {
           parking_spaces: data.parking_spaces,
           floors: data.floors,
           description: data.description,
-          // TODO: إضافة حقول latitude و longitude للجدول
+          region_id: data.district_id || data.city_id,
           status: "active",
           manager_id: user.id,
         });
@@ -144,9 +199,11 @@ export function PropertyForm() {
         <h3 className="text-lg font-semibold">تصنيف العقار *</h3>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { value: "residential", label: "السكني" },
-            { value: "commercial", label: "التجاري" },
-            { value: "administrative", label: "الإداري" },
+            { value: "project", label: "المشروع" },
+            { value: "branch", label: "الفرع" },
+            { value: "building", label: "المبنى" },
+            { value: "unit", label: "الوحدة" },
+            { value: "other", label: "أخرى" },
           ].map((type) => (
             <button
               key={type.value}
@@ -167,18 +224,29 @@ export function PropertyForm() {
         )}
       </div>
 
-      {/* اسم/رقم العقار */}
-      <div className="space-y-2">
-        <Label htmlFor="name">اسم/رقم العقار *</Label>
-        <Input
-          id="name"
-          {...register("name")}
-          placeholder="مثال: عمارة أكتوبر"
-          className={errors.name ? "border-destructive" : ""}
-        />
-        {errors.name && (
-          <p className="text-sm text-destructive">{errors.name.message}</p>
-        )}
+      {/* اسم ورقم العقار */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">اسم العقار *</Label>
+          <Input
+            id="name"
+            {...register("name")}
+            placeholder="مثال: عمارة أكتوبر"
+            className={errors.name ? "border-destructive" : ""}
+          />
+          {errors.name && (
+            <p className="text-sm text-destructive">{errors.name.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="code">رقم/رمز العقار</Label>
+          <Input
+            id="code"
+            {...register("code")}
+            placeholder="مثال: B-101"
+          />
+        </div>
       </div>
 
       {/* صورة العقار */}
@@ -195,10 +263,13 @@ export function PropertyForm() {
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">تفاصيل الموقع</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label>الدولة</Label>
-            <Select defaultValue="EG">
+            <Select 
+              defaultValue="EG"
+              onValueChange={(value) => setValue("country_code", value)}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -211,29 +282,42 @@ export function PropertyForm() {
 
           <div className="space-y-2">
             <Label>المدينة</Label>
-            <Select>
+            <Select 
+              value={selectedCity}
+              onValueChange={(value) => {
+                setSelectedCity(value);
+                setValue("city_id", value);
+                setValue("district_id", "");
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="اختر المدينة التي يقع بها العقار" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="6october">6 أكتوبر</SelectItem>
-                <SelectItem value="cairo">القاهرة</SelectItem>
-                <SelectItem value="giza">الجيزة</SelectItem>
-                <SelectItem value="alex">الإسكندرية</SelectItem>
+                {cities.map((city) => (
+                  <SelectItem key={city.id} value={city.id}>
+                    {city.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
             <Label>الحي</Label>
-            <Select>
+            <Select
+              disabled={!selectedCity}
+              onValueChange={(value) => setValue("district_id", value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="اختر الحي الذي يقع به العقار" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">الحي الأول</SelectItem>
-                <SelectItem value="2">الحي الثاني</SelectItem>
-                <SelectItem value="3">الحي الثالث</SelectItem>
+                {districts.map((district) => (
+                  <SelectItem key={district.id} value={district.id}>
+                    {district.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -344,6 +428,75 @@ export function PropertyForm() {
           placeholder="أدخل وصفاً تفصيلياً للعقار..."
           rows={4}
         />
+      </div>
+
+      {/* إعدادات العقار */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">إعدادات العقار</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="maintenance_manager">مدير الصيانة</Label>
+            <Input
+              id="maintenance_manager"
+              {...register("maintenance_manager")}
+              placeholder="اسم مدير الصيانة (اختياري)"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="property_supervisor">مشرف العقار</Label>
+            <Input
+              id="property_supervisor"
+              {...register("property_supervisor")}
+              placeholder="اسم مشرف العقار (اختياري)"
+            />
+          </div>
+        </div>
+
+        <div className="p-4 bg-muted/50 rounded-lg space-y-4">
+          <p className="text-sm text-muted-foreground">
+            هذه الحقول اختيارية وتُستخدم فقط إذا كنت ترغب بعرض بيانات تواصل مؤقتة للطلبات.
+          </p>
+          
+          <div className="space-y-2">
+            <Label htmlFor="temp_contact_name">اسم الشخص للتواصل المؤقت</Label>
+            <Input
+              id="temp_contact_name"
+              {...register("temp_contact_name")}
+              placeholder="ادخل الاسم..."
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="temp_contact_country_code">رمز الدولة</Label>
+              <Select 
+                defaultValue="+20"
+                onValueChange={(value) => setValue("temp_contact_country_code", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="+20">+20 (مصر)</SelectItem>
+                  <SelectItem value="+966">+966 (السعودية)</SelectItem>
+                  <SelectItem value="+971">+971 (الإمارات)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="temp_contact_phone">رقم الجوال للتواصل المؤقت</Label>
+              <Input
+                id="temp_contact_phone"
+                {...register("temp_contact_phone")}
+                placeholder="مثال: 1234567890"
+                type="tel"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* أزرار الحفظ */}
