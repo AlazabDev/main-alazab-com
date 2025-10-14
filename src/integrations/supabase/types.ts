@@ -796,6 +796,27 @@ export type Database = {
         }
         Relationships: []
       }
+      malls: {
+        Row: {
+          id: number
+          location: string | null
+          name: string
+          type: string | null
+        }
+        Insert: {
+          id: number
+          location?: string | null
+          name: string
+          type?: string | null
+        }
+        Update: {
+          id?: number
+          location?: string | null
+          name?: string
+          type?: string | null
+        }
+        Relationships: []
+      }
       material_requests: {
         Row: {
           actual_cost: number | null
@@ -857,6 +878,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      materials: {
+        Row: {
+          barcode: string | null
+          brand: string | null
+          category: string | null
+          cost_price: number | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          gallery_urls: string | null
+          height: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          length: number | null
+          min_stock: number | null
+          name: string
+          sku: string | null
+          stock_qty: number | null
+          unit: string | null
+          unit_price: number | null
+          updated_at: string | null
+          weight: number | null
+          width: number | null
+        }
+        Insert: {
+          barcode?: string | null
+          brand?: string | null
+          category?: string | null
+          cost_price?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          gallery_urls?: string | null
+          height?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          length?: number | null
+          min_stock?: number | null
+          name: string
+          sku?: string | null
+          stock_qty?: number | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+          weight?: number | null
+          width?: number | null
+        }
+        Update: {
+          barcode?: string | null
+          brand?: string | null
+          category?: string | null
+          cost_price?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          gallery_urls?: string | null
+          height?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          length?: number | null
+          min_stock?: number | null
+          name?: string
+          sku?: string | null
+          stock_qty?: number | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+          weight?: number | null
+          width?: number | null
+        }
+        Relationships: []
       }
       notes: {
         Row: {
@@ -1043,6 +1139,24 @@ export type Database = {
         }
         Relationships: []
       }
+      project_tasks: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           actual_cost: number | null
@@ -1165,6 +1279,50 @@ export type Database = {
           value?: number | null
         }
         Relationships: []
+      }
+      regions: {
+        Row: {
+          code: string | null
+          coordinates: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          level: number
+          name: string
+          parent_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          code?: string | null
+          coordinates?: Json | null
+          created_at?: string | null
+          id: string
+          is_active?: boolean | null
+          level: number
+          name: string
+          parent_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string | null
+          coordinates?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          level?: number
+          name?: string
+          parent_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "regions_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       request_approvals: {
         Row: {
@@ -1326,13 +1484,6 @@ export type Database = {
             referencedRelation: "service_requests"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "request_lines_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
         ]
       }
       request_reviews: {
@@ -1477,7 +1628,7 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           icon_url?: string | null
-          id: string
+          id?: string
           is_active?: boolean | null
           name_ar: string
           name_en?: string | null
@@ -1503,44 +1654,32 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
-          label_ar: string
-          label_en: string | null
-          note: string | null
+          is_active: boolean | null
+          max_quantity: number | null
+          min_quantity: number | null
           price: number
-          qty_from: number | null
-          qty_to: number | null
           service_id: string
-          sort_order: number | null
-          tier_code: string
-          updated_at: string | null
+          tier_name: string
         }
         Insert: {
           created_at?: string | null
-          id: string
-          label_ar: string
-          label_en?: string | null
-          note?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_quantity?: number | null
+          min_quantity?: number | null
           price: number
-          qty_from?: number | null
-          qty_to?: number | null
           service_id: string
-          sort_order?: number | null
-          tier_code: string
-          updated_at?: string | null
+          tier_name: string
         }
         Update: {
           created_at?: string | null
           id?: string
-          label_ar?: string
-          label_en?: string | null
-          note?: string | null
+          is_active?: boolean | null
+          max_quantity?: number | null
+          min_quantity?: number | null
           price?: number
-          qty_from?: number | null
-          qty_to?: number | null
           service_id?: string
-          sort_order?: number | null
-          tier_code?: string
-          updated_at?: string | null
+          tier_name?: string
         }
         Relationships: [
           {
@@ -1696,13 +1835,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "service_requests_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "service_requests_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
@@ -1738,7 +1870,7 @@ export type Database = {
           created_at?: string | null
           description_ar?: string | null
           description_en?: string | null
-          id: string
+          id?: string
           is_active?: boolean | null
           name_ar: string
           name_en?: string | null
@@ -1795,7 +1927,7 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           icon_url?: string | null
-          id: string
+          id?: string
           is_active?: boolean | null
           max_qty?: number | null
           min_qty?: number | null
@@ -1835,6 +1967,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stores: {
+        Row: {
+          area: number | null
+          category: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          email: string | null
+          id: string
+          is_deleted: boolean | null
+          location: string | null
+          map_url: string | null
+          name: string
+          opening_date: string | null
+          phone: string | null
+          region_id: string | null
+          status: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          area?: number | null
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          location?: string | null
+          map_url?: string | null
+          name: string
+          opening_date?: string | null
+          phone?: string | null
+          region_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          area?: number | null
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          location?: string | null
+          map_url?: string | null
+          name?: string
+          opening_date?: string | null
+          phone?: string | null
+          region_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       subcategories: {
         Row: {
@@ -2362,6 +2554,26 @@ export type Database = {
           vendor_id: string
         }[]
       }
+      gtrgm_compress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: { "": unknown }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2384,6 +2596,18 @@ export type Database = {
       recalc_request_totals: {
         Args: { p_request_id: string }
         Returns: undefined
+      }
+      set_limit: {
+        Args: { "": number }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: { "": string }
+        Returns: string[]
       }
       update_summary_data: {
         Args: Record<PropertyKey, never>
