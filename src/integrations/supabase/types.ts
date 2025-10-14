@@ -637,6 +637,7 @@ export type Database = {
           status: string | null
           title: string
           updated_at: string
+          urgency_level: string | null
           vendor_notes: string | null
           workflow_stage:
             | Database["public"]["Enums"]["maintenance_status"]
@@ -676,6 +677,7 @@ export type Database = {
           status?: string | null
           title: string
           updated_at?: string
+          urgency_level?: string | null
           vendor_notes?: string | null
           workflow_stage?:
             | Database["public"]["Enums"]["maintenance_status"]
@@ -715,6 +717,7 @@ export type Database = {
           status?: string | null
           title?: string
           updated_at?: string
+          urgency_level?: string | null
           vendor_notes?: string | null
           workflow_stage?:
             | Database["public"]["Enums"]["maintenance_status"]
@@ -1612,11 +1615,13 @@ export type Database = {
         Row: {
           code: string
           created_at: string | null
+          description: string | null
           description_ar: string | null
           description_en: string | null
           icon_url: string | null
           id: string
           is_active: boolean | null
+          name: string | null
           name_ar: string
           name_en: string | null
           sort_order: number | null
@@ -1625,11 +1630,13 @@ export type Database = {
         Insert: {
           code: string
           created_at?: string | null
+          description?: string | null
           description_ar?: string | null
           description_en?: string | null
           icon_url?: string | null
           id?: string
           is_active?: boolean | null
+          name?: string | null
           name_ar: string
           name_en?: string | null
           sort_order?: number | null
@@ -1638,11 +1645,13 @@ export type Database = {
         Update: {
           code?: string
           created_at?: string | null
+          description?: string | null
           description_ar?: string | null
           description_en?: string | null
           icon_url?: string | null
           id?: string
           is_active?: boolean | null
+          name?: string | null
           name_ar?: string
           name_en?: string | null
           sort_order?: number | null
@@ -1855,10 +1864,12 @@ export type Database = {
           category_id: string
           code: string
           created_at: string | null
+          description: string | null
           description_ar: string | null
           description_en: string | null
           id: string
           is_active: boolean | null
+          name: string | null
           name_ar: string
           name_en: string | null
           sort_order: number | null
@@ -1868,10 +1879,12 @@ export type Database = {
           category_id: string
           code: string
           created_at?: string | null
+          description?: string | null
           description_ar?: string | null
           description_en?: string | null
           id?: string
           is_active?: boolean | null
+          name?: string | null
           name_ar: string
           name_en?: string | null
           sort_order?: number | null
@@ -1881,10 +1894,12 @@ export type Database = {
           category_id?: string
           code?: string
           created_at?: string | null
+          description?: string | null
           description_ar?: string | null
           description_en?: string | null
           id?: string
           is_active?: boolean | null
+          name?: string | null
           name_ar?: string
           name_en?: string | null
           sort_order?: number | null
@@ -1903,6 +1918,7 @@ export type Database = {
       services: {
         Row: {
           base_price: number | null
+          category_id: string | null
           code: string
           created_at: string | null
           description_ar: string | null
@@ -1912,6 +1928,7 @@ export type Database = {
           is_active: boolean | null
           max_qty: number | null
           min_qty: number | null
+          name: string | null
           name_ar: string
           name_en: string | null
           pricing_type: string
@@ -1922,6 +1939,7 @@ export type Database = {
         }
         Insert: {
           base_price?: number | null
+          category_id?: string | null
           code: string
           created_at?: string | null
           description_ar?: string | null
@@ -1931,6 +1949,7 @@ export type Database = {
           is_active?: boolean | null
           max_qty?: number | null
           min_qty?: number | null
+          name?: string | null
           name_ar: string
           name_en?: string | null
           pricing_type?: string
@@ -1941,6 +1960,7 @@ export type Database = {
         }
         Update: {
           base_price?: number | null
+          category_id?: string | null
           code?: string
           created_at?: string | null
           description_ar?: string | null
@@ -1950,6 +1970,7 @@ export type Database = {
           is_active?: boolean | null
           max_qty?: number | null
           min_qty?: number | null
+          name?: string | null
           name_ar?: string
           name_en?: string | null
           pricing_type?: string
