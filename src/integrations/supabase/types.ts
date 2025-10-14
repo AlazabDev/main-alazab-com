@@ -1072,6 +1072,45 @@ export type Database = {
           },
         ]
       }
+      platform_permissions: {
+        Row: {
+          can_cancel_requests: boolean | null
+          can_choose_appointment_date: boolean | null
+          can_create_properties: boolean | null
+          can_reject_prices: boolean | null
+          can_submit_without_manager_approval: boolean | null
+          can_view_financial_details: boolean | null
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          can_cancel_requests?: boolean | null
+          can_choose_appointment_date?: boolean | null
+          can_create_properties?: boolean | null
+          can_reject_prices?: boolean | null
+          can_submit_without_manager_approval?: boolean | null
+          can_view_financial_details?: boolean | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          can_cancel_requests?: boolean | null
+          can_choose_appointment_date?: boolean | null
+          can_create_properties?: boolean | null
+          can_reject_prices?: boolean | null
+          can_submit_without_manager_approval?: boolean | null
+          can_view_financial_details?: boolean | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           content: string | null
@@ -1123,34 +1162,46 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          birth_date: string | null
           created_at: string
           first_name: string | null
+          gender: string | null
           id: string
           last_name: string | null
+          locale: string | null
           phone: string | null
           role: string | null
+          timezone: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           avatar_url?: string | null
+          birth_date?: string | null
           created_at?: string
           first_name?: string | null
+          gender?: string | null
           id?: string
           last_name?: string | null
+          locale?: string | null
           phone?: string | null
           role?: string | null
+          timezone?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           avatar_url?: string | null
+          birth_date?: string | null
           created_at?: string
           first_name?: string | null
+          gender?: string | null
           id?: string
           last_name?: string | null
+          locale?: string | null
           phone?: string | null
           role?: string | null
+          timezone?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -2112,6 +2163,122 @@ export type Database = {
           },
         ]
       }
+      subscription_invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          due_date: string
+          id: string
+          invoice_number: string
+          paid_at: string | null
+          status: string
+          subscription_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          due_date: string
+          id?: string
+          invoice_number: string
+          paid_at?: string | null
+          status?: string
+          subscription_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          due_date?: string
+          id?: string
+          invoice_number?: string
+          paid_at?: string | null
+          status?: string
+          subscription_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          end_date: string | null
+          id: string
+          payment_method: string | null
+          plan_name: string
+          start_date: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          end_date?: string | null
+          id?: string
+          payment_method?: string | null
+          plan_name: string
+          start_date: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          end_date?: string | null
+          id?: string
+          payment_method?: string | null
+          plan_name?: string
+          start_date?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      system_settings: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       units: {
         Row: {
           code: string
@@ -2127,6 +2294,39 @@ export type Database = {
           code?: string
           name_ar?: string
           name_en?: string | null
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          email_notifications: boolean | null
+          id: string
+          monthly_budget: number | null
+          notifications_enabled: boolean | null
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          monthly_budget?: number | null
+          notifications_enabled?: boolean | null
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          monthly_budget?: number | null
+          notifications_enabled?: boolean | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
