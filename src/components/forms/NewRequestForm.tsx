@@ -116,7 +116,9 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     setIsSubmitting(true);
     
     try {
-      const result = await createRequest(formData);
+      // إعداد البيانات للإرسال (حذف property_id من البيانات المرسلة)
+      const { property_id, ...requestData } = formData;
+      const result = await createRequest(requestData);
       if (result) {
         // إنشاء حدث دورة حياة للطلب الجديد
         try {
