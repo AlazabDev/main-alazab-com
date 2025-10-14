@@ -34,6 +34,7 @@ import ProductionMonitor from "./pages/ProductionMonitor";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Services from "./pages/Services";
+import ServiceRequest from "./pages/ServiceRequest";
 import Gallery from "./pages/Gallery";
 import Projects from "./pages/Projects";
 import Blog from "./pages/Blog";
@@ -93,6 +94,14 @@ const App = () => {
                   <AuthWrapper>
                     <AppLayout>
                       <Requests />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/service-request" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <ServiceRequest />
                     </AppLayout>
                   </AuthWrapper>
                 } />
