@@ -5,11 +5,13 @@ import { toast } from '@/hooks/use-toast';
 export interface Project {
   id: string;
   name: string;
+  code?: string;
   description?: string;
   client_name: string;
   client_id?: string;
   location: string;
-  status: 'planning' | 'design' | 'licensing' | 'construction' | 'finishing' | 'completed' | 'on_hold' | 'cancelled';
+  status: 'planning' | 'design' | 'licensing' | 'construction' | 'finishing' | 'completed' | 'maintenance' | 'on_hold' | 'cancelled';
+  project_type?: string;
   budget?: number;
   actual_cost?: number;
   progress: number;
@@ -17,6 +19,10 @@ export interface Project {
   end_date?: string;
   actual_end_date?: string;
   manager_id?: string;
+  magicplan_iframe_url?: string;
+  cover_image_url?: string;
+  latitude?: number;
+  longitude?: number;
   created_at: string;
   updated_at: string;
 }
