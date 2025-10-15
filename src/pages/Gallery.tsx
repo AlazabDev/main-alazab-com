@@ -175,13 +175,13 @@ export default function Gallery() {
                   <div className="relative aspect-square overflow-hidden bg-muted/50">
                     <img
                       src={image.url}
-                      alt={image.name}
+                      alt={image.title}
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
                       <div className="absolute bottom-0 left-0 right-0 p-3 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <p className="font-bold text-xs md:text-sm truncate">{image.name}</p>
+                        <p className="font-bold text-xs md:text-sm truncate">{image.title}</p>
                       </div>
                     </div>
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -233,7 +233,7 @@ export default function Gallery() {
                 <div className="flex-1 flex items-center justify-center p-4">
                   <img 
                     src={selectedImage.url}
-                    alt={selectedImage.name}
+                    alt={selectedImage.title}
                     className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                   />
                 </div>
@@ -249,7 +249,7 @@ export default function Gallery() {
                         {(selectedImageIndex ?? 0) + 1} / {images.length}
                       </span>
                     </div>
-                    <h3 className="text-xl md:text-2xl font-bold">{selectedImage.name}</h3>
+                    <h3 className="text-xl md:text-2xl font-bold">{selectedImage.title}</h3>
                   </div>
                 </div>
 

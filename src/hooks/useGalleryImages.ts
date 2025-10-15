@@ -3,9 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface GalleryImage {
   id: string;
-  name: string;
+  title: string;
   url: string;
   folder: string;
+  category: string;
+  description?: string;
+  tags?: string[];
+  is_featured?: boolean;
+  display_order?: number;
+  thumbnail_url?: string;
 }
 
 export const useGalleryImages = (folder: string) => {
@@ -22,17 +28,16 @@ export const useGalleryImages = (folder: string) => {
       setLoading(true);
       setError(null);
 
-      // جلب قائمة الملفات من المجلد المحدد
-      const { data, error: storageError } = await supabase.storage
-        .from("az_gallery")
-        .list(`images/${folder}`, {
-          limit: 100,
-          offset: 0,
-          sortBy: { column: "name", order: "asc" },
-        });
+      // جلب الصور من جدول gallery_images حسب المجلد
+      const { data, error: dbError } = await supabase
+        .from("gallery_images")
+        .select("*")
+        .eq("folder", folder)
+        .order("display_order", { ascending: true })
+        .order("created_at", { ascending: false });
 
-      if (storageError) {
-        throw storageError;
+      if (dbError) {
+        throw dbError;
       }
 
       if (!data) {
@@ -41,31 +46,19 @@ export const useGalleryImages = (folder: string) => {
         return;
       }
 
-      // تحويل البيانات إلى URLs
-      const imageList: GalleryImage[] = data
-        .filter((file) => {
-          // فلترة الملفات - فقط الصور
-          const ext = file.name.toLowerCase();
-          return (
-            ext.endsWith(".jpg") ||
-            ext.endsWith(".jpeg") ||
-            ext.endsWith(".png") ||
-            ext.endsWith(".webp") ||
-            ext.endsWith(".gif")
-          );
-        })
-        .map((file) => {
-          const publicUrl = supabase.storage
-            .from("az_gallery")
-            .getPublicUrl(`images/${folder}/${file.name}`).data.publicUrl;
-
-          return {
-            id: file.id || file.name,
-            name: file.name,
-            url: publicUrl,
-            folder: folder,
-          };
-        });
+      // تحويل البيانات إلى الصيغة المطلوبة
+      const imageList: GalleryImage[] = data.map((img) => ({
+        id: img.id,
+        title: img.title,
+        url: img.image_url,
+        folder: img.folder || folder,
+        category: img.category,
+        description: img.description,
+        tags: img.tags,
+        is_featured: img.is_featured,
+        display_order: img.display_order,
+        thumbnail_url: img.thumbnail_url,
+      }));
 
       setImages(imageList);
     } catch (err) {
