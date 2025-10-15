@@ -48,22 +48,30 @@ export const useGalleryImages = (folder: string) => {
       // تصفية الصور حسب المجلد من مسار الصورة وتحويلها للصيغة المطلوبة
       const imageList: GalleryImage[] = data
         .filter((img) => {
+          // إذا كان المجلد "all"، عرض جميع الصور
+          if (folder === "all") return true;
+          
           // استخراج اسم المجلد من مسار الصورة (مثال: images/commercial/image.jpg)
           const urlFolder = img.image_url?.split('/images/')[1]?.split('/')[0];
           return urlFolder === folder;
         })
-        .map((img) => ({
-          id: img.id,
-          title: img.title,
-          url: img.image_url,
-          folder: folder,
-          category: img.category,
-          description: img.description,
-          tags: img.tags,
-          is_featured: img.is_featured,
-          display_order: img.display_order,
-          thumbnail_url: img.thumbnail_url,
-        }));
+        .map((img) => {
+          // استخراج المجلد من مسار الصورة
+          const urlFolder = img.image_url?.split('/images/')[1]?.split('/')[0] || folder;
+          
+          return {
+            id: img.id,
+            title: img.title,
+            url: img.image_url,
+            folder: urlFolder,
+            category: img.category,
+            description: img.description,
+            tags: img.tags,
+            is_featured: img.is_featured,
+            display_order: img.display_order,
+            thumbnail_url: img.thumbnail_url,
+          };
+        });
 
       setImages(imageList);
     } catch (err) {

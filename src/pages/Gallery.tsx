@@ -5,12 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Camera, X, ChevronLeft, ChevronRight, RefreshCw, Loader2 } from "lucide-react";
+import { Camera, X, ChevronLeft, ChevronRight, RefreshCw, Loader2, Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGalleryImages } from "@/hooks/useGalleryImages";
 import { useToast } from "@/hooks/use-toast";
 
 const FOLDERS = [
+  { key: "all", label: "الكل", icon: "🎨" },
   { key: "commercial", label: "تجاري", icon: "🏢" },
   { key: "construction", label: "إنشائي", icon: "🏗️" },
   { key: "cuate", label: "تصميمات كرتونية", icon: "🎨" },
@@ -21,7 +22,7 @@ const FOLDERS = [
 ];
 
 export default function Gallery() {
-  const [selectedCategory, setSelectedCategory] = useState("commercial");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const { images, loading, error, refresh } = useGalleryImages(selectedCategory);
   const { toast } = useToast();
@@ -57,6 +58,30 @@ export default function Gallery() {
     }
   };
 
+  const handleDownload = async (imageUrl: string, title: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${title}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast({
+        title: "تم التحميل",
+        description: "تم تحميل الصورة بنجاح",
+      });
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "فشل تحميل الصورة",
+        variant: "destructive",
+      });
+    }
+  };
   const selectedImage = selectedImageIndex !== null ? images[selectedImageIndex] : null;
 
   return (
@@ -170,18 +195,32 @@ export default function Gallery() {
                 <Card
                   key={image.id}
                   className="group overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 bg-card/50 backdrop-blur-sm border-border/50"
-                  onClick={() => openLightbox(index)}
                 >
-                  <div className="relative aspect-square overflow-hidden bg-muted/50">
+                  <div 
+                    className="relative aspect-square overflow-hidden bg-muted/50"
+                    onClick={() => openLightbox(index)}
+                  >
                     <img
                       src={image.url}
                       alt={image.title}
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
                       <div className="absolute bottom-0 left-0 right-0 p-3 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <p className="font-bold text-xs md:text-sm truncate">{image.title}</p>
+                        <p className="font-bold text-xs md:text-sm truncate mb-2">{image.title}</p>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="w-full gap-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(image.url, image.title);
+                          }}
+                        >
+                          <Download className="h-3 w-3" />
+                          تحميل
+                        </Button>
                       </div>
                     </div>
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -208,6 +247,16 @@ export default function Gallery() {
             >
               <X className="h-6 w-6" />
             </button>
+
+            {/* Download Button */}
+            {selectedImage && (
+              <button
+                onClick={() => handleDownload(selectedImage.url, selectedImage.title)}
+                className="absolute top-4 left-20 z-50 w-12 h-12 rounded-full bg-primary/90 hover:bg-primary text-primary-foreground flex items-center justify-center transition-all backdrop-blur-md shadow-xl"
+              >
+                <Download className="h-5 w-5" />
+              </button>
+            )}
 
             {/* Navigation Buttons */}
             {selectedImageIndex !== null && selectedImageIndex > 0 && (
