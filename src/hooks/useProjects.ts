@@ -33,7 +33,7 @@ export interface ProjectPhase {
   name: string;
   description?: string;
   status: 'pending' | 'in_progress' | 'completed' | 'delayed';
-  order_index: number;
+  sort_order: number;
   start_date?: string;
   end_date?: string;
   actual_start_date?: string;
@@ -140,7 +140,7 @@ export const useProjectDetails = (projectId: string) => {
         .from('project_phases')
         .select('*')
         .eq('project_id', projectId)
-        .order('order_index');
+        .order('sort_order');
 
       if (phasesError) throw phasesError;
       setPhases((phasesData || []) as ProjectPhase[]);
