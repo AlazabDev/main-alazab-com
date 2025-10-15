@@ -28,11 +28,10 @@ export const useGalleryImages = (folder: string) => {
       setLoading(true);
       setError(null);
 
-      // جلب الصور من جدول gallery_images حسب المجلد
+      // جلب الصور من جدول gallery_images - البحث في مسار الصورة عن الفئة
       const { data, error: dbError } = await supabase
         .from("gallery_images")
         .select("*")
-        .eq("folder", folder)
         .order("display_order", { ascending: true })
         .order("created_at", { ascending: false });
 
@@ -46,19 +45,25 @@ export const useGalleryImages = (folder: string) => {
         return;
       }
 
-      // تحويل البيانات إلى الصيغة المطلوبة
-      const imageList: GalleryImage[] = data.map((img) => ({
-        id: img.id,
-        title: img.title,
-        url: img.image_url,
-        folder: img.folder || folder,
-        category: img.category,
-        description: img.description,
-        tags: img.tags,
-        is_featured: img.is_featured,
-        display_order: img.display_order,
-        thumbnail_url: img.thumbnail_url,
-      }));
+      // تصفية الصور حسب المجلد من مسار الصورة وتحويلها للصيغة المطلوبة
+      const imageList: GalleryImage[] = data
+        .filter((img) => {
+          // استخراج اسم المجلد من مسار الصورة (مثال: images/commercial/image.jpg)
+          const urlFolder = img.image_url?.split('/images/')[1]?.split('/')[0];
+          return urlFolder === folder;
+        })
+        .map((img) => ({
+          id: img.id,
+          title: img.title,
+          url: img.image_url,
+          folder: folder,
+          category: img.category,
+          description: img.description,
+          tags: img.tags,
+          is_featured: img.is_featured,
+          display_order: img.display_order,
+          thumbnail_url: img.thumbnail_url,
+        }));
 
       setImages(imageList);
     } catch (err) {
