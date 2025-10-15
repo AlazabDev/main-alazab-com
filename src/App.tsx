@@ -41,6 +41,8 @@ import ProjectDetails from "./pages/ProjectDetails";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import QuickRequest from "./pages/QuickRequest";
+import ExpenseReports from "./pages/ExpenseReports";
+import MaintenanceReports from "./pages/MaintenanceReports";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -241,6 +243,22 @@ const App = () => {
                   <AuthWrapper>
                     <AppLayout>
                       <ProjectDetails />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/reports/expenses" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <ExpenseReports />
+                    </AppLayout>
+                  </AuthWrapper>
+                } />
+                
+                <Route path="/reports/maintenance" element={
+                  <AuthWrapper>
+                    <AppLayout>
+                      <MaintenanceReports />
                     </AppLayout>
                   </AuthWrapper>
                 } />
