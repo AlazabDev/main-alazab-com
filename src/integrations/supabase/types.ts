@@ -1290,6 +1290,7 @@ export type Database = {
           end_date: string | null
           id: string
           location: string
+          magicplan_iframe_url: string | null
           manager_id: string | null
           name: string
           progress: number | null
@@ -1307,6 +1308,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           location: string
+          magicplan_iframe_url?: string | null
           manager_id?: string | null
           name: string
           progress?: number | null
@@ -1324,6 +1326,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           location?: string
+          magicplan_iframe_url?: string | null
           manager_id?: string | null
           name?: string
           progress?: number | null
