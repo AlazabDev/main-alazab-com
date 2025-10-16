@@ -27,9 +27,25 @@ export const HeroSection = () => {
               </Badge>
               
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                حلول شاملة للصيانة
+                <span className="inline-block animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+                  حلول
+                </span>{' '}
+                <span className="inline-block animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+                  شاملة
+                </span>{' '}
+                <span className="inline-block animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+                  للصيانة
+                </span>
                 <span className="bg-gradient-to-l from-primary to-primary/60 bg-clip-text text-transparent block">
-                  وتجهيز المحلات التجارية
+                  <span className="inline-block animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
+                    وتجهيز
+                  </span>{' '}
+                  <span className="inline-block animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+                    المحلات
+                  </span>{' '}
+                  <span className="inline-block animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+                    التجارية
+                  </span>
                 </span>
               </h1>
               
