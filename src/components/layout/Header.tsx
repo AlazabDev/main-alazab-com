@@ -2,6 +2,8 @@ import { Settings, User, Menu, LogOut, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,8 +19,48 @@ interface HeaderProps {
   onMenuToggle?: () => void;
 }
 
+interface UserData {
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+  role: string;
+}
+
 export const Header = ({ onMenuToggle }: HeaderProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, avatar_url, role")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      setUserData({
+        email: user.email || "",
+        firstName: profile?.first_name || "مستخدم",
+        lastName: profile?.last_name || "",
+        avatarUrl: profile?.avatar_url || null,
+        role: profile?.role === "admin" ? "مسؤول" : 
+              profile?.role === "manager" ? "مدير" :
+              profile?.role === "staff" ? "موظف" :
+              profile?.role === "vendor" ? "فني" : "عميل"
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -27,6 +69,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
         title: "تم تسجيل الخروج",
         description: "نراك قريباً",
       });
+      navigate("/login");
     } catch (error) {
       toast({
         title: "خطأ",
@@ -34,6 +77,18 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
         variant: "destructive",
       });
     }
+  };
+
+  const getInitials = () => {
+    if (!userData) return "م";
+    const first = userData.firstName?.charAt(0) || "";
+    const last = userData.lastName?.charAt(0) || "";
+    return `${first}${last}` || "م";
+  };
+
+  const getFullName = () => {
+    if (!userData) return "المستخدم";
+    return `${userData.firstName} ${userData.lastName}`.trim() || "المستخدم";
   };
   return (
     <header className="bg-card/95 backdrop-blur-md border-b border-border/50 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
@@ -75,47 +130,68 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 sm:gap-3 hover:bg-primary/10 transition-colors p-1 sm:p-2 rounded-xl">
-              <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-primary/20 shadow-md">
+            <Button 
+              variant="ghost" 
+              className="flex items-center gap-2 sm:gap-3 hover:bg-primary/10 transition-all duration-200 p-1 sm:p-2 rounded-xl"
+            >
+              <Avatar className="h-9 w-9 sm:h-11 sm:w-11 border-2 border-primary/30 shadow-lg ring-2 ring-primary/10 hover:ring-primary/30 transition-all">
                 <AvatarImage 
-                  src="/lovable-uploads/fb9d438e-077d-4ce0-997b-709c295e2b35.png" 
-                  alt="محمد عزب" 
+                  src={userData?.avatarUrl || "/lovable-uploads/fb9d438e-077d-4ce0-997b-709c295e2b35.png"} 
+                  alt={getFullName()} 
                   className="object-cover"
                 />
-                <AvatarFallback className="bg-gradient-secondary text-secondary-foreground font-semibold text-xs sm:text-sm">
-                  م ع
+                <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold text-xs sm:text-sm">
+                  {getInitials()}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden md:block text-right">
-                <p className="text-sm font-semibold text-foreground">محمد عزب</p>
-                <p className="text-xs text-muted-foreground">مسؤول الشركة</p>
+                <p className="text-sm font-semibold text-foreground">{getFullName()}</p>
+                <p className="text-xs text-muted-foreground">{userData?.role || "..."}</p>
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="text-right">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">محمد عزب</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  m.azab@azab.services
-                </p>
+          <DropdownMenuContent align="end" className="w-64 bg-card/95 backdrop-blur-md border-border/50 shadow-xl">
+            <DropdownMenuLabel className="text-right py-3">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12 border-2 border-primary/20">
+                  <AvatarImage 
+                    src={userData?.avatarUrl || "/lovable-uploads/fb9d438e-077d-4ce0-997b-709c295e2b35.png"} 
+                    alt={getFullName()} 
+                  />
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold">
+                    {getInitials()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col space-y-1 flex-1">
+                  <p className="text-sm font-semibold leading-none">{getFullName()}</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {userData?.email || "..."}
+                  </p>
+                  <span className="text-xs text-primary font-medium">{userData?.role || "..."}</span>
+                </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <User className="mr-2 h-4 w-4" />
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-primary/10 transition-colors"
+              onClick={() => navigate("/settings")}
+            >
+              <User className="ml-2 h-4 w-4 text-primary" />
               <span>الملف الشخصي</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <Settings className="mr-2 h-4 w-4" />
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-primary/10 transition-colors"
+              onClick={() => navigate("/settings")}
+            >
+              <Settings className="ml-2 h-4 w-4 text-primary" />
               <span>الإعدادات</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem 
               onClick={handleLogout} 
-              className="text-destructive cursor-pointer focus:text-destructive"
+              className="text-destructive cursor-pointer hover:bg-destructive/10 focus:text-destructive focus:bg-destructive/10 transition-colors"
             >
-              <LogOut className="mr-2 h-4 w-4" />
+              <LogOut className="ml-2 h-4 w-4" />
               <span>تسجيل الخروج</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
