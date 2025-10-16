@@ -1,7 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.56.1';
 
+// تحديد CORS للنطاق المحدد فقط لتحسين الأمان
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://zrrffsjbfkphridqyais.supabase.co',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 

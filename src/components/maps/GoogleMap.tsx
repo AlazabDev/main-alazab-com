@@ -49,28 +49,25 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
 
   const fetchApiKey = async () => {
     try {
-      // محاولة جلب API key من Supabase Edge Function
+      // جلب API key من Supabase Edge Function فقط (آمن)
       const response = await supabase.functions.invoke('get-maps-key');
       if (response.data && response.data.apiKey) {
         setApiKey(response.data.apiKey);
-        return;
       } else {
-        console.warn('Failed to fetch API key from Supabase function:', response.error);
+        console.error('Failed to fetch API key from Supabase function:', response.error);
+        toast({
+          title: "خطأ في تحميل مفتاح API",
+          description: "فشل في جلب مفتاح Google Maps. تواصل مع المدير.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      console.warn('Error fetching API key from Supabase:', error);
-    }
-    
-    // استخدام API key من localStorage كبديل
-    const storedKey = localStorage.getItem('google_maps_api_key');
-    if (storedKey) {
-      setApiKey(storedKey);
-    } else {
-      const userApiKey = prompt('الرجاء إدخال Google Maps API Key:');
-      if (userApiKey) {
-        setApiKey(userApiKey);
-        localStorage.setItem('google_maps_api_key', userApiKey);
-      }
+      console.error('Error fetching API key from Supabase:', error);
+      toast({
+        title: "خطأ في الاتصال",
+        description: "فشل الاتصال بالخادم. حاول مرة أخرى.",
+        variant: "destructive",
+      });
     }
   };
 

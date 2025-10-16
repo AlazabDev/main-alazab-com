@@ -95,33 +95,6 @@ export type Database = {
           },
         ]
       }
-      appointments_summary: {
-        Row: {
-          appointment_count: number
-          created_at: string | null
-          id: string
-          month: string
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          appointment_count?: number
-          created_at?: string | null
-          id?: string
-          month: string
-          status: string
-          updated_at?: string | null
-        }
-        Update: {
-          appointment_count?: number
-          created_at?: string | null
-          id?: string
-          month?: string
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       appointments_summary_secure: {
         Row: {
           appointment_count: number
@@ -786,39 +759,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      maintenance_requests_summary: {
-        Row: {
-          avg_actual_cost: number | null
-          avg_estimated_cost: number | null
-          created_at: string | null
-          id: string
-          month: string
-          request_count: number
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          avg_actual_cost?: number | null
-          avg_estimated_cost?: number | null
-          created_at?: string | null
-          id?: string
-          month: string
-          request_count?: number
-          status: string
-          updated_at?: string | null
-        }
-        Update: {
-          avg_actual_cost?: number | null
-          avg_estimated_cost?: number | null
-          created_at?: string | null
-          id?: string
-          month?: string
-          request_count?: number
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: []
       }
       maintenance_requests_summary_secure: {
         Row: {
