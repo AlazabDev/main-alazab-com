@@ -46,9 +46,27 @@ export const useUserSettings = () => {
         .from("profiles")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
+      
+      // إنشاء ملف تعريف إذا لم يكن موجوداً
+      if (!data) {
+        const { data: newProfile, error: createError } = await supabase
+          .from("profiles")
+          .insert({
+            user_id: user.id,
+            first_name: user.user_metadata?.first_name || "",
+            timezone: "Africa/Cairo",
+            locale: "ar"
+          })
+          .select()
+          .single();
+        
+        if (createError) throw createError;
+        return newProfile as UserProfile;
+      }
+      
       return data as UserProfile;
     },
   });
@@ -64,9 +82,9 @@ export const useUserSettings = () => {
         .from("user_preferences")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== "PGRST116") throw error;
+      if (error) throw error;
       return data as UserPreferences | null;
     },
   });
@@ -82,9 +100,9 @@ export const useUserSettings = () => {
         .from("platform_permissions")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== "PGRST116") throw error;
+      if (error) throw error;
       return data as PlatformPermissions | null;
     },
   });

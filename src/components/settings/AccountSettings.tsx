@@ -98,9 +98,9 @@ export const AccountSettings = () => {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>البريد الإلكتروني *</FormLabel>
+                      <FormLabel>رقم الهاتف</FormLabel>
                       <FormControl>
-                        <Input {...field} type="email" placeholder="example@email.com" />
+                        <Input {...field} type="tel" placeholder="+20 123 456 7890" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
