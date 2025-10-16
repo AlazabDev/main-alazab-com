@@ -103,7 +103,28 @@ export const useUserSettings = () => {
         .maybeSingle();
 
       if (error) throw error;
-      return data as PlatformPermissions | null;
+      
+      // Create default permissions if none exist
+      if (!data) {
+        const { data: newPermissions, error: createError } = await supabase
+          .from("platform_permissions")
+          .insert({
+            user_id: user.id,
+            can_choose_appointment_date: true,
+            can_submit_without_manager_approval: false,
+            can_view_financial_details: false,
+            can_cancel_requests: false,
+            can_reject_prices: false,
+            can_create_properties: false
+          })
+          .select()
+          .single();
+        
+        if (createError) throw createError;
+        return newPermissions as PlatformPermissions;
+      }
+      
+      return data as PlatformPermissions;
     },
   });
 
@@ -209,6 +230,37 @@ export const useUserSettings = () => {
     },
   });
 
+  // Update permissions mutation
+  const updatePermissionsMutation = useMutation({
+    mutationFn: async (updates: Partial<PlatformPermissions>) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("platform_permissions")
+        .upsert(
+          { user_id: user.id, ...updates },
+          { onConflict: "user_id" }
+        );
+
+      if (error) throw error;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["platform-permissions"] });
+      toast({
+        title: "تم التحديث",
+        description: "تم تحديث الصلاحيات بنجاح",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "خطأ",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     profile,
     preferences,
@@ -217,5 +269,6 @@ export const useUserSettings = () => {
     updateProfile: updateProfileMutation.mutate,
     updatePreferences: updatePreferencesMutation.mutate,
     updatePassword: updatePasswordMutation.mutate,
+    updatePermissions: updatePermissionsMutation.mutate,
   };
 };

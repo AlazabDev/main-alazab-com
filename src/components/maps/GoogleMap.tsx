@@ -84,7 +84,9 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
       const loader = new Loader({
         apiKey: apiKey,
         version: 'weekly',
-        libraries: ['places']
+        libraries: ['places'],
+        language: 'ar',
+        region: 'EG'
       });
 
       const google = await loader.load();

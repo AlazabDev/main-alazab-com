@@ -75,7 +75,8 @@ export function useMaintenanceRequests() {
 
       const { data, error } = await supabase
         .from('maintenance_requests')
-        .select('*')
+        .select('id,title,description,client_name,client_phone,location,service_type,status,priority,preferred_date,estimated_cost,actual_cost,created_at,updated_at,assigned_vendor_id,workflow_stage,sla_due_date')
+        .is('archived_at', null)
         .order('created_at', { ascending: false });
 
       if (error) throw error;

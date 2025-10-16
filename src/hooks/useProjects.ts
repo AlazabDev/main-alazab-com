@@ -81,8 +81,8 @@ export const useProjects = () => {
     try {
       const { data, error } = await (supabase as any)
         .from('projects')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id,name,code,client_name,location,status,progress,start_date,end_date,budget,actual_cost,magicplan_iframe_url,cover_image_url,created_at,updated_at')
+        .order('updated_at', { ascending: false });
 
       if (error) throw error;
       setProjects((data || []) as Project[]);

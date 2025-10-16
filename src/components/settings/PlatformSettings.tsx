@@ -9,7 +9,7 @@ import { InfoIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const PlatformSettings = () => {
-  const { preferences, permissions, updatePreferences } = useUserSettings();
+  const { preferences, permissions, updatePreferences, updatePermissions } = useUserSettings();
   const [monthlyBudget, setMonthlyBudget] = useState<string>("");
 
   useEffect(() => {
@@ -19,11 +19,14 @@ export const PlatformSettings = () => {
   }, [preferences]);
 
   const handleBudgetSave = () => {
-    const budget = parseFloat(monthlyBudget);
+    const budget = Number(monthlyBudget);
     if (!isNaN(budget) && budget > 0) {
       updatePreferences({ monthly_budget: budget });
     }
   };
+
+  const togglePermission = (key: keyof import("@/hooks/useUserSettings").PlatformPermissions) => 
+    (val: boolean) => updatePermissions({ [key]: val });
 
   return (
     <div className="space-y-6">
@@ -68,28 +71,28 @@ export const PlatformSettings = () => {
                 label="السماح للمشرف بتقديم الطلبات دون موافقة مدير الصيانة"
                 description="إذا تم التفعيل، يمكن للمشرف الشركة عرض التفاصيل المالية لطلبات الصيانة بما في ذلك التكاليف، ومعلومات التسعير."
                 checked={permissions?.can_submit_without_manager_approval ?? false}
-                disabled
+                onChange={togglePermission("can_submit_without_manager_approval")}
               />
 
               <PermissionItem
                 label="السماح للمشرف بإلغاء طلبات الصيانة"
                 description="إذا تم التفعيل، يمكن للمشرف الشركة إلغاء طلبات الصيانة المقدمة من المستخدمين."
                 checked={permissions?.can_cancel_requests ?? false}
-                disabled
+                onChange={togglePermission("can_cancel_requests")}
               />
 
               <PermissionItem
                 label="السماح للمشرف بالموافقة/رفض أسعار طلبات الصيانة"
                 description="إذا تم التفعيل، يمكن للمشرف بالموافقة أو رفض طلبات الصيانة الموجهة إلى خدمات تتبع عند الطلب."
                 checked={permissions?.can_reject_prices ?? false}
-                disabled
+                onChange={togglePermission("can_reject_prices")}
               />
 
               <PermissionItem
                 label="السماح للمشرف بإنشاء عقارات"
                 description="إذا تم التفعيل، يمكن للمشرف الشركة إنشاء عقارات جديدة."
                 checked={permissions?.can_create_properties ?? false}
-                disabled
+                onChange={togglePermission("can_create_properties")}
               />
             </div>
           </div>
@@ -123,9 +126,10 @@ interface PermissionItemProps {
   description: string;
   checked: boolean;
   disabled?: boolean;
+  onChange?: (v: boolean) => void;
 }
 
-const PermissionItem = ({ label, description, checked, disabled }: PermissionItemProps) => (
+const PermissionItem = ({ label, description, checked, disabled, onChange }: PermissionItemProps) => (
   <div className="flex items-start justify-between gap-4 p-4 border rounded-lg">
     <div className="flex-1">
       <div className="flex items-center gap-2">
@@ -143,6 +147,6 @@ const PermissionItem = ({ label, description, checked, disabled }: PermissionIte
       </div>
       <p className="text-sm text-muted-foreground mt-1">{description}</p>
     </div>
-    <Switch checked={checked} disabled={disabled} />
+    <Switch checked={checked} disabled={disabled} onCheckedChange={onChange} />
   </div>
 );
