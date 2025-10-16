@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Play, Wrench, Building2, Zap, Droplets } from "lucide-react";
+import { RotatingText } from "./RotatingText";
 
 export const HeroSection = () => {
   return (
@@ -26,32 +27,39 @@ export const HeroSection = () => {
                 خبراء الصيانة وتجهيز المحلات
               </Badge>
               
-              <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                <span className="inline-block animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
-                  حلول
-                </span>{' '}
-                <span className="inline-block animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-                  شاملة
-                </span>{' '}
-                <span className="inline-block animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-                  للصيانة
-                </span>
-                <span className="bg-gradient-to-l from-primary to-primary/60 bg-clip-text text-transparent block">
-                  <span className="inline-block animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-                    وتجهيز
-                  </span>{' '}
-                  <span className="inline-block animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
-                    المحلات
-                  </span>{' '}
-                  <span className="inline-block animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
-                    التجارية
-                  </span>
+              <h1 className="text-4xl lg:text-6xl font-bold leading-tight min-h-[180px] lg:min-h-[240px]">
+                <RotatingText
+                  texts={[
+                    "حلول شاملة للصيانة",
+                    "خدمات صيانة متكاملة",
+                    "خبراء الصيانة المتخصصة",
+                    "صيانة احترافية متطورة"
+                  ]}
+                  interval={3500}
+                />
+                <span className="bg-gradient-to-l from-primary to-primary/60 bg-clip-text text-transparent block mt-2">
+                  <RotatingText
+                    texts={[
+                      "وتجهيز المحلات التجارية",
+                      "وتجهيز المتاجر بالكامل",
+                      "للمحلات والمنشآت التجارية",
+                      "وتأسيس المحلات الحديثة"
+                    ]}
+                    interval={3500}
+                  />
                 </span>
               </h1>
               
               <p className="text-lg text-muted-foreground leading-relaxed">
-                نوفر خدمات الصيانة الكاملة من كهرباء وسباكة وتكييف، بالإضافة إلى تجهيز المحلات التجارية 
-                بأعلى معايير الجودة والاحترافية. فريق متخصص متاح على مدار الساعة.
+                <RotatingText
+                  texts={[
+                    "نوفر خدمات الصيانة الكاملة من كهرباء وسباكة وتكييف، بالإضافة إلى تجهيز المحلات التجارية بأعلى معايير الجودة والاحترافية",
+                    "نقدم حلول متكاملة لصيانة وتجهيز المحلات التجارية بأحدث التقنيات ومعايير الجودة العالمية مع فريق متخصص محترف",
+                    "خبراء في تأسيس وصيانة المحلات التجارية بجميع أنواعها، من الكهرباء والسباكة إلى التكييف والديكور الداخلي",
+                    "شريكك الموثوق في تجهيز المحلات التجارية والمنشآت، نوفر خدمات صيانة شاملة متاحة على مدار الساعة"
+                  ]}
+                  interval={3500}
+                />
               </p>
             </div>
 
