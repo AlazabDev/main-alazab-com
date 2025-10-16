@@ -93,13 +93,6 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "appointments_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_safe"
-            referencedColumns: ["id"]
-          },
         ]
       }
       appointments_summary: {
@@ -790,13 +783,6 @@ export type Database = {
             columns: ["assigned_vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
-            columns: ["assigned_vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -2172,13 +2158,6 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "service_prices_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_safe"
-            referencedColumns: ["id"]
-          },
         ]
       }
       service_requests: {
@@ -2291,13 +2270,6 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_requests_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -2871,6 +2843,42 @@ export type Database = {
         }
         Relationships: []
       }
+      wrappers_fdw_stats: {
+        Row: {
+          bytes_in: number | null
+          bytes_out: number | null
+          create_times: number | null
+          created_at: string
+          fdw_name: string
+          metadata: Json | null
+          rows_in: number | null
+          rows_out: number | null
+          updated_at: string
+        }
+        Insert: {
+          bytes_in?: number | null
+          bytes_out?: number | null
+          create_times?: number | null
+          created_at?: string
+          fdw_name: string
+          metadata?: Json | null
+          rows_in?: number | null
+          rows_out?: number | null
+          updated_at?: string
+        }
+        Update: {
+          bytes_in?: number | null
+          bytes_out?: number | null
+          create_times?: number | null
+          created_at?: string
+          fdw_name?: string
+          metadata?: Json | null
+          rows_in?: number | null
+          rows_out?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       appointments_secure: {
@@ -2952,11 +2960,85 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      appointments_staff_view: {
+        Row: {
+          appointment_date: string | null
+          appointment_time: string | null
+          created_at: string | null
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string | null
+          location: string | null
+          maintenance_request_id: string | null
+          notes: string | null
+          property_id: string | null
+          reminder_sent: boolean | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_email?: never
+          customer_name?: never
+          customer_phone?: never
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string | null
+          location?: string | null
+          maintenance_request_id?: string | null
+          notes?: string | null
+          property_id?: string | null
+          reminder_sent?: boolean | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "appointments_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
-            referencedRelation: "vendors_safe"
+            referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
         ]
@@ -3031,71 +3113,27 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "appointments_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors_safe"
-            referencedColumns: ["id"]
-          },
         ]
-      }
-      vendors_safe: {
-        Row: {
-          address: string | null
-          company_name: string | null
-          created_at: string | null
-          email: string | null
-          experience_years: number | null
-          hourly_rate: number | null
-          id: string | null
-          name: string | null
-          phone: string | null
-          profile_image: string | null
-          rating: number | null
-          specialization: string[] | null
-          status: string | null
-          total_jobs: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          address?: never
-          company_name?: string | null
-          created_at?: string | null
-          email?: never
-          experience_years?: number | null
-          hourly_rate?: number | null
-          id?: string | null
-          name?: string | null
-          phone?: never
-          profile_image?: string | null
-          rating?: number | null
-          specialization?: string[] | null
-          status?: string | null
-          total_jobs?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          address?: never
-          company_name?: string | null
-          created_at?: string | null
-          email?: never
-          experience_years?: number | null
-          hourly_rate?: number | null
-          id?: string | null
-          name?: string | null
-          phone?: never
-          profile_image?: string | null
-          rating?: number | null
-          specialization?: string[] | null
-          status?: string | null
-          total_jobs?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
       }
     }
     Functions: {
+      airtable_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      airtable_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      airtable_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
       app_is_admin: {
         Args: { uid: string }
         Returns: boolean
@@ -3111,6 +3149,40 @@ export type Database = {
       app_is_vendor: {
         Args: { uid: string }
         Returns: boolean
+      }
+      auth0_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      auth0_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      auth0_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
+      big_query_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      big_query_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      big_query_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
       }
       calculate_distance: {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
@@ -3132,6 +3204,57 @@ export type Database = {
         Args: { request_id: string }
         Returns: boolean
       }
+      click_house_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      click_house_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      click_house_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
+      cognito_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      cognito_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      cognito_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
+      duckdb_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      duckdb_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      duckdb_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
       find_nearest_vendor: {
         Args: {
           request_latitude: number
@@ -3145,6 +3268,23 @@ export type Database = {
           vendor_id: string
           vendor_name: string
         }[]
+      }
+      firebase_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      firebase_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      firebase_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
       }
       generate_invoice_number: {
         Args: Record<PropertyKey, never>
@@ -3235,32 +3375,46 @@ export type Database = {
           vendor_id: string
         }[]
       }
-      gtrgm_compress: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_decompress: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_in: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_options: {
-        Args: { "": unknown }
-        Returns: undefined
-      }
-      gtrgm_out: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      hello_world_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      hello_world_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      hello_world_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
+      iceberg_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      iceberg_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      iceberg_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
       }
       is_staff: {
         Args: Record<PropertyKey, never> | { uid: string }
@@ -3270,25 +3424,98 @@ export type Database = {
         Args: { uid: string }
         Returns: boolean
       }
+      logflare_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      logflare_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      logflare_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
       mask_customer_phone: {
         Args: { phone: string; user_role: string }
         Returns: string
+      }
+      mssql_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      mssql_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      mssql_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
       }
       recalc_request_totals: {
         Args: { p_request_id: string }
         Returns: undefined
       }
-      set_limit: {
-        Args: { "": number }
-        Returns: number
-      }
-      show_limit: {
+      redis_fdw_handler: {
         Args: Record<PropertyKey, never>
-        Returns: number
+        Returns: unknown
       }
-      show_trgm: {
-        Args: { "": string }
-        Returns: string[]
+      redis_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      redis_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
+      s3_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      s3_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      s3_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
+      }
+      stripe_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      stripe_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      stripe_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
       }
       update_summary_data: {
         Args: Record<PropertyKey, never>
@@ -3318,6 +3545,23 @@ export type Database = {
           updated_at: string
           vendor_id: string
         }[]
+      }
+      wasm_fdw_handler: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      wasm_fdw_meta: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author: string
+          name: string
+          version: string
+          website: string
+        }[]
+      }
+      wasm_fdw_validator: {
+        Args: { catalog: unknown; options: string[] }
+        Returns: undefined
       }
     }
     Enums: {
