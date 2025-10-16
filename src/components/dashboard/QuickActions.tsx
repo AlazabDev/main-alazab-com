@@ -99,16 +99,16 @@ export const QuickActions = () => {
               <Button
                 key={index}
                 variant={action.variant}
-                className="h-auto p-4 justify-start gap-3 text-right min-h-[80px] cursor-pointer hover:scale-105 transition-transform"
+                className="h-auto p-4 justify-start gap-3 text-right min-h-[80px] cursor-pointer hover:scale-105 transition-transform overflow-hidden"
                 onClick={() => handleActionClick(index)}
               >
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${action.color} flex-shrink-0`}>
                   <action.icon className="h-5 w-5" />
                 </div>
-                <div className="flex-1 text-right min-w-0">
-                  <p className="font-medium text-sm leading-tight break-words">{action.label}</p>
+                <div className="flex-1 text-right min-w-0 overflow-hidden">
+                  <p className="font-medium text-sm leading-tight truncate">{action.label}</p>
                   {action.description && (
-                    <p className="text-xs text-muted-foreground mt-1 break-words leading-relaxed">{action.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{action.description}</p>
                   )}
                 </div>
               </Button>
