@@ -167,8 +167,9 @@ const Testing = () => {
     const start = Date.now();
     
     try {
+      // Use secure view for testing
       const { data, error } = await supabase
-        .from('appointments')
+        .from('appointments_staff_view')
         .select('*')
         .limit(1);
       

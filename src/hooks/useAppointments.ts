@@ -52,8 +52,9 @@ export const useAppointments = () => {
 
   const fetchAppointments = async () => {
     try {
+      // Use secure view instead of direct table access
       const { data, error } = await supabase
-        .from('appointments')
+        .from('appointments_staff_view')
         .select(`
           *,
           properties:property_id(name, address),

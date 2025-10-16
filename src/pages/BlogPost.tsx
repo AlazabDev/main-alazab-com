@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Calendar, Clock, User, ArrowRight, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import DOMPurify from 'dompurify';
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -94,7 +95,10 @@ export default function BlogPost() {
       <article className="py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="prose prose-lg prose-slate dark:prose-invert max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content, {
+              ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'p', 'ul', 'ol', 'li', 'strong', 'em', 'a', 'br'],
+              ALLOWED_ATTR: ['href', 'target', 'rel']
+            }) }} />
           </div>
 
           {/* Share Section */}
