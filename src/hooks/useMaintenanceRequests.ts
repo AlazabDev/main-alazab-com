@@ -64,6 +64,15 @@ export function useMaintenanceRequests() {
   const fetchRequests = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setRequests([]);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('maintenance_requests')
         .select('*')
@@ -72,7 +81,13 @@ export function useMaintenanceRequests() {
       if (error) throw error;
       setRequests(data || []);
     } catch (err) {
+      console.error('Error fetching requests:', err);
       setError(err as Error);
+      toast({
+        title: "خطأ في تحميل الطلبات",
+        description: err instanceof Error ? err.message : "حدث خطأ غير متوقع",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -81,12 +96,17 @@ export function useMaintenanceRequests() {
   const createRequest = async (requestData: any) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("يجب تسجيل الدخول أولاً");
+      }
       
       const { data, error } = await supabase
         .from('maintenance_requests')
         .insert({
           ...requestData,
-          requested_by: user?.id
+          requested_by: user.id,
+          status: 'pending',
+          workflow_stage: 'submitted'
         })
         .select()
         .single();
@@ -94,16 +114,17 @@ export function useMaintenanceRequests() {
       if (error) throw error;
 
       toast({
-        title: "تم إنشاء الطلب",
+        title: "✓ تم إنشاء الطلب",
         description: "تم إنشاء طلب الصيانة بنجاح",
       });
 
-      fetchRequests();
+      await fetchRequests();
       return data;
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "فشل في إنشاء طلب الصيانة";
       toast({
         title: "خطأ",
-        description: "فشل في إنشاء طلب الصيانة",
+        description: errorMessage,
         variant: "destructive",
       });
       throw err;
@@ -112,6 +133,11 @@ export function useMaintenanceRequests() {
 
   const updateRequest = async (id: string, updates: Partial<MaintenanceRequest>) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("يجب تسجيل الدخول أولاً");
+      }
+
       const { data, error } = await supabase
         .from('maintenance_requests')
         .update(updates as any)
@@ -122,16 +148,17 @@ export function useMaintenanceRequests() {
       if (error) throw error;
 
       toast({
-        title: "تم تحديث الطلب",
+        title: "✓ تم التحديث",
         description: "تم تحديث طلب الصيانة بنجاح",
       });
 
-      fetchRequests();
+      await fetchRequests();
       return data;
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "فشل في تحديث طلب الصيانة";
       toast({
         title: "خطأ",
-        description: "فشل في تحديث طلب الصيانة",
+        description: errorMessage,
         variant: "destructive",
       });
       throw err;
@@ -140,6 +167,11 @@ export function useMaintenanceRequests() {
 
   const deleteRequest = async (id: string) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("يجب تسجيل الدخول أولاً");
+      }
+
       const { error } = await supabase
         .from('maintenance_requests')
         .delete()
@@ -148,15 +180,16 @@ export function useMaintenanceRequests() {
       if (error) throw error;
 
       toast({
-        title: "تم حذف الطلب",
+        title: "✓ تم الحذف",
         description: "تم حذف طلب الصيانة بنجاح",
       });
 
-      fetchRequests();
+      await fetchRequests();
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "فشل في حذف طلب الصيانة";
       toast({
         title: "خطأ",
-        description: "فشل في حذف طلب الصيانة",
+        description: errorMessage,
         variant: "destructive",
       });
       throw err;
