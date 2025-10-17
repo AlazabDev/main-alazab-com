@@ -1255,27 +1255,6 @@ export type Database = {
         }
         Relationships: []
       }
-      profile: {
-        Row: {
-          avatar_url: string | null
-          id: string
-          updated_at: string | null
-          username: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          id: string
-          updated_at?: string | null
-          username?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          id?: string
-          updated_at?: string | null
-          username?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1609,12 +1588,14 @@ export type Database = {
           created_at: string
           description: string | null
           end_date: string | null
+          gallery_url: string | null
           id: string
           location: string
           magicplan_iframe_url: string | null
           manager_id: string | null
           name: string
           progress: number | null
+          sketch_url: string | null
           start_date: string | null
           status: string | null
           updated_at: string
@@ -1627,12 +1608,14 @@ export type Database = {
           created_at?: string
           description?: string | null
           end_date?: string | null
+          gallery_url?: string | null
           id?: string
           location: string
           magicplan_iframe_url?: string | null
           manager_id?: string | null
           name: string
           progress?: number | null
+          sketch_url?: string | null
           start_date?: string | null
           status?: string | null
           updated_at?: string
@@ -1645,12 +1628,14 @@ export type Database = {
           created_at?: string
           description?: string | null
           end_date?: string | null
+          gallery_url?: string | null
           id?: string
           location?: string
           magicplan_iframe_url?: string | null
           manager_id?: string | null
           name?: string
           progress?: number | null
+          sketch_url?: string | null
           start_date?: string | null
           status?: string | null
           updated_at?: string

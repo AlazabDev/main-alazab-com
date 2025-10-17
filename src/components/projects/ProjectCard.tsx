@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Building2, MapPin, Calendar, Eye } from "lucide-react";
 import { Project } from "@/hooks/useProjects";
 import { useNavigate } from "react-router-dom";
+import { ProjectActionButtons } from "./ProjectActionButtons";
 
 interface ProjectCardProps {
   project: Project;
@@ -119,8 +120,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         )}
 
-        <div className="pt-2">
-          <div className="flex items-center justify-center gap-2 text-sm text-primary group-hover:text-primary/80 transition-colors">
+        <div className="pt-3 border-t border-border/50 space-y-3">
+          <ProjectActionButtons
+            magicplanUrl={project.magicplan_iframe_url}
+            galleryUrl={project.gallery_url}
+            sketchUrl={project.sketch_url}
+          />
+          
+          <div className="flex items-center justify-center gap-2 text-sm text-primary group-hover:text-primary/80 transition-colors pt-2">
             <Eye className="h-4 w-4" />
             <span>عرض التفاصيل</span>
           </div>
