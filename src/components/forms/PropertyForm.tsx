@@ -24,9 +24,10 @@ import { Loader2 } from "lucide-react";
 const propertySchema = z.object({
   name: z.string().min(3, "اسم العقار يجب أن يكون 3 أحرف على الأقل"),
   code: z.string().optional(),
-  type: z.enum(["project", "branch", "building", "unit", "other"], {
-    required_error: "يرجى اختيار تصنيف العقار",
-  }),
+  type: z.string().refine(
+    (val) => ["project", "branch", "building", "unit", "other"].includes(val),
+    { message: "يرجى اختيار تصنيف العقار" }
+  ),
   country_code: z.string().default("EG"),
   city_id: z.string().optional(),
   district_id: z.string().optional(),

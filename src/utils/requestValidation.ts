@@ -27,21 +27,15 @@ export const maintenanceRequestSchema = z.object({
     .min(10, 'العنوان يجب أن يكون 10 أحرف على الأقل')
     .max(200, 'العنوان يجب ألا يتجاوز 200 حرف'),
   
-  service_type: z.enum([
-    'plumbing',
-    'electrical',
-    'hvac',
-    'carpentry',
-    'painting',
-    'cleaning',
-    'general'
-  ], {
-    errorMap: () => ({ message: 'نوع الخدمة غير صحيح' })
-  }),
+  service_type: z.string().refine(
+    (val) => ['plumbing', 'electrical', 'hvac', 'carpentry', 'painting', 'cleaning', 'general'].includes(val),
+    { message: 'نوع الخدمة غير صحيح' }
+  ),
   
-  priority: z.enum(['low', 'medium', 'high'], {
-    errorMap: () => ({ message: 'الأولوية غير صحيحة' })
-  }),
+  priority: z.string().refine(
+    (val) => ['low', 'medium', 'high'].includes(val),
+    { message: 'الأولوية غير صحيحة' }
+  ),
   
   preferred_date: z.string()
     .optional()
@@ -87,7 +81,7 @@ export function validateMaintenanceRequest(data: any) {
     if (error instanceof z.ZodError) {
       return { 
         success: false, 
-        errors: error.errors.map(err => ({
+        errors: error.issues.map(err => ({
           field: err.path.join('.'),
           message: err.message
         }))
