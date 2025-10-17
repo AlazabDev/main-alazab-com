@@ -338,54 +338,6 @@ export type Database = {
           },
         ]
       }
-      gallery_by_folder: {
-        Row: {
-          commercial: string | null
-          construction: string | null
-          created_at: string | null
-          cuate: string | null
-          id: string
-          image_url: string
-          images: string | null
-          live_edge: string | null
-          maintenance: string | null
-          residential: string | null
-          shops: string | null
-          title: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          commercial?: string | null
-          construction?: string | null
-          created_at?: string | null
-          cuate?: string | null
-          id?: string
-          image_url: string
-          images?: string | null
-          live_edge?: string | null
-          maintenance?: string | null
-          residential?: string | null
-          shops?: string | null
-          title?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          commercial?: string | null
-          construction?: string | null
-          created_at?: string | null
-          cuate?: string | null
-          id?: string
-          image_url?: string
-          images?: string | null
-          live_edge?: string | null
-          maintenance?: string | null
-          residential?: string | null
-          shops?: string | null
-          title?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       gallery_images: {
         Row: {
           category: string
@@ -793,6 +745,117 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_requests_v2: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          created_by: string
+          customer_id: string
+          description: string | null
+          id: string
+          location: Json | null
+          org_id: string
+          preferred_end: string | null
+          preferred_start: string | null
+          priority: string
+          property_id: string | null
+          source: string | null
+          status: Database["public"]["Enums"]["maintenance_status_v2"]
+          subcategory_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string
+          customer_id: string
+          description?: string | null
+          id?: string
+          location?: Json | null
+          org_id: string
+          preferred_end?: string | null
+          preferred_start?: string | null
+          priority?: string
+          property_id?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["maintenance_status_v2"]
+          subcategory_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string
+          customer_id?: string
+          description?: string | null
+          id?: string
+          location?: Json | null
+          org_id?: string
+          preferred_end?: string | null
+          preferred_start?: string | null
+          priority?: string
+          property_id?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["maintenance_status_v2"]
+          subcategory_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      maintenance_services: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          estimated_cost: number | null
+          estimated_time: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          is_deleted: boolean | null
+          name: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          category?: string | null
+          code?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_time?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_deleted?: boolean | null
+          name: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_time?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_deleted?: boolean | null
+          name?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       malls: {
         Row: {
           id: number
@@ -953,18 +1016,29 @@ export type Database = {
       }
       notes: {
         Row: {
+          created_by: string | null
           id: number
           title: string
         }
         Insert: {
+          created_by?: string | null
           id?: never
           title: string
         }
         Update: {
+          created_by?: string | null
           id?: never
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -1141,49 +1215,46 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_url: string | null
-          birth_date: string | null
-          created_at: string
-          first_name: string | null
-          gender: string | null
+          created_at: string | null
+          created_by: string | null
+          department_id: string | null
+          email: string
           id: string
-          last_name: string | null
-          locale: string | null
-          phone: string | null
-          role: string | null
-          timezone: string | null
-          updated_at: string
-          user_id: string
+          is_deleted: boolean | null
+          name: string
+          position: string | null
+          reports_to: string | null
+          role: string
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
-          avatar_url?: string | null
-          birth_date?: string | null
-          created_at?: string
-          first_name?: string | null
-          gender?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          department_id?: string | null
+          email: string
           id?: string
-          last_name?: string | null
-          locale?: string | null
-          phone?: string | null
-          role?: string | null
-          timezone?: string | null
-          updated_at?: string
-          user_id: string
+          is_deleted?: boolean | null
+          name: string
+          position?: string | null
+          reports_to?: string | null
+          role: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
-          avatar_url?: string | null
-          birth_date?: string | null
-          created_at?: string
-          first_name?: string | null
-          gender?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          department_id?: string | null
+          email?: string
           id?: string
-          last_name?: string | null
-          locale?: string | null
-          phone?: string | null
-          role?: string | null
-          timezone?: string | null
-          updated_at?: string
-          user_id?: string
+          is_deleted?: boolean | null
+          name?: string
+          position?: string | null
+          reports_to?: string | null
+          role?: string
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -1384,20 +1455,31 @@ export type Database = {
       project_tasks: {
         Row: {
           created_at: string | null
+          created_by: string | null
           id: string
           name: string
         }
         Insert: {
           created_at?: string | null
+          created_by?: string | null
           id?: string
           name: string
         }
         Update: {
           created_at?: string | null
+          created_by?: string | null
           id?: string
           name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "project_tasks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_updates: {
         Row: {
@@ -1682,6 +1764,47 @@ export type Database = {
           },
         ]
       }
+      request_appointments_v2: {
+        Row: {
+          created_at: string
+          created_by: string
+          end_at: string
+          id: string
+          request_id: string
+          start_at: string
+          status: string
+          technician_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          end_at: string
+          id?: string
+          request_id: string
+          start_at: string
+          status?: string
+          technician_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          end_at?: string
+          id?: string
+          request_id?: string
+          start_at?: string
+          status?: string
+          technician_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_appointments_v2_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests_v2"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       request_approvals: {
         Row: {
           approval_type: string
@@ -1723,6 +1846,41 @@ export type Database = {
           },
         ]
       }
+      request_assignments_v2: {
+        Row: {
+          assigned_by: string
+          created_at: string
+          id: string
+          request_id: string
+          status: string
+          technician_id: string
+        }
+        Insert: {
+          assigned_by?: string
+          created_at?: string
+          id?: string
+          request_id: string
+          status?: string
+          technician_id: string
+        }
+        Update: {
+          assigned_by?: string
+          created_at?: string
+          id?: string
+          request_id?: string
+          status?: string
+          technician_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_assignments_v2_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests_v2"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       request_attachments: {
         Row: {
           created_at: string
@@ -1760,6 +1918,76 @@ export type Database = {
             columns: ["request_id"]
             isOneToOne: false
             referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_attachments_v2: {
+        Row: {
+          created_at: string
+          file_type: string | null
+          id: string
+          path: string
+          request_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          file_type?: string | null
+          id?: string
+          path: string
+          request_id: string
+          uploaded_by?: string
+        }
+        Update: {
+          created_at?: string
+          file_type?: string | null
+          id?: string
+          path?: string
+          request_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_attachments_v2_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests_v2"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_comments_v2: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          request_id: string
+          visibility: string
+        }
+        Insert: {
+          author_id?: string
+          body: string
+          created_at?: string
+          id?: string
+          request_id: string
+          visibility?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          request_id?: string
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_comments_v2_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests_v2"
             referencedColumns: ["id"]
           },
         ]
@@ -1888,6 +2116,44 @@ export type Database = {
           would_recommend?: boolean | null
         }
         Relationships: []
+      }
+      request_status_audit: {
+        Row: {
+          changed_at: string
+          changed_by: string
+          from_status: string
+          id: string
+          note: string | null
+          request_id: string
+          to_status: string
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string
+          from_status: string
+          id?: string
+          note?: string | null
+          request_id: string
+          to_status: string
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string
+          from_status?: string
+          id?: string
+          note?: string | null
+          request_id?: string
+          to_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_status_audit_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests_v2"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       request_status_history: {
         Row: {
@@ -2185,13 +2451,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "service_requests_contact_user_id_fkey"
-            columns: ["contact_user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
             foreignKeyName: "service_requests_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
@@ -2343,6 +2602,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      status_defs: {
+        Row: {
+          label_ar: string | null
+          label_en: string | null
+          sort: number
+          status: string
+        }
+        Insert: {
+          label_ar?: string | null
+          label_en?: string | null
+          sort: number
+          status: string
+        }
+        Update: {
+          label_ar?: string | null
+          label_en?: string | null
+          sort?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      status_transitions: {
+        Row: {
+          from_status: string
+          roles_allowed: string[]
+          to_status: string
+        }
+        Insert: {
+          from_status: string
+          roles_allowed: string[]
+          to_status: string
+        }
+        Update: {
+          from_status?: string
+          roles_allowed?: string[]
+          to_status?: string
+        }
+        Relationships: []
       }
       stores: {
         Row: {
@@ -2783,42 +3081,6 @@ export type Database = {
         }
         Relationships: []
       }
-      wrappers_fdw_stats: {
-        Row: {
-          bytes_in: number | null
-          bytes_out: number | null
-          create_times: number | null
-          created_at: string
-          fdw_name: string
-          metadata: Json | null
-          rows_in: number | null
-          rows_out: number | null
-          updated_at: string
-        }
-        Insert: {
-          bytes_in?: number | null
-          bytes_out?: number | null
-          create_times?: number | null
-          created_at?: string
-          fdw_name: string
-          metadata?: Json | null
-          rows_in?: number | null
-          rows_out?: number | null
-          updated_at?: string
-        }
-        Update: {
-          bytes_in?: number | null
-          bytes_out?: number | null
-          create_times?: number | null
-          created_at?: string
-          fdw_name?: string
-          metadata?: Json | null
-          rows_in?: number | null
-          rows_out?: number | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       appointments_secure: {
@@ -2983,6 +3245,14 @@ export type Database = {
           },
         ]
       }
+      table_row_counts: {
+        Row: {
+          row_count: number | null
+          schema_name: unknown | null
+          table_name: unknown | null
+        }
+        Relationships: []
+      }
       vendor_appointments: {
         Row: {
           appointment_date: string | null
@@ -3057,23 +3327,6 @@ export type Database = {
       }
     }
     Functions: {
-      airtable_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      airtable_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      airtable_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       app_is_admin: {
         Args: { uid: string }
         Returns: boolean
@@ -3089,40 +3342,6 @@ export type Database = {
       app_is_vendor: {
         Args: { uid: string }
         Returns: boolean
-      }
-      auth0_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      auth0_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      auth0_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      big_query_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      big_query_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      big_query_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
       }
       calculate_distance: {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
@@ -3144,57 +3363,6 @@ export type Database = {
         Args: { request_id: string }
         Returns: boolean
       }
-      click_house_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      click_house_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      click_house_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      cognito_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      cognito_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      cognito_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      duckdb_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      duckdb_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      duckdb_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       find_nearest_vendor: {
         Args: {
           request_latitude: number
@@ -3209,22 +3377,21 @@ export type Database = {
           vendor_name: string
         }[]
       }
-      firebase_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
+      fn_claim: {
+        Args: { key: string }
+        Returns: string
       }
-      firebase_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
+      fn_claim_uuid: {
+        Args: { key: string }
+        Returns: string
       }
-      firebase_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
+      fn_has_role: {
+        Args: { roles: string[] }
+        Returns: boolean
+      }
+      fn_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       generate_invoice_number: {
         Args: Record<PropertyKey, never>
@@ -3322,40 +3489,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      hello_world_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      hello_world_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      hello_world_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      iceberg_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      iceberg_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      iceberg_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       is_staff: {
         Args: Record<PropertyKey, never> | { uid: string }
         Returns: boolean
@@ -3364,98 +3497,35 @@ export type Database = {
         Args: { uid: string }
         Returns: boolean
       }
-      logflare_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      logflare_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      logflare_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       mask_customer_phone: {
         Args: { phone: string; user_role: string }
         Returns: string
-      }
-      mssql_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      mssql_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      mssql_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
       }
       recalc_request_totals: {
         Args: { p_request_id: string }
         Returns: undefined
       }
-      redis_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      redis_fdw_meta: {
-        Args: Record<PropertyKey, never>
+      transition_request: {
+        Args: { p_new_status: string; p_note?: string; p_request_id: string }
         Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      redis_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      s3_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      s3_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      s3_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      stripe_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      stripe_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      stripe_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
+          category_id: string | null
+          created_at: string
+          created_by: string
+          customer_id: string
+          description: string | null
+          id: string
+          location: Json | null
+          org_id: string
+          preferred_end: string | null
+          preferred_start: string | null
+          priority: string
+          property_id: string | null
+          source: string | null
+          status: Database["public"]["Enums"]["maintenance_status_v2"]
+          subcategory_id: string | null
+          title: string
+          updated_at: string
+        }
       }
       update_summary_data: {
         Args: Record<PropertyKey, never>
@@ -3486,23 +3556,6 @@ export type Database = {
           vendor_id: string
         }[]
       }
-      wasm_fdw_handler: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      wasm_fdw_meta: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      wasm_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
     }
     Enums: {
       app_role:
@@ -3531,6 +3584,20 @@ export type Database = {
         | "closed"
         | "cancelled"
         | "on_hold"
+      maintenance_status_v2:
+        | "submitted"
+        | "triaged"
+        | "needs_info"
+        | "scheduled"
+        | "in_progress"
+        | "paused"
+        | "escalated"
+        | "completed"
+        | "qa_review"
+        | "closed"
+        | "reopened"
+        | "canceled"
+        | "rejected"
       payment_status_t:
         | "draft"
         | "pending"
@@ -3711,6 +3778,21 @@ export const Constants = {
         "closed",
         "cancelled",
         "on_hold",
+      ],
+      maintenance_status_v2: [
+        "submitted",
+        "triaged",
+        "needs_info",
+        "scheduled",
+        "in_progress",
+        "paused",
+        "escalated",
+        "completed",
+        "qa_review",
+        "closed",
+        "reopened",
+        "canceled",
+        "rejected",
       ],
       payment_status_t: [
         "draft",
