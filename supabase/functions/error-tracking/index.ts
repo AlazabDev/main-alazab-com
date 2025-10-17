@@ -1,8 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.56.1';
 
-// تحديد CORS للنطاق المحدد فقط لتحسين الأمان
+// CORS headers - السماح لجميع النطاقات
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://zrrffsjbfkphridqyais.supabase.co',
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -12,9 +12,10 @@ interface ErrorLog {
   url: string;
   user_id?: string;
   user_agent?: string;
-  timestamp: string;
-  level: 'error' | 'warning' | 'info';
+  timestamp?: string;
+  level: 'error' | 'warning' | 'info' | 'warn';
   metadata?: Record<string, any>;
+  created_at?: string;
 }
 
 Deno.serve(async (req) => {
@@ -37,39 +38,32 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     
-    // Enhanced input validation
-    if (!body.message || typeof body.message !== 'string') {
-      return new Response(JSON.stringify({ error: 'Valid message is required' }), {
+    // دعم إرسال خطأ واحد أو مصفوفة أخطاء
+    const errors = body.errors || [body];
+    
+    if (!Array.isArray(errors) || errors.length === 0) {
+      return new Response(JSON.stringify({ error: 'No errors provided' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    // Sanitize and validate input with length limits
-    const errorData: ErrorLog = {
-      message: body.message.slice(0, 1000),
-      stack: body.stack ? body.stack.slice(0, 5000) : undefined,
-      url: body.url ? body.url.slice(0, 500) : '',
-      user_id: body.user_id || undefined,
-      user_agent: body.user_agent ? body.user_agent.slice(0, 500) : undefined,
-      level: ['error', 'warning', 'info'].includes(body.level) ? body.level : 'error',
-      metadata: body.metadata || undefined,
-      timestamp: new Date().toISOString()
-    };
+    // معالجة وتنظيف كل خطأ
+    const sanitizedErrors = errors.map((err: any) => ({
+      message: String(err.message || 'Unknown error').slice(0, 1000),
+      stack: err.stack ? String(err.stack).slice(0, 5000) : undefined,
+      url: err.url ? String(err.url).slice(0, 500) : '',
+      user_id: err.user_id || undefined,
+      user_agent: err.user_agent ? String(err.user_agent).slice(0, 500) : undefined,
+      level: ['error', 'warning', 'info', 'warn'].includes(err.level) ? err.level : 'error',
+      metadata: err.metadata || undefined,
+      created_at: err.created_at || new Date().toISOString()
+    }));
 
-    // تسجيل الخطأ في قاعدة البيانات
+    // تسجيل الأخطاء في قاعدة البيانات
     const { error } = await supabase
       .from('error_logs')
-      .insert([{
-        message: errorData.message,
-        stack: errorData.stack,
-        url: errorData.url,
-        user_id: errorData.user_id,
-        user_agent: errorData.user_agent,
-        level: errorData.level,
-        metadata: errorData.metadata,
-        created_at: errorData.timestamp
-      }]);
+      .insert(sanitizedErrors);
 
     if (error) {
       console.error('Error saving log:', error);
@@ -82,21 +76,25 @@ Deno.serve(async (req) => {
       );
     }
 
-    // إرسال إشعار للمديرين في حالة الأخطاء الحرجة
-    if (errorData.level === 'error') {
+    // إرسال إشعار للمديرين في حالة الأخطاء الحرجة فقط
+    const criticalErrors = sanitizedErrors.filter(e => e.level === 'error');
+    if (criticalErrors.length > 0) {
       try {
-        // البحث عن المديرين من جدول user_roles (آمن)
+        // البحث عن المديرين من جدول user_roles
         const { data: admins } = await supabase
           .from('user_roles')
           .select('user_id')
           .eq('role', 'admin')
-          .limit(10); // Limit to prevent abuse
+          .limit(10);
 
         if (admins && admins.length > 0) {
+          // إرسال إشعار واحد فقط للأخطاء المتعددة
           const notifications = admins.map(admin => ({
             recipient_id: admin.user_id,
             title: 'خطأ تقني في النظام',
-            message: `حدث خطأ تقني: ${errorData.message.slice(0, 100)}...`,
+            message: criticalErrors.length === 1 
+              ? `حدث خطأ تقني: ${criticalErrors[0].message.slice(0, 100)}...`
+              : `حدثت ${criticalErrors.length} أخطاء تقنية في النظام`,
             type: 'error',
             entity_type: 'system_error',
             entity_id: null
