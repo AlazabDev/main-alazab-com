@@ -1,0 +1,26 @@
+# ========================================
+# pnpm Workspace Configuration
+# ========================================
+# هذا الملف يحدد هيكل workspace للمشروع
+# يسمح بإدارة تبعيات متعددة من مكان واحد
+
+packages:
+  # Frontend React Application
+  - 'frontend'
+  
+  # Supabase Edge Functions
+  - 'supabase/functions/*'
+
+# ========================================
+# Excluded Directories
+# ========================================
+# المجلدات التي يجب تجاهلها
+
+exclude:
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/.next/**'
+  - '**/coverage/**'
+  - '**/android/**'
+  - '**/ios/**'
