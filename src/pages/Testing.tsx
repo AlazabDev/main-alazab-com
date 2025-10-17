@@ -417,12 +417,13 @@ const Testing = () => {
     const start = Date.now();
     
     try {
+      const policiesCheck = await Promise.all([
+        supabase.from('profiles').select('*').limit(1),
+        supabase.from('maintenance_requests').select('*').limit(1),
+        supabase.from('properties').select('*').limit(1),
+        supabase.from('vendors').select('*').limit(1)
+      ]);
       const tables = ['profiles', 'maintenance_requests', 'properties', 'vendors'];
-      const policiesCheck = await Promise.all(
-        tables.map(table => 
-          supabase.from(table).select('*').limit(1)
-        )
-      );
       
       const duration = Date.now() - start;
       const failedTables = policiesCheck.filter(r => r.error).map((_, i) => tables[i]);
