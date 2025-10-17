@@ -32,22 +32,38 @@ const COLORS = {
 export function MaintenanceReportDashboard() {
   const [startDate, setStartDate] = useState(format(new Date(new Date().getFullYear(), new Date().getMonth(), 1), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [requests, setRequests] = useState<any[]>([]);
+  const [completedRequests, setCompletedRequests] = useState<any[]>([]);
+  const [archiveRequests, setArchiveRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch completed requests from maintenance_requests
+      const { data: completed, error: completedError } = await supabase
         .from('maintenance_requests')
         .select('*')
+        .eq('status', 'completed')
         .gte('created_at', startDate)
         .lte('created_at', endDate)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setRequests(data || []);
+      if (completedError) throw completedError;
+
+      // Fetch archived requests
+      const { data: archived, error: archivedError } = await supabase
+        .from('maintenance_requests_archive')
+        .select('*')
+        .eq('status', 'completed')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate)
+        .order('created_at', { ascending: false });
+
+      if (archivedError) throw archivedError;
+
+      setCompletedRequests(completed || []);
+      setArchiveRequests(archived || []);
     } catch (error) {
       console.error('Error fetching requests:', error);
     } finally {
@@ -59,28 +75,44 @@ export function MaintenanceReportDashboard() {
     fetchRequests();
   }, [startDate, endDate]);
 
-  const totalRequests = requests.length;
-  const completedRequests = requests.filter(r => r.status === 'completed').length;
-  const pendingRequests = requests.filter(r => r.status === 'pending').length;
-  const inProgressRequests = requests.filter(r => r.status === 'in_progress').length;
+  const allCompleted = [...completedRequests, ...archiveRequests];
+  const totalCompleted = allCompleted.length;
+  const totalCost = allCompleted.reduce((sum, r) => sum + (Number(r.actual_cost) || 0), 0);
+  const averageCost = totalCompleted > 0 ? totalCost / totalCompleted : 0;
 
-  const statusData = [
-    { name: 'مكتملة', value: completedRequests, color: COLORS.completed },
-    { name: 'قيد التنفيذ', value: inProgressRequests, color: COLORS.in_progress },
-    { name: 'في انتظار الموافقة', value: pendingRequests, color: COLORS.pending },
-  ];
-
-  // Group by month for timeline
-  const monthlyData = requests.reduce((acc: any[], req) => {
-    const month = format(new Date(req.created_at), 'MMMM');
-    const existing = acc.find(item => item.month === month);
+  // Group by service type
+  const serviceTypeData = allCompleted.reduce((acc: any[], req) => {
+    const serviceType = req.service_type || 'غير محدد';
+    const existing = acc.find(item => item.name === serviceType);
     if (existing) {
-      existing.count++;
+      existing.value++;
+      existing.totalCost += (Number(req.actual_cost) || 0);
     } else {
-      acc.push({ month, count: 1 });
+      acc.push({ 
+        name: serviceType, 
+        value: 1,
+        totalCost: (Number(req.actual_cost) || 0)
+      });
     }
     return acc;
   }, []);
+
+  // Group by month for timeline
+  const monthlyData = allCompleted.reduce((acc: any[], req) => {
+    const month = format(new Date(req.created_at), 'yyyy-MM');
+    const existing = acc.find(item => item.month === month);
+    if (existing) {
+      existing.count++;
+      existing.cost += (Number(req.actual_cost) || 0);
+    } else {
+      acc.push({ 
+        month, 
+        count: 1,
+        cost: (Number(req.actual_cost) || 0)
+      });
+    }
+    return acc;
+  }, []).sort((a, b) => a.month.localeCompare(b.month));
 
   return (
     <div className="space-y-6">
@@ -89,8 +121,8 @@ export function MaintenanceReportDashboard() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>تقارير الصيانة</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">طلبات الصيانة والإحصائيات</p>
+              <CardTitle>تقرير الصيانات المنتهية</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">تحليل شامل للصيانات المكتملة والمؤرشفة</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={fetchRequests} disabled={loading}>
@@ -136,26 +168,29 @@ export function MaintenanceReportDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground mb-1">إجمالي الطلبات</p>
-            <p className="text-3xl font-bold text-primary">{totalRequests}</p>
+            <p className="text-sm text-muted-foreground mb-1">إجمالي الصيانات المنتهية</p>
+            <p className="text-3xl font-bold text-success">{totalCompleted}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              الحالية: {completedRequests.length} | المؤرشفة: {archiveRequests.length}
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground mb-1">الطلبات المعلقة</p>
-            <p className="text-3xl font-bold text-warning">{pendingRequests}</p>
+            <p className="text-sm text-muted-foreground mb-1">إجمالي التكلفة</p>
+            <p className="text-3xl font-bold text-primary">{totalCost.toLocaleString('ar-EG')} جنيه</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground mb-1">الطلبات قيد التنفيذ</p>
-            <p className="text-3xl font-bold text-primary">{inProgressRequests}</p>
+            <p className="text-sm text-muted-foreground mb-1">متوسط التكلفة</p>
+            <p className="text-3xl font-bold text-primary">{Math.round(averageCost).toLocaleString('ar-EG')} جنيه</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground mb-1">الطلبات المكتملة</p>
-            <p className="text-3xl font-bold text-success">{completedRequests}</p>
+            <p className="text-sm text-muted-foreground mb-1">أنواع الخدمات</p>
+            <p className="text-3xl font-bold text-primary">{serviceTypeData.length}</p>
           </CardContent>
         </Card>
       </div>
@@ -164,22 +199,22 @@ export function MaintenanceReportDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>حالة الطلبات</CardTitle>
+            <CardTitle>توزيع الخدمات</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={statusData}
+                  data={serviceTypeData}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
                   outerRadius={100}
                   dataKey="value"
-                  label
+                  label={(entry) => `${entry.name}: ${entry.value}`}
                 >
-                  {statusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  {serviceTypeData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={`hsl(${index * 60}, 70%, 50%)`} />
                   ))}
                 </Pie>
                 <ChartTooltip />
@@ -190,87 +225,204 @@ export function MaintenanceReportDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>إحصائيات طلبات الصيانة</CardTitle>
+            <CardTitle>التكلفة حسب نوع الخدمة</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={monthlyData}>
+              <BarChart data={serviceTypeData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
+                <XAxis dataKey="name" />
                 <YAxis />
                 <ChartTooltip />
-                <Line 
-                  type="monotone" 
-                  dataKey="count" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth={3}
-                  name="طلبات الصيانة"
+                <Bar 
+                  dataKey="totalCost" 
+                  fill="hsl(var(--primary))"
+                  name="التكلفة الإجمالية"
                 />
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent Requests */}
+      {/* Monthly Timeline */}
       <Card>
         <CardHeader>
-          <CardTitle>أحدث طلبات الصيانة</CardTitle>
+          <CardTitle>الصيانات المنتهية عبر الزمن</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-right py-3 px-4">رقم الطلب</th>
-                  <th className="text-right py-3 px-4">العقار</th>
-                  <th className="text-right py-3 px-4">الخدمة</th>
-                  <th className="text-right py-3 px-4">الحالة</th>
-                  <th className="text-right py-3 px-4">تاريخ الطلب</th>
-                  <th className="text-right py-3 px-4">الإجراءات</th>
-                </tr>
-              </thead>
-              <tbody>
-                {requests.slice(0, 5).map((request) => (
-                  <tr key={request.id} className="border-b hover:bg-muted/50">
-                    <td className="py-3 px-4">
-                      <Badge className="bg-primary/10 text-primary">
-                        MR-{request.id.substring(0, 8).toUpperCase()}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4">{request.location}</td>
-                    <td className="py-3 px-4">
-                      <Badge>{request.service_type}</Badge>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Badge className={
-                        request.status === 'completed' ? 'bg-success/10 text-success' :
-                        request.status === 'in_progress' ? 'bg-primary/10 text-primary' :
-                        'bg-warning/10 text-warning'
-                      }>
-                        {request.status === 'completed' ? 'تم التعيين' :
-                         request.status === 'in_progress' ? 'قيد التنفيذ' : 'سباكة'}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4">
-                      {format(new Date(request.created_at), 'yyyy-MM-dd HH:mm')}
-                    </td>
-                    <td className="py-3 px-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => navigate(`/requests/${request.id}`)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis yAxisId="left" />
+              <YAxis yAxisId="right" orientation="right" />
+              <ChartTooltip />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="count" 
+                stroke="hsl(var(--success))" 
+                strokeWidth={3}
+                name="عدد الصيانات"
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="cost" 
+                stroke="hsl(var(--primary))" 
+                strokeWidth={3}
+                name="التكلفة (جنيه)"
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
+
+      {/* Completed Requests Table */}
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="all">الكل ({totalCompleted})</TabsTrigger>
+          <TabsTrigger value="current">الحالية ({completedRequests.length})</TabsTrigger>
+          <TabsTrigger value="archive">المؤرشفة ({archiveRequests.length})</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="all">
+          <Card>
+            <CardHeader>
+              <CardTitle>جميع الصيانات المنتهية</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-right py-3 px-4">العنوان</th>
+                      <th className="text-right py-3 px-4">الوصف</th>
+                      <th className="text-right py-3 px-4">نوع الخدمة</th>
+                      <th className="text-right py-3 px-4">التكلفة الفعلية</th>
+                      <th className="text-right py-3 px-4">تاريخ الإنشاء</th>
+                      <th className="text-right py-3 px-4">المصدر</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allCompleted.slice(0, 20).map((request) => (
+                      <tr key={request.id} className="border-b hover:bg-muted/50">
+                        <td className="py-3 px-4 font-medium">{request.title}</td>
+                        <td className="py-3 px-4 text-sm text-muted-foreground max-w-xs truncate">
+                          {request.description}
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant="outline">{request.service_type || 'غير محدد'}</Badge>
+                        </td>
+                        <td className="py-3 px-4 font-semibold text-success">
+                          {request.actual_cost ? `${Number(request.actual_cost).toLocaleString('ar-EG')} جنيه` : '-'}
+                        </td>
+                        <td className="py-3 px-4 text-sm">
+                          {format(new Date(request.created_at), 'yyyy-MM-dd')}
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant={request.store_id ? 'secondary' : 'default'}>
+                            {request.store_id ? 'أرشيف' : 'حالي'}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="current">
+          <Card>
+            <CardHeader>
+              <CardTitle>الصيانات المنتهية الحالية</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-right py-3 px-4">العنوان</th>
+                      <th className="text-right py-3 px-4">الموقع</th>
+                      <th className="text-right py-3 px-4">نوع الخدمة</th>
+                      <th className="text-right py-3 px-4">التكلفة</th>
+                      <th className="text-right py-3 px-4">التاريخ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {completedRequests.map((request) => (
+                      <tr key={request.id} className="border-b hover:bg-muted/50">
+                        <td className="py-3 px-4 font-medium">{request.title}</td>
+                        <td className="py-3 px-4">{request.location}</td>
+                        <td className="py-3 px-4">
+                          <Badge variant="outline">{request.service_type}</Badge>
+                        </td>
+                        <td className="py-3 px-4 font-semibold text-success">
+                          {request.actual_cost ? `${Number(request.actual_cost).toLocaleString('ar-EG')} جنيه` : '-'}
+                        </td>
+                        <td className="py-3 px-4 text-sm">
+                          {format(new Date(request.created_at), 'yyyy-MM-dd')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="archive">
+          <Card>
+            <CardHeader>
+              <CardTitle>الصيانات المؤرشفة</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-right py-3 px-4">العنوان</th>
+                      <th className="text-right py-3 px-4">الوصف</th>
+                      <th className="text-right py-3 px-4">الأولوية</th>
+                      <th className="text-right py-3 px-4">التكلفة</th>
+                      <th className="text-right py-3 px-4">تاريخ الإكمال</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {archiveRequests.map((request) => (
+                      <tr key={request.id} className="border-b hover:bg-muted/50">
+                        <td className="py-3 px-4 font-medium">{request.title}</td>
+                        <td className="py-3 px-4 text-sm text-muted-foreground max-w-xs truncate">
+                          {request.description}
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant={
+                            request.priority === 'high' ? 'destructive' :
+                            request.priority === 'medium' ? 'default' : 'secondary'
+                          }>
+                            {request.priority === 'high' ? 'عالية' :
+                             request.priority === 'medium' ? 'متوسطة' : 'منخفضة'}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4 font-semibold text-success">
+                          {request.actual_cost ? `${Number(request.actual_cost).toLocaleString('ar-EG')} جنيه` : '-'}
+                        </td>
+                        <td className="py-3 px-4 text-sm">
+                          {request.completion_date ? format(new Date(request.completion_date), 'yyyy-MM-dd') : '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
