@@ -254,7 +254,7 @@ audit_logs
 
 ```sql
 -- القراءة: الكل يمكنهم رؤية طلباتهم + الموظفين يرون الكل
-SELECT: 
+SELECT:
   - (requested_by = current_user) OR
   - (assigned_vendor_id = current_user) OR
   - is_staff(current_user)
@@ -340,85 +340,96 @@ const createRequest = async (requestData) => {
 ## 📱 الواجهات الرئيسية والمكونات
 
 ### 1. **Dashboard** (`Dashboard.tsx`)
-   - **المكونات**:
-     - `MaintenanceStats` → عرض الإحصائيات
-     - `MaintenanceChart` → الرسوم البيانية
-     - `RecentRequests` → آخر الطلبات
-     - `QuickActions` → إجراءات سريعة
-   - **الهوكات**:
-     - `useMaintenanceRequests` → جلب الطلبات
-     - `useProjects` → جلب المشاريع
-     - `useSupabaseData` → إحصائيات عامة
+
+- **المكونات**:
+  - `MaintenanceStats` → عرض الإحصائيات
+  - `MaintenanceChart` → الرسوم البيانية
+  - `RecentRequests` → آخر الطلبات
+  - `QuickActions` → إجراءات سريعة
+- **الهوكات**:
+  - `useMaintenanceRequests` → جلب الطلبات
+  - `useProjects` → جلب المشاريع
+  - `useSupabaseData` → إحصائيات عامة
 
 ### 2. **Requests** (`Requests.tsx`)
-   - **المكونات**:
-     - `MaintenanceRequestsList` (Desktop)
-     - `MobileMaintenanceList` (Mobile)
-     - `MaintenanceFilters` → تصفية
-     - `NewRequestFormDialog` → حوار الطلب الجديد
-   - **الهوكات**:
-     - `useMaintenanceRequests`
-     - `useRequestFilters`
+
+- **المكونات**:
+  - `MaintenanceRequestsList` (Desktop)
+  - `MobileMaintenanceList` (Mobile)
+  - `MaintenanceFilters` → تصفية
+  - `NewRequestFormDialog` → حوار الطلب الجديد
+- **الهوكات**:
+  - `useMaintenanceRequests`
+  - `useRequestFilters`
 
 ### 3. **RequestDetails** (`RequestDetails.tsx`)
-   - **المكونات**:
-     - `MaintenanceRequestDetails` → التفاصيل
-     - `RequestStatusTimeline` → الخط الزمني
-     - `RequestLifecycleTracker` → تتبع دورة الحياة
-     - `MaintenanceRequestActions` → الإجراءات
-     - `RequestWorkflowControls` → ⚠️ مفقود - يحتاج إنشاء
-   - **الهوكات**:
-     - `useMaintenanceRequests`
-     - `useRequestLifecycle`
+
+- **المكونات**:
+  - `MaintenanceRequestDetails` → التفاصيل
+  - `RequestStatusTimeline` → الخط الزمني
+  - `RequestLifecycleTracker` → تتبع دورة الحياة
+  - `MaintenanceRequestActions` → الإجراءات
+  - `RequestWorkflowControls` → ⚠️ مفقود - يحتاج إنشاء
+- **الهوكات**:
+  - `useMaintenanceRequests`
+  - `useRequestLifecycle`
 
 ### 4. **Properties** (`Properties.tsx`)
-   - **المكونات**:
-     - `PropertyCard` → بطاقة عقار
-     - `PropertyActionsDialog` → إجراءات
-     - `PropertyQRCode` → QR Code
-   - **الهوكات**:
-     - `useProperties`
+
+- **المكونات**:
+  - `PropertyCard` → بطاقة عقار
+  - `PropertyActionsDialog` → إجراءات
+  - `PropertyQRCode` → QR Code
+- **الهوكات**:
+  - `useProperties`
 
 ### 5. **Appointments** (`Appointments.tsx`)
-   - **النماذج**:
-     - `NewAppointmentForm`
-   - **الهوكات**:
-     - `useAppointments`
+
+- **النماذج**:
+  - `NewAppointmentForm`
+- **الهوكات**:
+  - `useAppointments`
 
 ### 6. **Reports** (`MaintenanceReports.tsx`)
-   - **المكونات**:
-     - `MaintenanceReportDashboard` → داشبورد شامل
-     - Charts → Recharts
-   - **البيانات**:
-     - `maintenance_requests` (completed)
-     - `maintenance_requests_archive`
+
+- **المكونات**:
+  - `MaintenanceReportDashboard` → داشبورد شامل
+  - Charts → Recharts
+- **البيانات**:
+  - `maintenance_requests` (completed)
+  - `maintenance_requests_archive`
 
 ---
 
 ## 🛠️ Edge Functions
 
 ### 1. **chatbot** (`chatbot/index.ts`)
-   - **الغرض**: الدردشة الذكية
-   - **API**: OpenAI / DeepSeek
-   - **الاستخدام**: `ChatBot.tsx`
+
+- **الغرض**: الدردشة الذكية
+- **API**: OpenAI / DeepSeek
+- **الاستخدام**: `ChatBot.tsx`
 
 ### 2. **send-notification** (`send-notification/index.ts`)
-   - **الغرض**: إرسال إشعارات
-   - **المدخلات**: `{ type, requestId, title, message }`
-   - **الإخراج**: إنشاء سجل في `notifications`
+
+- **الغرض**: إرسال إشعارات
+- **المدخلات**: `{ type, requestId, title, message }`
+- **الإخراج**: إنشاء سجل في `notifications`
 
 ### 3. **get-maps-key** (`get-maps-key/index.ts`)
-   - **الغرض**: تأمين Google Maps API Key
-   - **⚠️ مشكلة أمنية**: يحتاج تفعيل JWT verification
+
+- **الغرض**: تأمين Google Maps API Key
+- **⚠️ مشكلة أمنية**: يحتاج تفعيل JWT verification
 
 ### 4. **error-tracking** (`error-tracking/index.ts`)
-   - **الغرض**: تتبع الأخطاء
-   - **⚠️ مشكلة**: يستخدم `profiles.role` المهمل
-   - **الحل**: استخدام `user_roles` table
+
+- **الغرض**: تتبع الأخطاء
+- **⚠️ مشكلة**: يستخدم `profiles.role` المهمل
+- **الحل**: استخدام `user_roles` table
 
 ### 5. **send-invoice-email** (`send-invoice-email/index.ts`)
-   - **الغرض**: إرسال الفواتير عبر البريد
-   - **API**: Resend
+
+- **الغرض**: إرسال الفواتير عبر البريد
+- **API**: Resend
 
 ---
 
@@ -456,6 +467,7 @@ useEffect(() => {
 ## 🎯 المهام المتبقية (Remaining Tasks)
 
 ### ✅ ما تم إنجازه:
+
 - [x] بنية تحتية قوية (React + Supabase)
 - [x] نظام المصادقة والصلاحيات
 - [x] CRUD كامل لطلبات الصيانة
@@ -465,6 +477,7 @@ useEffect(() => {
 - [x] جداول الأرشيف
 
 ### ⚠️ يحتاج إصلاح:
+
 - [ ] **RequestWorkflowControls** - مكون مفقود (عالي)
 - [ ] **Navigation** - التوجيه بعد إنشاء طلب (عالي)
 - [ ] **Google Maps API Key** - مشكلة أمنية (حرج)
@@ -473,6 +486,7 @@ useEffect(() => {
 - [ ] **Settings Page** - صفحة الإعدادات (منخفض)
 
 ### 🚀 تحسينات مقترحة:
+
 - [ ] تحسين SLA tracking
 - [ ] نظام التصعيد التلقائي
 - [ ] تقارير متقدمة
