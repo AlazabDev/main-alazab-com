@@ -1,173 +1,224 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useMaintenanceRequests, WorkflowStage } from "@/hooks/useMaintenanceRequests";
-import { useRequestLifecycle } from "@/hooks/useRequestLifecycle";
-import { 
-  ArrowRight, 
-  User, 
-  Calendar, 
-  Clock, 
-  CheckCircle, 
-  AlertTriangle,
-  Pause
+import {
+  CheckCircle2,
+  Clock,
+  UserCheck,
+  Wrench,
+  FileCheck,
+  DollarSign,
+  XCircle,
+  Pause,
 } from "lucide-react";
+import { MaintenanceRequest, WorkflowStage } from "@/hooks/useMaintenanceRequests";
 
 interface RequestWorkflowControlsProps {
-  request: any;
+  request: MaintenanceRequest;
+  onUpdate?: () => void;
 }
 
-export function RequestWorkflowControls({ request }: RequestWorkflowControlsProps) {
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [notes, setNotes] = useState("");
-  const { updateRequest } = useMaintenanceRequests();
-  const { addLifecycleEvent } = useRequestLifecycle();
+const workflowStages: { value: WorkflowStage; label: string; icon: any; color: string }[] = [
+  { value: 'submitted', label: 'تم الإرسال', icon: Clock, color: 'bg-blue-500' },
+  { value: 'acknowledged', label: 'تم الاستلام', icon: CheckCircle2, color: 'bg-cyan-500' },
+  { value: 'assigned', label: 'تم التعيين', icon: UserCheck, color: 'bg-purple-500' },
+  { value: 'scheduled', label: 'تم الجدولة', icon: Clock, color: 'bg-indigo-500' },
+  { value: 'in_progress', label: 'قيد التنفيذ', icon: Wrench, color: 'bg-yellow-500' },
+  { value: 'inspection', label: 'قيد الفحص', icon: FileCheck, color: 'bg-orange-500' },
+  { value: 'completed', label: 'مكتمل', icon: CheckCircle2, color: 'bg-green-500' },
+  { value: 'billed', label: 'تم الفوترة', icon: DollarSign, color: 'bg-emerald-500' },
+  { value: 'closed', label: 'مغلق', icon: CheckCircle2, color: 'bg-gray-500' },
+  { value: 'cancelled', label: 'ملغي', icon: XCircle, color: 'bg-red-500' },
+  { value: 'on_hold', label: 'معلق', icon: Pause, color: 'bg-amber-500' },
+];
 
-  const workflowStages = [
-    { value: 'submitted', label: 'مقدم', icon: ArrowRight },
-    { value: 'acknowledged', label: 'مستلم ومؤكد', icon: CheckCircle },
-    { value: 'assigned', label: 'مخصص لفني', icon: User },
-    { value: 'scheduled', label: 'مجدول', icon: Calendar },
-    { value: 'in_progress', label: 'قيد التنفيذ', icon: Clock },
-    { value: 'inspection', label: 'فحص وتقييم', icon: CheckCircle },
-    { value: 'waiting_parts', label: 'انتظار قطع غيار', icon: Pause },
-    { value: 'completed', label: 'مكتمل', icon: CheckCircle },
-    { value: 'billed', label: 'تم الفوترة', icon: CheckCircle },
-    { value: 'paid', label: 'مدفوع', icon: CheckCircle },
-    { value: 'closed', label: 'مغلق', icon: CheckCircle },
-    { value: 'cancelled', label: 'ملغي', icon: AlertTriangle },
-    { value: 'on_hold', label: 'متوقف مؤقتاً', icon: Pause }
-  ];
+export function RequestWorkflowControls({ request, onUpdate }: RequestWorkflowControlsProps) {
+  const [loading, setLoading] = useState(false);
+  const [selectedStage, setSelectedStage] = useState<WorkflowStage>(
+    request.workflow_stage || 'submitted'
+  );
+  const { toast } = useToast();
 
-  const getCurrentStage = () => {
-    return workflowStages.find(stage => stage.value === (request.workflow_stage || request.status));
-  };
+  const currentStage = workflowStages.find(s => s.value === selectedStage);
 
-  const getNextStages = () => {
-    const currentIndex = workflowStages.findIndex(stage => stage.value === (request.workflow_stage || request.status));
-    return workflowStages.slice(currentIndex + 1);
-  };
-
-  const handleStageChange = async (newStage: WorkflowStage) => {
-    setIsUpdating(true);
+  const updateWorkflowStage = async (newStage: WorkflowStage) => {
+    setLoading(true);
     try {
-      // Update the request
-      await updateRequest(request.id, {
+      const updates: any = {
         workflow_stage: newStage,
-        status: newStage // Also update the main status field
+      };
+
+      // تحديث الحالة التقليدية أيضاً
+      if (newStage === 'completed' || newStage === 'closed') {
+        updates.status = 'completed';
+        updates.actual_completion = new Date().toISOString();
+      } else if (newStage === 'in_progress') {
+        updates.status = 'in_progress';
+      } else if (newStage === 'cancelled') {
+        updates.status = 'cancelled';
+      } else if (newStage === 'on_hold') {
+        updates.status = 'on_hold';
+      }
+
+      const { error } = await supabase
+        .from('maintenance_requests')
+        .update(updates)
+        .eq('id', request.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "✓ تم التحديث",
+        description: `تم تحديث مرحلة الطلب إلى: ${workflowStages.find(s => s.value === newStage)?.label}`,
       });
 
-      // Add lifecycle event
-      await addLifecycleEvent(
-        request.id,
-        newStage,
-        'status_change',
-        notes || undefined,
-        { previous_stage: request.workflow_stage || request.status }
-      );
-
-      setNotes("");
-    } catch (error) {
-      console.error('Error updating workflow stage:', error);
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error: any) {
+      console.error('Error updating workflow:', error);
+      toast({
+        title: "خطأ",
+        description: error.message || "فشل في تحديث المرحلة",
+        variant: "destructive",
+      });
     } finally {
-      setIsUpdating(false);
+      setLoading(false);
     }
   };
 
-  const currentStage = getCurrentStage();
-  const nextStages = getNextStages();
-  const CurrentIcon = currentStage?.icon || ArrowRight;
+  const handleStageChange = (value: string) => {
+    const newStage = value as WorkflowStage;
+    setSelectedStage(newStage);
+    updateWorkflowStage(newStage);
+  };
+
+  const quickActions = [
+    {
+      label: 'بدء العمل',
+      stage: 'in_progress' as WorkflowStage,
+      variant: 'default' as const,
+      show: selectedStage === 'scheduled' || selectedStage === 'assigned',
+    },
+    {
+      label: 'إكمال',
+      stage: 'completed' as WorkflowStage,
+      variant: 'default' as const,
+      show: selectedStage === 'in_progress' || selectedStage === 'inspection',
+    },
+    {
+      label: 'إغلاق',
+      stage: 'closed' as WorkflowStage,
+      variant: 'secondary' as const,
+      show: selectedStage === 'completed' || selectedStage === 'billed',
+    },
+    {
+      label: 'تعليق',
+      stage: 'on_hold' as WorkflowStage,
+      variant: 'outline' as const,
+      show: selectedStage === 'in_progress' || selectedStage === 'scheduled',
+    },
+  ];
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <CurrentIcon className="h-5 w-5" />
-          إدارة سير العمل
+          <Wrench className="h-5 w-5" />
+          التحكم في سير العمل
         </CardTitle>
+        <CardDescription>
+          إدارة مراحل تنفيذ طلب الصيانة
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Current Stage */}
-        <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-md">
-          <Badge variant="outline" className="bg-primary text-primary-foreground">
-            المرحلة الحالية
-          </Badge>
-          <span className="font-medium">{currentStage?.label}</span>
+        {/* المرحلة الحالية */}
+        <div className="flex items-center gap-3 p-4 bg-muted rounded-lg">
+          {currentStage && (
+            <>
+              <div className={`p-2 rounded-full ${currentStage.color}`}>
+                <currentStage.icon className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground">المرحلة الحالية</p>
+                <p className="font-semibold">{currentStage.label}</p>
+              </div>
+              <Badge variant="outline">{selectedStage}</Badge>
+            </>
+          )}
         </div>
 
-        {/* Stage Transition */}
-        {nextStages.length > 0 && (
-          <div className="space-y-3">
-            <Label>الانتقال للمرحلة التالية:</Label>
-            <Select onValueChange={handleStageChange} disabled={isUpdating}>
-              <SelectTrigger>
-                <SelectValue placeholder="اختر المرحلة التالية" />
-              </SelectTrigger>
-              <SelectContent>
-                {nextStages.map((stage) => {
-                  const StageIcon = stage.icon;
-                  return (
-                    <SelectItem key={stage.value} value={stage.value}>
-                      <div className="flex items-center gap-2">
-                        <StageIcon className="h-4 w-4" />
-                        {stage.label}
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
-        {/* Notes */}
+        {/* تغيير المرحلة */}
         <div className="space-y-2">
-          <Label htmlFor="notes">ملاحظات (اختياري)</Label>
-          <Textarea
-            id="notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="أضف ملاحظات حول تغيير المرحلة..."
-            rows={3}
-          />
+          <label className="text-sm font-medium">تغيير المرحلة</label>
+          <Select
+            value={selectedStage}
+            onValueChange={handleStageChange}
+            disabled={loading}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="اختر المرحلة" />
+            </SelectTrigger>
+            <SelectContent>
+              {workflowStages.map((stage) => (
+                <SelectItem key={stage.value} value={stage.value}>
+                  <div className="flex items-center gap-2">
+                    <stage.icon className="h-4 w-4" />
+                    {stage.label}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-2 pt-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleStageChange('on_hold')}
-            disabled={isUpdating || request.workflow_stage === 'on_hold'}
-          >
-            <Pause className="h-4 w-4 mr-1" />
-            توقيف مؤقت
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleStageChange('cancelled')}
-            disabled={isUpdating || ['completed', 'cancelled', 'closed'].includes(request.workflow_stage)}
-          >
-            <AlertTriangle className="h-4 w-4 mr-1" />
-            إلغاء
-          </Button>
+        {/* إجراءات سريعة */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">إجراءات سريعة</label>
+          <div className="flex flex-wrap gap-2">
+            {quickActions
+              .filter(action => action.show)
+              .map((action) => (
+                <Button
+                  key={action.stage}
+                  variant={action.variant}
+                  size="sm"
+                  onClick={() => {
+                    setSelectedStage(action.stage);
+                    updateWorkflowStage(action.stage);
+                  }}
+                  disabled={loading}
+                >
+                  {action.label}
+                </Button>
+              ))}
+          </div>
         </div>
 
-        {/* Follow-up Indicator */}
-        {request.follow_up_required && (
-          <div className="flex items-center gap-2 p-2 bg-warning/10 border border-warning/20 rounded-md">
-            <AlertTriangle className="h-4 w-4 text-warning" />
-            <span className="text-sm">يتطلب متابعة</span>
-            {request.follow_up_date && (
-              <span className="text-xs text-muted-foreground">
-                - {new Date(request.follow_up_date).toLocaleDateString('ar-SA')}
-              </span>
-            )}
+        {/* مؤشر SLA */}
+        {request.sla_due_date && (
+          <div className="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
+            <div className="flex items-center gap-2 text-sm">
+              <Clock className="h-4 w-4 text-amber-600" />
+              <span className="font-medium">موعد SLA:</span>
+              <span>{new Date(request.sla_due_date).toLocaleString('ar-EG')}</span>
+            </div>
           </div>
         )}
       </CardContent>

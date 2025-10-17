@@ -197,6 +197,9 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
           });
         }
 
+        // حفظ معرف الطلب قبل مسح البيانات
+        const requestId = result.id;
+        
         setFormData({
           title: "",
           description: "",
@@ -212,7 +215,16 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
           longitude: null,
           property_id: ""
         });
-        onSuccess?.();
+        
+        // إغلاق النموذج أولاً
+        if (onSuccess) {
+          onSuccess();
+        }
+        
+        // ثم التوجيه لصفحة التفاصيل بعد ثانية واحدة
+        setTimeout(() => {
+          window.location.href = `/requests/${requestId}`;
+        }, 500);
       }
     } catch (error) {
       console.error("Submit error:", error);
