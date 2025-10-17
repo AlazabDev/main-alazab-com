@@ -3,14 +3,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 export interface UserProfile {
-  user_id: string;
+  id: string;
+  name: string;
+  email: string;
+  role: string;
   first_name: string | null;
   last_name: string | null;
   phone: string | null;
-  gender: string | null;
-  birth_date: string | null;
-  timezone: string | null;
-  locale: string | null;
+  avatar_url: string | null;
+  position: string | null;
+  department_id: string | null;
 }
 
 export interface UserPreferences {
@@ -45,7 +47,7 @@ export const useUserSettings = () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("id", user.id)
         .maybeSingle();
 
       if (error) throw error;
@@ -55,10 +57,12 @@ export const useUserSettings = () => {
         const { data: newProfile, error: createError } = await supabase
           .from("profiles")
           .insert({
-            user_id: user.id,
+            id: user.id,
+            name: user.user_metadata?.name || "",
+            email: user.email || "",
+            role: "customer",
             first_name: user.user_metadata?.first_name || "",
-            timezone: "Africa/Cairo",
-            locale: "ar"
+            last_name: user.user_metadata?.last_name || ""
           })
           .select()
           .single();
@@ -137,7 +141,7 @@ export const useUserSettings = () => {
       const { data, error } = await supabase
         .from("profiles")
         .update(updates)
-        .eq("user_id", user.id)
+        .eq("id", user.id)
         .select()
         .single();
 

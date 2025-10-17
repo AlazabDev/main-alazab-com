@@ -712,6 +712,69 @@ export type Database = {
           },
         ]
       }
+      maintenance_requests_archive: {
+        Row: {
+          actual_cost: number | null
+          assigned_to: string | null
+          completion_date: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          estimated_cost: number | null
+          id: string
+          is_deleted: boolean | null
+          primary_service_id: string | null
+          priority: string | null
+          scheduled_date: string | null
+          service_type: string | null
+          status: string | null
+          store_id: string | null
+          title: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          actual_cost?: number | null
+          assigned_to?: string | null
+          completion_date?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          estimated_cost?: number | null
+          id?: string
+          is_deleted?: boolean | null
+          primary_service_id?: string | null
+          priority?: string | null
+          scheduled_date?: string | null
+          service_type?: string | null
+          status?: string | null
+          store_id?: string | null
+          title: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          actual_cost?: number | null
+          assigned_to?: string | null
+          completion_date?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          estimated_cost?: number | null
+          id?: string
+          is_deleted?: boolean | null
+          primary_service_id?: string | null
+          priority?: string | null
+          scheduled_date?: string | null
+          service_type?: string | null
+          status?: string | null
+          store_id?: string | null
+          title?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       maintenance_requests_summary_secure: {
         Row: {
           avg_actual_cost: number | null
@@ -1215,13 +1278,17 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           created_by: string | null
           department_id: string | null
           email: string
+          first_name: string | null
           id: string
           is_deleted: boolean | null
+          last_name: string | null
           name: string
+          phone: string | null
           position: string | null
           reports_to: string | null
           role: string
@@ -1229,13 +1296,17 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           created_by?: string | null
           department_id?: string | null
           email: string
+          first_name?: string | null
           id?: string
           is_deleted?: boolean | null
+          last_name?: string | null
           name: string
+          phone?: string | null
           position?: string | null
           reports_to?: string | null
           role: string
@@ -1243,13 +1314,17 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           created_by?: string | null
           department_id?: string | null
           email?: string
+          first_name?: string | null
           id?: string
           is_deleted?: boolean | null
+          last_name?: string | null
           name?: string
+          phone?: string | null
           position?: string | null
           reports_to?: string | null
           role?: string

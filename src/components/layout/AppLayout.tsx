@@ -47,7 +47,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       const { data: profile } = await supabase
         .from("profiles")
         .select("first_name, last_name, avatar_url, role")
-        .eq("user_id", user.id)
+        .eq("id", user.id)
         .maybeSingle();
 
       setUserData({

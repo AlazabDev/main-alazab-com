@@ -14,10 +14,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 const accountSchema = z.object({
   first_name: z.string().min(1, "الاسم مطلوب"),
   last_name: z.string().optional(),
-  gender: z.enum(["male", "female"]).optional(),
-  birth_date: z.string().optional(),
-  timezone: z.string().default("Africa/Cairo"),
   phone: z.string().optional(),
+  position: z.string().optional(),
 });
 
 type AccountFormValues = z.infer<typeof accountSchema>;
@@ -31,10 +29,8 @@ export const AccountSettings = () => {
     values: {
       first_name: profile?.first_name || "",
       last_name: profile?.last_name || "",
-      gender: (profile?.gender as "male" | "female") || undefined,
-      birth_date: profile?.birth_date || "",
-      timezone: profile?.timezone || "Africa/Cairo",
       phone: profile?.phone || "",
+      position: profile?.position || "",
     },
   });
 
@@ -73,21 +69,13 @@ export const AccountSettings = () => {
 
                 <FormField
                   control={form.control}
-                  name="gender"
+                  name="last_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>الجنس</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="اختر الجنس" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="male">ذكر</SelectItem>
-                          <SelectItem value="female">أنثى</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>اللقب</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="أدخل اللقب" />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -109,36 +97,13 @@ export const AccountSettings = () => {
 
                 <FormField
                   control={form.control}
-                  name="birth_date"
+                  name="position"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>تاريخ الميلاد</FormLabel>
+                      <FormLabel>الوظيفة</FormLabel>
                       <FormControl>
-                        <Input {...field} type="date" />
+                        <Input {...field} placeholder="مثال: مدير" />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="timezone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>المنطقة الزمنية</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Africa/Cairo">Africa - Cairo</SelectItem>
-                          <SelectItem value="Asia/Riyadh">Asia - Riyadh</SelectItem>
-                          <SelectItem value="Asia/Dubai">Asia - Dubai</SelectItem>
-                        </SelectContent>
-                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
