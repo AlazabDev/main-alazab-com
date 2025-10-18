@@ -588,6 +588,7 @@ export type Database = {
           address: string | null
           archived_at: string | null
           assigned_vendor_id: string | null
+          billed_at: string | null
           client_email: string | null
           client_name: string
           client_phone: string | null
@@ -601,9 +602,16 @@ export type Database = {
           follow_up_date: string | null
           follow_up_required: boolean | null
           id: string
+          inspection_approved_at: string | null
+          inspection_approved_by: string | null
+          invoice_id: string | null
           latitude: number | null
           location: string
           longitude: number | null
+          mall_branch_id: string | null
+          mall_id: number | null
+          mall_payload: Json | null
+          paid_at: string | null
           phone: string | null
           preferred_date: string | null
           preferred_time: string | null
@@ -612,7 +620,12 @@ export type Database = {
           rating: number | null
           requested_by: string | null
           service_type: string
+          sla_accept_due: string | null
+          sla_arrive_due: string | null
+          sla_complete_due: string | null
           sla_due_date: string | null
+          source: string | null
+          stage: Database["public"]["Enums"]["maintenance_stage"] | null
           status: string | null
           title: string
           updated_at: string
@@ -628,6 +641,7 @@ export type Database = {
           address?: string | null
           archived_at?: string | null
           assigned_vendor_id?: string | null
+          billed_at?: string | null
           client_email?: string | null
           client_name: string
           client_phone?: string | null
@@ -641,9 +655,16 @@ export type Database = {
           follow_up_date?: string | null
           follow_up_required?: boolean | null
           id?: string
+          inspection_approved_at?: string | null
+          inspection_approved_by?: string | null
+          invoice_id?: string | null
           latitude?: number | null
           location: string
           longitude?: number | null
+          mall_branch_id?: string | null
+          mall_id?: number | null
+          mall_payload?: Json | null
+          paid_at?: string | null
           phone?: string | null
           preferred_date?: string | null
           preferred_time?: string | null
@@ -652,7 +673,12 @@ export type Database = {
           rating?: number | null
           requested_by?: string | null
           service_type: string
+          sla_accept_due?: string | null
+          sla_arrive_due?: string | null
+          sla_complete_due?: string | null
           sla_due_date?: string | null
+          source?: string | null
+          stage?: Database["public"]["Enums"]["maintenance_stage"] | null
           status?: string | null
           title: string
           updated_at?: string
@@ -668,6 +694,7 @@ export type Database = {
           address?: string | null
           archived_at?: string | null
           assigned_vendor_id?: string | null
+          billed_at?: string | null
           client_email?: string | null
           client_name?: string
           client_phone?: string | null
@@ -681,9 +708,16 @@ export type Database = {
           follow_up_date?: string | null
           follow_up_required?: boolean | null
           id?: string
+          inspection_approved_at?: string | null
+          inspection_approved_by?: string | null
+          invoice_id?: string | null
           latitude?: number | null
           location?: string
           longitude?: number | null
+          mall_branch_id?: string | null
+          mall_id?: number | null
+          mall_payload?: Json | null
+          paid_at?: string | null
           phone?: string | null
           preferred_date?: string | null
           preferred_time?: string | null
@@ -692,7 +726,12 @@ export type Database = {
           rating?: number | null
           requested_by?: string | null
           service_type?: string
+          sla_accept_due?: string | null
+          sla_arrive_due?: string | null
+          sla_complete_due?: string | null
           sla_due_date?: string | null
+          source?: string | null
+          stage?: Database["public"]["Enums"]["maintenance_stage"] | null
           status?: string | null
           title?: string
           updated_at?: string
@@ -708,6 +747,20 @@ export type Database = {
             columns: ["assigned_vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_mall_branch_id_fkey"
+            columns: ["mall_branch_id"]
+            isOneToOne: false
+            referencedRelation: "mall_branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_mall_id_fkey"
+            columns: ["mall_id"]
+            isOneToOne: false
+            referencedRelation: "malls"
             referencedColumns: ["id"]
           },
         ]
@@ -916,6 +969,97 @@ export type Database = {
           name?: string
           updated_at?: string | null
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      mall_branches: {
+        Row: {
+          branch_code: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string | null
+          floor: string | null
+          id: string
+          mall_id: number | null
+          store_id: string | null
+          tenant_id: string | null
+          unit_no: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          branch_code: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          floor?: string | null
+          id?: string
+          mall_id?: number | null
+          store_id?: string | null
+          tenant_id?: string | null
+          unit_no?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          branch_code?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          floor?: string | null
+          id?: string
+          mall_id?: number | null
+          store_id?: string | null
+          tenant_id?: string | null
+          unit_no?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mall_branches_mall_id_fkey"
+            columns: ["mall_id"]
+            isOneToOne: false
+            referencedRelation: "malls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mall_branches_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mall_branches_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "mall_tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mall_tenants: {
+        Row: {
+          brand_code: string | null
+          contact_email: string | null
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          brand_code?: string | null
+          contact_email?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          brand_code?: string | null
+          contact_email?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
         }
         Relationships: []
       }
@@ -1144,6 +1288,59 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      parts_orders: {
+        Row: {
+          actual_cost: number | null
+          created_at: string | null
+          estimated_cost: number | null
+          id: string
+          item_id: string | null
+          item_name: string
+          qty: number
+          received_at: string | null
+          request_id: string | null
+          status: string | null
+          updated_at: string | null
+          vendor_ref: string | null
+        }
+        Insert: {
+          actual_cost?: number | null
+          created_at?: string | null
+          estimated_cost?: number | null
+          id?: string
+          item_id?: string | null
+          item_name: string
+          qty: number
+          received_at?: string | null
+          request_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vendor_ref?: string | null
+        }
+        Update: {
+          actual_cost?: number | null
+          created_at?: string | null
+          estimated_cost?: number | null
+          id?: string
+          item_id?: string | null
+          item_name?: string
+          qty?: number
+          received_at?: string | null
+          request_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vendor_ref?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parts_orders_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payments: {
         Row: {
@@ -2052,6 +2249,45 @@ export type Database = {
           },
         ]
       }
+      request_events: {
+        Row: {
+          by_user: string | null
+          created_at: string | null
+          event_type: string
+          from_stage: string | null
+          id: string
+          meta: Json | null
+          nonce: string | null
+          notes: string | null
+          request_id: string
+          to_stage: string | null
+        }
+        Insert: {
+          by_user?: string | null
+          created_at?: string | null
+          event_type: string
+          from_stage?: string | null
+          id?: string
+          meta?: Json | null
+          nonce?: string | null
+          notes?: string | null
+          request_id: string
+          to_stage?: string | null
+        }
+        Update: {
+          by_user?: string | null
+          created_at?: string | null
+          event_type?: string
+          from_stage?: string | null
+          id?: string
+          meta?: Json | null
+          nonce?: string | null
+          notes?: string | null
+          request_id?: string
+          to_stage?: string | null
+        }
+        Relationships: []
+      }
       request_lifecycle: {
         Row: {
           created_at: string
@@ -2339,6 +2575,44 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      service_checklists: {
+        Row: {
+          category_id: string | null
+          created_at: string | null
+          evidence_type: string | null
+          id: string
+          item: string
+          required: boolean | null
+          sort_order: number | null
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string | null
+          evidence_type?: string | null
+          id?: string
+          item: string
+          required?: boolean | null
+          sort_order?: number | null
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string | null
+          evidence_type?: string | null
+          id?: string
+          item?: string
+          required?: boolean | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_checklists_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       service_price_tiers: {
         Row: {
@@ -2659,6 +2933,44 @@ export type Database = {
             columns: ["subcategory_id"]
             isOneToOne: false
             referencedRelation: "service_subcategories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sla_policies: {
+        Row: {
+          accept_within_min: number
+          arrive_within_min: number
+          category_id: string | null
+          complete_within_min: number
+          created_at: string | null
+          id: string
+          priority: string
+        }
+        Insert: {
+          accept_within_min: number
+          arrive_within_min: number
+          category_id?: string | null
+          complete_within_min: number
+          created_at?: string | null
+          id?: string
+          priority: string
+        }
+        Update: {
+          accept_within_min?: number
+          arrive_within_min?: number
+          category_id?: string | null
+          complete_within_min?: number
+          created_at?: string | null
+          id?: string
+          priority?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sla_policies_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
             referencedColumns: ["id"]
           },
         ]
@@ -3002,6 +3314,41 @@ export type Database = {
           vendor_id?: string
         }
         Relationships: []
+      }
+      vendor_communications: {
+        Row: {
+          created_at: string | null
+          id: string
+          meta: Json | null
+          msg: string | null
+          request_id: string | null
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          meta?: Json | null
+          msg?: string | null
+          request_id?: string | null
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          meta?: Json | null
+          msg?: string | null
+          request_id?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_communications_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendor_locations: {
         Row: {
@@ -3407,6 +3754,14 @@ export type Database = {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
       }
+      calculate_sla_deadlines: {
+        Args: {
+          p_category_id?: string
+          p_priority: string
+          p_request_id: string
+        }
+        Returns: undefined
+      }
       calculate_sla_due_date: {
         Args: {
           created_at: string
@@ -3421,6 +3776,10 @@ export type Database = {
       }
       can_access_service_request: {
         Args: { request_id: string }
+        Returns: boolean
+      }
+      can_transition_stage: {
+        Args: { current_stage: string; next_stage: string; user_role: string }
         Returns: boolean
       }
       find_nearest_vendor: {
@@ -3629,6 +3988,22 @@ export type Database = {
         | "accounting"
         | "engineering"
       currency_t: "EGP" | "USD" | "EUR" | "SAR" | "AED"
+      maintenance_stage:
+        | "DRAFT"
+        | "SUBMITTED"
+        | "TRIAGED"
+        | "ASSIGNED"
+        | "SCHEDULED"
+        | "IN_PROGRESS"
+        | "INSPECTION"
+        | "COMPLETED"
+        | "BILLED"
+        | "PAID"
+        | "CLOSED"
+        | "ON_HOLD"
+        | "WAITING_PARTS"
+        | "CANCELLED"
+        | "REJECTED"
       maintenance_status:
         | "draft"
         | "submitted"
@@ -3823,6 +4198,23 @@ export const Constants = {
         "engineering",
       ],
       currency_t: ["EGP", "USD", "EUR", "SAR", "AED"],
+      maintenance_stage: [
+        "DRAFT",
+        "SUBMITTED",
+        "TRIAGED",
+        "ASSIGNED",
+        "SCHEDULED",
+        "IN_PROGRESS",
+        "INSPECTION",
+        "COMPLETED",
+        "BILLED",
+        "PAID",
+        "CLOSED",
+        "ON_HOLD",
+        "WAITING_PARTS",
+        "CANCELLED",
+        "REJECTED",
+      ],
       maintenance_status: [
         "draft",
         "submitted",
