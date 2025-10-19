@@ -1,3 +1,5 @@
+import { LandingHeader } from "@/components/landing/LandingHeader";
+import { Footer } from "@/components/landing/Footer";
 import { useState } from "react";
 import { useProjects } from "@/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
@@ -44,6 +46,7 @@ export default function Projects() {
 
   return (
     <div className="min-h-screen bg-background">
+      <LandingHeader />
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-primary/5">
         <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
@@ -145,6 +148,7 @@ export default function Projects() {
           </a>
         </div>
       </div>
+     <Footer />
     </div>
   );
 }
