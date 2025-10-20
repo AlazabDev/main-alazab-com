@@ -51,7 +51,7 @@ const workflowStages: { value: WorkflowStage; label: string; icon: any; color: s
 export function RequestWorkflowControls({ request, onUpdate }: RequestWorkflowControlsProps) {
   const [loading, setLoading] = useState(false);
   const [selectedStage, setSelectedStage] = useState<WorkflowStage>(
-    request.workflow_stage || 'submitted'
+    (request.workflow_stage as WorkflowStage) || 'submitted'
   );
   const { toast } = useToast();
 

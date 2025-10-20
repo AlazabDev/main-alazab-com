@@ -550,7 +550,7 @@ const Testing = () => {
     const start = Date.now();
     
     try {
-      const statuses = ['pending', 'in_progress', 'completed'];
+      const statuses = ['Open', 'InProgress', 'Completed'];
       const checks = await Promise.all(
         statuses.map(status => 
           supabase

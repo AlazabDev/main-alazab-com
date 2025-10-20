@@ -44,23 +44,15 @@ export function MaintenanceReportDashboard() {
       const { data: completed, error: completedError } = await supabase
         .from('maintenance_requests')
         .select('*')
-        .eq('status', 'completed')
+        .eq('status', 'Completed')
         .gte('created_at', startDate)
         .lte('created_at', endDate)
         .order('created_at', { ascending: false });
 
       if (completedError) throw completedError;
 
-      // Fetch archived requests
-      const { data: archived, error: archivedError } = await supabase
-        .from('maintenance_requests_archive')
-        .select('*')
-        .eq('status', 'completed')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate)
-        .order('created_at', { ascending: false });
-
-      if (archivedError) throw archivedError;
+      // For now, only use completed requests (archived table doesn't exist yet)
+      const archived: any[] = [];
 
       setCompletedRequests(completed || []);
       setArchiveRequests(archived || []);

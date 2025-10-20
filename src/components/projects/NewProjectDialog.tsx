@@ -38,15 +38,15 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
     setLoading(true);
 
     try {
-      const { error } = await supabase.from("projects").insert([{
-        client_name: formData.name,
+      const { error } = await supabase.from("projects").insert({
+        name: formData.name,
         description: formData.description || null,
         location: formData.location,
         status: formData.status,
         budget: formData.budget ? parseFloat(formData.budget) : null,
         start_date: formData.start_date || null,
         end_date: formData.end_date || null
-      }]);
+      });
 
       if (error) throw error;
 

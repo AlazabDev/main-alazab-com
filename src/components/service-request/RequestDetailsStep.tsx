@@ -84,30 +84,45 @@ export const RequestDetailsStep = ({ selectedServices, onBack }: RequestDetailsS
         : 0;
       const taxAmount = (totalServicePrice + inspectionPrice) * 0.14;
 
-      // إنشاء طلب الصيانة
+      // إنشاء طلب الصيانة - نحتاج company_id و branch_id
+      const { data: userData } = await supabase.auth.getUser();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', userData.user?.id)
+        .single();
+
+      if (!profile?.company_id) {
+        throw new Error('لم يتم العثور على الشركة');
+      }
+
+      // جلب أول فرع للشركة
+      const { data: branch } = await supabase
+        .from('branches')
+        .select('id')
+        .eq('company_id', profile.company_id)
+        .limit(1)
+        .single();
+
+      if (!branch) {
+        throw new Error('لم يتم العثور على فرع');
+      }
+
       const { data: request, error: requestError } = await supabase
         .from('maintenance_requests')
         .insert([{
+          company_id: profile.company_id,
+          branch_id: branch.id,
           title: values.title,
           description: values.description,
           client_name: values.client_name,
           client_phone: values.client_phone,
           client_email: values.client_email,
           location: values.location,
-          address: values.address,
-          preferred_date: values.preferred_date,
-          preferred_time: values.preferred_time,
-          property_id: values.property_id,
-          temp_contact_name: values.temp_contact_name,
-          temp_contact_country_code: values.temp_contact_country_code,
-          temp_contact_phone: values.temp_contact_phone,
           service_type: services.map(s => s.name).join(', '),
-          status: 'pending',
+          status: 'Open',
           workflow_stage: 'submitted',
-          service_price: totalServicePrice,
-          inspection_price: inspectionPrice,
-          tax_amount: taxAmount,
-          completion_photos: images
+          estimated_cost: totalServicePrice + inspectionPrice + taxAmount
         }])
         .select()
         .single();

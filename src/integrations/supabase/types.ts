@@ -685,55 +685,97 @@ export type Database = {
       }
       maintenance_requests: {
         Row: {
+          actual_cost: number | null
+          archived_at: string | null
           asset_id: string | null
+          assigned_vendor_id: string | null
           branch_id: string
           category_id: string | null
           channel: string | null
+          client_email: string | null
+          client_name: string | null
+          client_phone: string | null
           company_id: string
           created_at: string
           created_by: string | null
           description: string | null
+          estimated_cost: number | null
           id: string
+          location: string | null
           opened_by_role: string | null
           priority: string | null
+          rating: number | null
+          service_type: string | null
           sla_deadline: string | null
+          sla_due_date: string | null
           status: Database["public"]["Enums"]["mr_status"]
           subcategory_id: string | null
           title: string
+          updated_at: string | null
+          vendor_notes: string | null
+          workflow_stage: string | null
         }
         Insert: {
+          actual_cost?: number | null
+          archived_at?: string | null
           asset_id?: string | null
+          assigned_vendor_id?: string | null
           branch_id: string
           category_id?: string | null
           channel?: string | null
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
           company_id: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          estimated_cost?: number | null
           id?: string
+          location?: string | null
           opened_by_role?: string | null
           priority?: string | null
+          rating?: number | null
+          service_type?: string | null
           sla_deadline?: string | null
+          sla_due_date?: string | null
           status?: Database["public"]["Enums"]["mr_status"]
           subcategory_id?: string | null
           title: string
+          updated_at?: string | null
+          vendor_notes?: string | null
+          workflow_stage?: string | null
         }
         Update: {
+          actual_cost?: number | null
+          archived_at?: string | null
           asset_id?: string | null
+          assigned_vendor_id?: string | null
           branch_id?: string
           category_id?: string | null
           channel?: string | null
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
           company_id?: string
           created_at?: string
           created_by?: string | null
           description?: string | null
+          estimated_cost?: number | null
           id?: string
+          location?: string | null
           opened_by_role?: string | null
           priority?: string | null
+          rating?: number | null
+          service_type?: string | null
           sla_deadline?: string | null
+          sla_due_date?: string | null
           status?: Database["public"]["Enums"]["mr_status"]
           subcategory_id?: string | null
           title?: string
+          updated_at?: string | null
+          vendor_notes?: string | null
+          workflow_stage?: string | null
         }
         Relationships: [
           {
@@ -741,6 +783,13 @@ export type Database = {
             columns: ["asset_id"]
             isOneToOne: false
             referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
+            columns: ["assigned_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {

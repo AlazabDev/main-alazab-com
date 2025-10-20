@@ -35,6 +35,20 @@ export interface MaintenanceRequest {
   status: string;
   created_at: string;
   created_by?: string;
+  client_name?: string;
+  client_phone?: string;
+  client_email?: string;
+  location?: string;
+  service_type?: string;
+  estimated_cost?: number;
+  actual_cost?: number;
+  rating?: number;
+  workflow_stage?: string;
+  sla_due_date?: string;
+  assigned_vendor_id?: string;
+  vendor_notes?: string;
+  archived_at?: string;
+  updated_at?: string;
 }
 
 export function useMaintenanceRequests() {
