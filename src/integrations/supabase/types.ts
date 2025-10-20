@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_roles: {
+        Row: {
+          created_at: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       appointments: {
         Row: {
           appointment_date: string
@@ -122,6 +140,74 @@ export type Database = {
         }
         Relationships: []
       }
+      approvals: {
+        Row: {
+          approved_at: string | null
+          approved_by_user_id: string | null
+          id: string
+          target_entity: string | null
+          target_id: string
+          user_geo: string | null
+          user_ip: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by_user_id?: string | null
+          id?: string
+          target_entity?: string | null
+          target_id: string
+          user_geo?: string | null
+          user_ip?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by_user_id?: string | null
+          id?: string
+          target_entity?: string | null
+          target_id?: string
+          user_geo?: string | null
+          user_ip?: string | null
+        }
+        Relationships: []
+      }
+      assets: {
+        Row: {
+          branch_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          last_service_at: string | null
+          name: string
+          serial_number: string | null
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_service_at?: string | null
+          name: string
+          serial_number?: string | null
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_service_at?: string | null
+          name?: string
+          serial_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -157,33 +243,50 @@ export type Database = {
       }
       branches: {
         Row: {
+          address: string | null
           city: string | null
           code: string | null
-          country_code: string | null
+          company_id: string
           created_at: string
+          created_by: string | null
+          geo: Json | null
           id: string
-          is_active: boolean
           name: string
+          opening_hours: string | null
         }
         Insert: {
+          address?: string | null
           city?: string | null
           code?: string | null
-          country_code?: string | null
+          company_id: string
           created_at?: string
+          created_by?: string | null
+          geo?: Json | null
           id?: string
-          is_active?: boolean
           name: string
+          opening_hours?: string | null
         }
         Update: {
+          address?: string | null
           city?: string | null
           code?: string | null
-          country_code?: string | null
+          company_id?: string
           created_at?: string
+          created_by?: string | null
+          geo?: Json | null
           id?: string
-          is_active?: boolean
           name?: string
+          opening_hours?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "branches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categories: {
         Row: {
@@ -239,6 +342,36 @@ export type Database = {
           entity_type?: string
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      companies: {
+        Row: {
+          billing_cycle: string | null
+          created_at: string
+          created_by: string | null
+          eta_tax_profile_id: string | null
+          id: string
+          name: string
+          pricing_model: string | null
+        }
+        Insert: {
+          billing_cycle?: string | null
+          created_at?: string
+          created_by?: string | null
+          eta_tax_profile_id?: string | null
+          id?: string
+          name: string
+          pricing_model?: string | null
+        }
+        Update: {
+          billing_cycle?: string | null
+          created_at?: string
+          created_by?: string | null
+          eta_tax_profile_id?: string | null
+          id?: string
+          name?: string
+          pricing_model?: string | null
         }
         Relationships: []
       }
@@ -321,22 +454,7 @@ export type Database = {
           request_id?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "expenses_maintenance_request_id_fkey"
-            columns: ["maintenance_request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expenses_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "service_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       gallery_images: {
         Row: {
@@ -405,15 +523,7 @@ export type Database = {
           is_active?: boolean
           name?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "internal_teams_branch_id_fkey"
-            columns: ["branch_id"]
-            isOneToOne: false
-            referencedRelation: "branches"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       invoice_items: {
         Row: {
@@ -571,262 +681,97 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "maintenance_reports_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       maintenance_requests: {
         Row: {
-          actual_completion: string | null
-          actual_cost: number | null
-          address: string | null
-          archived_at: string | null
-          assigned_vendor_id: string | null
-          billed_at: string | null
-          client_email: string | null
-          client_name: string
-          client_phone: string | null
-          completion_photos: string[] | null
+          asset_id: string | null
+          branch_id: string
+          category_id: string | null
+          channel: string | null
+          company_id: string
           created_at: string
-          customer_notes: string | null
+          created_by: string | null
           description: string | null
-          escalation_level: number | null
-          estimated_completion: string | null
-          estimated_cost: number | null
-          follow_up_date: string | null
-          follow_up_required: boolean | null
           id: string
-          inspection_approved_at: string | null
-          inspection_approved_by: string | null
-          invoice_id: string | null
-          latitude: number | null
-          location: string
-          longitude: number | null
-          mall_branch_id: string | null
-          mall_id: number | null
-          mall_payload: Json | null
-          paid_at: string | null
-          phone: string | null
-          preferred_date: string | null
-          preferred_time: string | null
+          opened_by_role: string | null
           priority: string | null
-          quality_score: number | null
-          rating: number | null
-          requested_by: string | null
-          service_type: string
-          sla_accept_due: string | null
-          sla_arrive_due: string | null
-          sla_complete_due: string | null
-          sla_due_date: string | null
-          source: string | null
-          stage: Database["public"]["Enums"]["maintenance_stage"] | null
-          status: string | null
+          sla_deadline: string | null
+          status: Database["public"]["Enums"]["mr_status"]
+          subcategory_id: string | null
           title: string
-          updated_at: string
-          urgency_level: string | null
-          vendor_notes: string | null
-          workflow_stage:
-            | Database["public"]["Enums"]["maintenance_status"]
-            | null
         }
         Insert: {
-          actual_completion?: string | null
-          actual_cost?: number | null
-          address?: string | null
-          archived_at?: string | null
-          assigned_vendor_id?: string | null
-          billed_at?: string | null
-          client_email?: string | null
-          client_name: string
-          client_phone?: string | null
-          completion_photos?: string[] | null
+          asset_id?: string | null
+          branch_id: string
+          category_id?: string | null
+          channel?: string | null
+          company_id: string
           created_at?: string
-          customer_notes?: string | null
+          created_by?: string | null
           description?: string | null
-          escalation_level?: number | null
-          estimated_completion?: string | null
-          estimated_cost?: number | null
-          follow_up_date?: string | null
-          follow_up_required?: boolean | null
           id?: string
-          inspection_approved_at?: string | null
-          inspection_approved_by?: string | null
-          invoice_id?: string | null
-          latitude?: number | null
-          location: string
-          longitude?: number | null
-          mall_branch_id?: string | null
-          mall_id?: number | null
-          mall_payload?: Json | null
-          paid_at?: string | null
-          phone?: string | null
-          preferred_date?: string | null
-          preferred_time?: string | null
+          opened_by_role?: string | null
           priority?: string | null
-          quality_score?: number | null
-          rating?: number | null
-          requested_by?: string | null
-          service_type: string
-          sla_accept_due?: string | null
-          sla_arrive_due?: string | null
-          sla_complete_due?: string | null
-          sla_due_date?: string | null
-          source?: string | null
-          stage?: Database["public"]["Enums"]["maintenance_stage"] | null
-          status?: string | null
+          sla_deadline?: string | null
+          status?: Database["public"]["Enums"]["mr_status"]
+          subcategory_id?: string | null
           title: string
-          updated_at?: string
-          urgency_level?: string | null
-          vendor_notes?: string | null
-          workflow_stage?:
-            | Database["public"]["Enums"]["maintenance_status"]
-            | null
         }
         Update: {
-          actual_completion?: string | null
-          actual_cost?: number | null
-          address?: string | null
-          archived_at?: string | null
-          assigned_vendor_id?: string | null
-          billed_at?: string | null
-          client_email?: string | null
-          client_name?: string
-          client_phone?: string | null
-          completion_photos?: string[] | null
+          asset_id?: string | null
+          branch_id?: string
+          category_id?: string | null
+          channel?: string | null
+          company_id?: string
           created_at?: string
-          customer_notes?: string | null
+          created_by?: string | null
           description?: string | null
-          escalation_level?: number | null
-          estimated_completion?: string | null
-          estimated_cost?: number | null
-          follow_up_date?: string | null
-          follow_up_required?: boolean | null
           id?: string
-          inspection_approved_at?: string | null
-          inspection_approved_by?: string | null
-          invoice_id?: string | null
-          latitude?: number | null
-          location?: string
-          longitude?: number | null
-          mall_branch_id?: string | null
-          mall_id?: number | null
-          mall_payload?: Json | null
-          paid_at?: string | null
-          phone?: string | null
-          preferred_date?: string | null
-          preferred_time?: string | null
+          opened_by_role?: string | null
           priority?: string | null
-          quality_score?: number | null
-          rating?: number | null
-          requested_by?: string | null
-          service_type?: string
-          sla_accept_due?: string | null
-          sla_arrive_due?: string | null
-          sla_complete_due?: string | null
-          sla_due_date?: string | null
-          source?: string | null
-          stage?: Database["public"]["Enums"]["maintenance_stage"] | null
-          status?: string | null
+          sla_deadline?: string | null
+          status?: Database["public"]["Enums"]["mr_status"]
+          subcategory_id?: string | null
           title?: string
-          updated_at?: string
-          urgency_level?: string | null
-          vendor_notes?: string | null
-          workflow_stage?:
-            | Database["public"]["Enums"]["maintenance_status"]
-            | null
         }
         Relationships: [
           {
-            foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
-            columns: ["assigned_vendor_id"]
+            foreignKeyName: "maintenance_requests_asset_id_fkey"
+            columns: ["asset_id"]
             isOneToOne: false
-            referencedRelation: "vendors"
+            referencedRelation: "assets"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "maintenance_requests_mall_branch_id_fkey"
-            columns: ["mall_branch_id"]
+            foreignKeyName: "maintenance_requests_branch_id_fkey"
+            columns: ["branch_id"]
             isOneToOne: false
-            referencedRelation: "mall_branches"
+            referencedRelation: "branches"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "maintenance_requests_mall_id_fkey"
-            columns: ["mall_id"]
+            foreignKeyName: "maintenance_requests_category_id_fkey"
+            columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: "malls"
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "service_subcategories"
             referencedColumns: ["id"]
           },
         ]
-      }
-      maintenance_requests_archive: {
-        Row: {
-          actual_cost: number | null
-          assigned_to: string | null
-          completion_date: string | null
-          created_at: string | null
-          created_by: string | null
-          description: string | null
-          estimated_cost: number | null
-          id: string
-          is_deleted: boolean | null
-          primary_service_id: string | null
-          priority: string | null
-          scheduled_date: string | null
-          service_type: string | null
-          status: string | null
-          store_id: string | null
-          title: string
-          updated_at: string | null
-          updated_by: string | null
-        }
-        Insert: {
-          actual_cost?: number | null
-          assigned_to?: string | null
-          completion_date?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          estimated_cost?: number | null
-          id?: string
-          is_deleted?: boolean | null
-          primary_service_id?: string | null
-          priority?: string | null
-          scheduled_date?: string | null
-          service_type?: string | null
-          status?: string | null
-          store_id?: string | null
-          title: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Update: {
-          actual_cost?: number | null
-          assigned_to?: string | null
-          completion_date?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          estimated_cost?: number | null
-          id?: string
-          is_deleted?: boolean | null
-          primary_service_id?: string | null
-          priority?: string | null
-          scheduled_date?: string | null
-          service_type?: string | null
-          status?: string | null
-          store_id?: string | null
-          title?: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Relationships: []
       }
       maintenance_requests_summary_secure: {
         Row: {
@@ -858,66 +803,6 @@ export type Database = {
           request_count?: number
           status?: string
           updated_at?: string | null
-        }
-        Relationships: []
-      }
-      maintenance_requests_v2: {
-        Row: {
-          category_id: string | null
-          created_at: string
-          created_by: string
-          customer_id: string
-          description: string | null
-          id: string
-          location: Json | null
-          org_id: string
-          preferred_end: string | null
-          preferred_start: string | null
-          priority: string
-          property_id: string | null
-          source: string | null
-          status: Database["public"]["Enums"]["maintenance_status_v2"]
-          subcategory_id: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          category_id?: string | null
-          created_at?: string
-          created_by?: string
-          customer_id: string
-          description?: string | null
-          id?: string
-          location?: Json | null
-          org_id: string
-          preferred_end?: string | null
-          preferred_start?: string | null
-          priority?: string
-          property_id?: string | null
-          source?: string | null
-          status?: Database["public"]["Enums"]["maintenance_status_v2"]
-          subcategory_id?: string | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          category_id?: string | null
-          created_at?: string
-          created_by?: string
-          customer_id?: string
-          description?: string | null
-          id?: string
-          location?: Json | null
-          org_id?: string
-          preferred_end?: string | null
-          preferred_start?: string | null
-          priority?: string
-          property_id?: string | null
-          source?: string | null
-          status?: Database["public"]["Enums"]["maintenance_status_v2"]
-          subcategory_id?: string | null
-          title?: string
-          updated_at?: string
         }
         Relationships: []
       }
@@ -1136,15 +1021,7 @@ export type Database = {
           unit?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "material_requests_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       materials: {
         Row: {
@@ -1332,15 +1209,7 @@ export type Database = {
           updated_at?: string | null
           vendor_ref?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "parts_orders_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       payments: {
         Row: {
@@ -1376,15 +1245,7 @@ export type Database = {
           request_id?: string
           status?: Database["public"]["Enums"]["payment_status_t"]
         }
-        Relationships: [
-          {
-            foreignKeyName: "payments_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "service_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       platform_permissions: {
         Row: {
@@ -1455,16 +1316,21 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          company_id: string | null
           created_at: string | null
           created_by: string | null
           department_id: string | null
           email: string
           first_name: string | null
           id: string
+          iframe_key: string | null
           is_deleted: boolean | null
           last_name: string | null
+          link_3d: string | null
           name: string
           phone: string | null
+          photo_link: string | null
+          plan_link: string | null
           position: string | null
           reports_to: string | null
           role: string
@@ -1473,16 +1339,21 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          company_id?: string | null
           created_at?: string | null
           created_by?: string | null
           department_id?: string | null
           email: string
           first_name?: string | null
           id?: string
+          iframe_key?: string | null
           is_deleted?: boolean | null
           last_name?: string | null
+          link_3d?: string | null
           name: string
           phone?: string | null
+          photo_link?: string | null
+          plan_link?: string | null
           position?: string | null
           reports_to?: string | null
           role: string
@@ -1491,23 +1362,36 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          company_id?: string | null
           created_at?: string | null
           created_by?: string | null
           department_id?: string | null
           email?: string
           first_name?: string | null
           id?: string
+          iframe_key?: string | null
           is_deleted?: boolean | null
           last_name?: string | null
+          link_3d?: string | null
           name?: string
           phone?: string | null
+          photo_link?: string | null
+          plan_link?: string | null
           position?: string | null
           reports_to?: string | null
           role?: string
           updated_at?: string | null
           updated_by?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_documents: {
         Row: {
@@ -1543,15 +1427,7 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "project_documents_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       project_gallery: {
         Row: {
@@ -1590,15 +1466,7 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "project_gallery_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       project_phases: {
         Row: {
@@ -1652,15 +1520,7 @@ export type Database = {
           status?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "project_phases_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       project_reviews: {
         Row: {
@@ -1693,15 +1553,7 @@ export type Database = {
           reviewer_name?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "project_reviews_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       project_tasks: {
         Row: {
@@ -1766,76 +1618,170 @@ export type Database = {
           update_type?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "project_updates_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      project_views: {
+        Row: {
+          area_label: string | null
+          category: string | null
+          challenges: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          cover_image: string | null
+          created_at: string | null
+          display_status: string | null
+          duration_label: string | null
+          end_date: string | null
+          featured: boolean | null
+          full_description: string | null
+          gallery: Json | null
+          id: number
+          is_deleted: boolean | null
+          link_3d: string | null
+          order_priority: number | null
+          plan_link: string | null
+          project_name: string
+          short_description: string | null
+          slug: string | null
+          solutions: string | null
+          start_date: string | null
+          status: string | null
+          technical_specs: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          area_label?: string | null
+          category?: string | null
+          challenges?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          display_status?: string | null
+          duration_label?: string | null
+          end_date?: string | null
+          featured?: boolean | null
+          full_description?: string | null
+          gallery?: Json | null
+          id?: number
+          is_deleted?: boolean | null
+          link_3d?: string | null
+          order_priority?: number | null
+          plan_link?: string | null
+          project_name: string
+          short_description?: string | null
+          slug?: string | null
+          solutions?: string | null
+          start_date?: string | null
+          status?: string | null
+          technical_specs?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          area_label?: string | null
+          category?: string | null
+          challenges?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          display_status?: string | null
+          duration_label?: string | null
+          end_date?: string | null
+          featured?: boolean | null
+          full_description?: string | null
+          gallery?: Json | null
+          id?: number
+          is_deleted?: boolean | null
+          link_3d?: string | null
+          order_priority?: number | null
+          plan_link?: string | null
+          project_name?: string
+          short_description?: string | null
+          slug?: string | null
+          solutions?: string | null
+          start_date?: string | null
+          status?: string | null
+          technical_specs?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       projects: {
         Row: {
           actual_cost: number | null
           actual_end_date: string | null
           budget: number | null
-          client_name: string
-          created_at: string
+          company_name: string | null
+          cover_image_url: string | null
+          created_at: string | null
           description: string | null
           end_date: string | null
           gallery_url: string | null
           id: string
-          location: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
           magicplan_iframe_url: string | null
           manager_id: string | null
           name: string
           progress: number | null
+          project_type: string | null
           sketch_url: string | null
           start_date: string | null
-          status: string | null
-          updated_at: string
+          status: string
+          updated_at: string | null
         }
         Insert: {
           actual_cost?: number | null
           actual_end_date?: string | null
           budget?: number | null
-          client_name: string
-          created_at?: string
+          company_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
           description?: string | null
           end_date?: string | null
           gallery_url?: string | null
-          id?: string
-          location: string
+          id: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
           magicplan_iframe_url?: string | null
           manager_id?: string | null
           name: string
           progress?: number | null
+          project_type?: string | null
           sketch_url?: string | null
           start_date?: string | null
-          status?: string | null
-          updated_at?: string
+          status?: string
+          updated_at?: string | null
         }
         Update: {
           actual_cost?: number | null
           actual_end_date?: string | null
           budget?: number | null
-          client_name?: string
-          created_at?: string
+          company_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
           description?: string | null
           end_date?: string | null
           gallery_url?: string | null
           id?: string
-          location?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
           magicplan_iframe_url?: string | null
           manager_id?: string | null
           name?: string
           progress?: number | null
+          project_type?: string | null
           sketch_url?: string | null
           start_date?: string | null
-          status?: string | null
-          updated_at?: string
+          status?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1962,13 +1908,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "quick_maintenance_requests_converted_to_request_id_fkey"
-            columns: ["converted_to_request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "quick_maintenance_requests_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
@@ -2021,47 +1960,6 @@ export type Database = {
           },
         ]
       }
-      request_appointments_v2: {
-        Row: {
-          created_at: string
-          created_by: string
-          end_at: string
-          id: string
-          request_id: string
-          start_at: string
-          status: string
-          technician_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string
-          end_at: string
-          id?: string
-          request_id: string
-          start_at: string
-          status?: string
-          technician_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          created_by?: string
-          end_at?: string
-          id?: string
-          request_id?: string
-          start_at?: string
-          status?: string
-          technician_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "request_appointments_v2_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests_v2"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       request_approvals: {
         Row: {
           approval_type: string
@@ -2093,50 +1991,7 @@ export type Database = {
           request_id?: string
           status?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "request_approvals_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      request_assignments_v2: {
-        Row: {
-          assigned_by: string
-          created_at: string
-          id: string
-          request_id: string
-          status: string
-          technician_id: string
-        }
-        Insert: {
-          assigned_by?: string
-          created_at?: string
-          id?: string
-          request_id: string
-          status?: string
-          technician_id: string
-        }
-        Update: {
-          assigned_by?: string
-          created_at?: string
-          id?: string
-          request_id?: string
-          status?: string
-          technician_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "request_assignments_v2_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests_v2"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       request_attachments: {
         Row: {
@@ -2169,85 +2024,7 @@ export type Database = {
           size_bytes?: number | null
           uploaded_by?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "request_attachments_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "service_requests"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      request_attachments_v2: {
-        Row: {
-          created_at: string
-          file_type: string | null
-          id: string
-          path: string
-          request_id: string
-          uploaded_by: string
-        }
-        Insert: {
-          created_at?: string
-          file_type?: string | null
-          id?: string
-          path: string
-          request_id: string
-          uploaded_by?: string
-        }
-        Update: {
-          created_at?: string
-          file_type?: string | null
-          id?: string
-          path?: string
-          request_id?: string
-          uploaded_by?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "request_attachments_v2_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests_v2"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      request_comments_v2: {
-        Row: {
-          author_id: string
-          body: string
-          created_at: string
-          id: string
-          request_id: string
-          visibility: string
-        }
-        Insert: {
-          author_id?: string
-          body: string
-          created_at?: string
-          id?: string
-          request_id: string
-          visibility?: string
-        }
-        Update: {
-          author_id?: string
-          body?: string
-          created_at?: string
-          id?: string
-          request_id?: string
-          visibility?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "request_comments_v2_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests_v2"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       request_events: {
         Row: {
@@ -2358,15 +2135,7 @@ export type Database = {
           vat_amount?: number
           vat_rate?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "request_lines_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "service_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       request_reviews: {
         Row: {
@@ -2413,44 +2182,6 @@ export type Database = {
         }
         Relationships: []
       }
-      request_status_audit: {
-        Row: {
-          changed_at: string
-          changed_by: string
-          from_status: string
-          id: string
-          note: string | null
-          request_id: string
-          to_status: string
-        }
-        Insert: {
-          changed_at?: string
-          changed_by?: string
-          from_status: string
-          id?: string
-          note?: string | null
-          request_id: string
-          to_status: string
-        }
-        Update: {
-          changed_at?: string
-          changed_by?: string
-          from_status?: string
-          id?: string
-          note?: string | null
-          request_id?: string
-          to_status?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "request_status_audit_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests_v2"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       request_status_history: {
         Row: {
           changed_at: string
@@ -2479,15 +2210,7 @@ export type Database = {
           request_id?: string
           to_status?: Database["public"]["Enums"]["request_status_t"]
         }
-        Relationships: [
-          {
-            foreignKeyName: "request_status_history_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "service_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       scheduled_notifications: {
         Row: {
@@ -2530,49 +2253,19 @@ export type Database = {
       }
       service_categories: {
         Row: {
-          code: string
-          created_at: string | null
-          description: string | null
-          description_ar: string | null
-          description_en: string | null
-          icon_url: string | null
+          created_at: string
           id: string
-          is_active: boolean | null
-          name: string | null
-          name_ar: string
-          name_en: string | null
-          sort_order: number | null
-          updated_at: string | null
+          name: string
         }
         Insert: {
-          code: string
-          created_at?: string | null
-          description?: string | null
-          description_ar?: string | null
-          description_en?: string | null
-          icon_url?: string | null
+          created_at?: string
           id?: string
-          is_active?: boolean | null
-          name?: string | null
-          name_ar: string
-          name_en?: string | null
-          sort_order?: number | null
-          updated_at?: string | null
+          name: string
         }
         Update: {
-          code?: string
-          created_at?: string | null
-          description?: string | null
-          description_ar?: string | null
-          description_en?: string | null
-          icon_url?: string | null
+          created_at?: string
           id?: string
-          is_active?: boolean | null
-          name?: string | null
-          name_ar?: string
-          name_en?: string | null
-          sort_order?: number | null
-          updated_at?: string | null
+          name?: string
         }
         Relationships: []
       }
@@ -2685,121 +2378,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "service_prices_branch_id_fkey"
-            columns: ["branch_id"]
-            isOneToOne: false
-            referencedRelation: "branches"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "service_prices_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      service_requests: {
-        Row: {
-          assigned_to: string | null
-          branch_id: string
-          code: string
-          contact_user_id: string | null
-          created_at: string
-          created_by: string
-          currency: Database["public"]["Enums"]["currency_t"]
-          id: string
-          notes: string | null
-          paid_amount: number
-          property_id: string | null
-          provider_type: Database["public"]["Enums"]["provider_type_t"]
-          scheduled_at: string | null
-          service_id: string | null
-          status: Database["public"]["Enums"]["request_status_t"]
-          subtotal: number
-          team_id: string | null
-          temp_contact_country_code: string | null
-          temp_contact_name: string | null
-          temp_contact_phone: string | null
-          total: number
-          vat_amount: number
-          vendor_id: string | null
-        }
-        Insert: {
-          assigned_to?: string | null
-          branch_id: string
-          code?: string
-          contact_user_id?: string | null
-          created_at?: string
-          created_by: string
-          currency?: Database["public"]["Enums"]["currency_t"]
-          id?: string
-          notes?: string | null
-          paid_amount?: number
-          property_id?: string | null
-          provider_type?: Database["public"]["Enums"]["provider_type_t"]
-          scheduled_at?: string | null
-          service_id?: string | null
-          status?: Database["public"]["Enums"]["request_status_t"]
-          subtotal?: number
-          team_id?: string | null
-          temp_contact_country_code?: string | null
-          temp_contact_name?: string | null
-          temp_contact_phone?: string | null
-          total?: number
-          vat_amount?: number
-          vendor_id?: string | null
-        }
-        Update: {
-          assigned_to?: string | null
-          branch_id?: string
-          code?: string
-          contact_user_id?: string | null
-          created_at?: string
-          created_by?: string
-          currency?: Database["public"]["Enums"]["currency_t"]
-          id?: string
-          notes?: string | null
-          paid_amount?: number
-          property_id?: string | null
-          provider_type?: Database["public"]["Enums"]["provider_type_t"]
-          scheduled_at?: string | null
-          service_id?: string | null
-          status?: Database["public"]["Enums"]["request_status_t"]
-          subtotal?: number
-          team_id?: string | null
-          temp_contact_country_code?: string | null
-          temp_contact_name?: string | null
-          temp_contact_phone?: string | null
-          total?: number
-          vat_amount?: number
-          vendor_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "service_requests_branch_id_fkey"
-            columns: ["branch_id"]
-            isOneToOne: false
-            referencedRelation: "branches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_requests_team_id_fkey"
-            columns: ["team_id"]
-            isOneToOne: false
-            referencedRelation: "internal_teams"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_requests_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
@@ -2810,48 +2389,21 @@ export type Database = {
       service_subcategories: {
         Row: {
           category_id: string
-          code: string
-          created_at: string | null
-          description: string | null
-          description_ar: string | null
-          description_en: string | null
+          created_at: string
           id: string
-          is_active: boolean | null
-          name: string | null
-          name_ar: string
-          name_en: string | null
-          sort_order: number | null
-          updated_at: string | null
+          name: string
         }
         Insert: {
           category_id: string
-          code: string
-          created_at?: string | null
-          description?: string | null
-          description_ar?: string | null
-          description_en?: string | null
+          created_at?: string
           id?: string
-          is_active?: boolean | null
-          name?: string | null
-          name_ar: string
-          name_en?: string | null
-          sort_order?: number | null
-          updated_at?: string | null
+          name: string
         }
         Update: {
           category_id?: string
-          code?: string
-          created_at?: string | null
-          description?: string | null
-          description_ar?: string | null
-          description_en?: string | null
+          created_at?: string
           id?: string
-          is_active?: boolean | null
-          name?: string | null
-          name_ar?: string
-          name_en?: string | null
-          sort_order?: number | null
-          updated_at?: string | null
+          name?: string
         }
         Relationships: [
           {
@@ -2927,15 +2479,7 @@ export type Database = {
           unit?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "services_subcategory_id_fkey"
-            columns: ["subcategory_id"]
-            isOneToOne: false
-            referencedRelation: "service_subcategories"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       sla_policies: {
         Row: {
@@ -3340,15 +2884,7 @@ export type Database = {
           request_id?: string | null
           vendor_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "vendor_communications_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: false
-            referencedRelation: "maintenance_requests"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       vendor_locations: {
         Row: {
@@ -3436,6 +2972,88 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      wo_media: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          file_url: string
+          id: string
+          media_type: string | null
+          signature_blob: string | null
+          wo_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          file_url: string
+          id?: string
+          media_type?: string | null
+          signature_blob?: string | null
+          wo_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          file_url?: string
+          id?: string
+          media_type?: string | null
+          signature_blob?: string | null
+          wo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wo_media_wo_id_fkey"
+            columns: ["wo_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_orders: {
+        Row: {
+          assigned_to_technician_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          mr_id: string
+          route_eta: string | null
+          schedule_end: string | null
+          schedule_start: string | null
+          status: Database["public"]["Enums"]["wo_status"]
+        }
+        Insert: {
+          assigned_to_technician_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          mr_id: string
+          route_eta?: string | null
+          schedule_end?: string | null
+          schedule_start?: string | null
+          status?: Database["public"]["Enums"]["wo_status"]
+        }
+        Update: {
+          assigned_to_technician_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          mr_id?: string
+          route_eta?: string | null
+          schedule_end?: string | null
+          schedule_start?: string | null
+          status?: Database["public"]["Enums"]["wo_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_orders_mr_id_fkey"
+            columns: ["mr_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       work_tasks: {
         Row: {
@@ -3852,6 +3470,10 @@ export type Database = {
           vendor_id: string
         }[]
       }
+      get_current_user_company_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_customer_contact_info: {
         Args: { appointment_id: string }
         Returns: {
@@ -3908,6 +3530,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_staff: {
         Args: Record<PropertyKey, never> | { uid: string }
         Returns: boolean
@@ -3923,28 +3549,6 @@ export type Database = {
       recalc_request_totals: {
         Args: { p_request_id: string }
         Returns: undefined
-      }
-      transition_request: {
-        Args: { p_new_status: string; p_note?: string; p_request_id: string }
-        Returns: {
-          category_id: string | null
-          created_at: string
-          created_by: string
-          customer_id: string
-          description: string | null
-          id: string
-          location: Json | null
-          org_id: string
-          preferred_end: string | null
-          preferred_start: string | null
-          priority: string
-          property_id: string | null
-          source: string | null
-          status: Database["public"]["Enums"]["maintenance_status_v2"]
-          subcategory_id: string | null
-          title: string
-          updated_at: string
-        }
       }
       update_summary_data: {
         Args: Record<PropertyKey, never>
@@ -4033,6 +3637,14 @@ export type Database = {
         | "reopened"
         | "canceled"
         | "rejected"
+      mr_status:
+        | "Open"
+        | "Assigned"
+        | "InProgress"
+        | "Waiting"
+        | "Completed"
+        | "Rejected"
+        | "Cancelled"
       payment_status_t:
         | "draft"
         | "pending"
@@ -4059,6 +3671,14 @@ export type Database = {
         | "feedback"
         | "payment"
         | "note"
+      wo_status:
+        | "Pending"
+        | "Scheduled"
+        | "EnRoute"
+        | "InProgress"
+        | "Paused"
+        | "Completed"
+        | "Cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4246,6 +3866,15 @@ export const Constants = {
         "canceled",
         "rejected",
       ],
+      mr_status: [
+        "Open",
+        "Assigned",
+        "InProgress",
+        "Waiting",
+        "Completed",
+        "Rejected",
+        "Cancelled",
+      ],
       payment_status_t: [
         "draft",
         "pending",
@@ -4274,6 +3903,15 @@ export const Constants = {
         "feedback",
         "payment",
         "note",
+      ],
+      wo_status: [
+        "Pending",
+        "Scheduled",
+        "EnRoute",
+        "InProgress",
+        "Paused",
+        "Completed",
+        "Cancelled",
       ],
     },
   },
