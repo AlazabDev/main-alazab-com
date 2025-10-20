@@ -18,41 +18,23 @@ export type WorkflowStage =
   | 'cancelled'
   | 'on_hold';
 
+// Based on actual database schema
 export interface MaintenanceRequest {
   id: string;
+  company_id: string;
+  branch_id: string;
+  asset_id?: string;
+  category_id?: string;
+  subcategory_id?: string;
+  opened_by_role?: string;
+  channel?: string;
   title: string;
   description?: string;
-  client_name: string;
-  client_phone?: string;
-  client_email?: string;
-  location: string;
-  address?: string;
-  phone?: string;
-  service_type: string;
+  priority?: string;
+  sla_deadline?: string;
   status: string;
-  priority: string;
-  preferred_date?: string;
-  preferred_time?: string;
-  customer_notes?: string;
-  vendor_notes?: string;
-  estimated_cost?: number;
-  actual_cost?: number;
-  rating?: number;
-  completion_photos?: string[];
   created_at: string;
-  updated_at: string;
-  requested_by?: string;
-  assigned_vendor_id?: string;
-  estimated_completion?: string;
-  actual_completion?: string;
-  // New lifecycle fields
-  workflow_stage?: WorkflowStage;
-  sla_due_date?: string;
-  escalation_level?: number;
-  quality_score?: number;
-  follow_up_required?: boolean;
-  follow_up_date?: string;
-  archived_at?: string;
+  created_by?: string;
 }
 
 export function useMaintenanceRequests() {
@@ -75,8 +57,7 @@ export function useMaintenanceRequests() {
 
       const { data, error } = await supabase
         .from('maintenance_requests')
-        .select('id,title,description,client_name,client_phone,location,service_type,status,priority,preferred_date,estimated_cost,actual_cost,created_at,updated_at,assigned_vendor_id,workflow_stage,sla_due_date')
-        .is('archived_at', null)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -105,9 +86,8 @@ export function useMaintenanceRequests() {
         .from('maintenance_requests')
         .insert({
           ...requestData,
-          requested_by: user.id,
-          status: 'pending',
-          workflow_stage: 'submitted'
+          created_by: user.id,
+          status: 'Open'
         })
         .select()
         .single();

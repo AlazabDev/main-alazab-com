@@ -38,13 +38,17 @@ export const useServices = () => {
   const fetchCategories = async () => {
     try {
       const { data, error } = await supabase
-        .from('service_categories')
-        .select('*')
+        .from('categories')
+        .select('id, name, description, icon_url, sort_order, is_active')
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
 
       if (error) throw error;
-      setCategories(data || []);
+      setCategories((data || []).map(cat => ({
+        ...cat,
+        icon: cat.icon_url,
+        parent_id: undefined
+      })));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'خطأ في تحميل التصنيفات');
     }

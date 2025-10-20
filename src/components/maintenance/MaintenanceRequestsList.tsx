@@ -35,29 +35,19 @@ export function MaintenanceRequestsList({ onNewRequestClick }: MaintenanceReques
   const filteredRequests = useMemo(() => {
     return requests?.filter(request => {
       const matchesSearch = request.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           request.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           request.client_name?.toLowerCase().includes(searchTerm.toLowerCase());
+                           request.description?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesStatus = statusFilter === "all" || request.status === statusFilter;
       const matchesPriority = priorityFilter === "all" || request.priority === priorityFilter;
-      const matchesServiceType = serviceTypeFilter === "all" || request.service_type === serviceTypeFilter;
-      const matchesLocation = !locationFilter || request.location?.toLowerCase().includes(locationFilter.toLowerCase());
       
       const requestDate = new Date(request.created_at);
       const matchesDateFrom = !dateFromFilter || requestDate >= dateFromFilter;
       const matchesDateTo = !dateToFilter || requestDate <= dateToFilter;
       
-      const cost = request.actual_cost || request.estimated_cost || 0;
-      const matchesMinCost = !minCostFilter || cost >= parseFloat(minCostFilter);
-      const matchesMaxCost = !maxCostFilter || cost <= parseFloat(maxCostFilter);
-      
-      const matchesRating = ratingFilter === "all" || !request.rating || request.rating >= parseInt(ratingFilter);
-      
-      return matchesSearch && matchesStatus && matchesPriority && matchesServiceType && 
-             matchesLocation && matchesDateFrom && matchesDateTo && matchesMinCost && 
-             matchesMaxCost && matchesRating;
+      return matchesSearch && matchesStatus && matchesPriority && 
+             matchesDateFrom && matchesDateTo;
     }) || [];
-  }, [requests, searchTerm, statusFilter, priorityFilter, serviceTypeFilter, locationFilter, 
+  }, [requests, searchTerm, statusFilter, priorityFilter,
       dateFromFilter, dateToFilter, minCostFilter, maxCostFilter, ratingFilter]);
 
   const clearFilters = () => {

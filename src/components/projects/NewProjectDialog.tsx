@@ -38,22 +38,15 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
     setLoading(true);
 
     try {
-      const { error } = await supabase.from("projects").insert({
-        name: formData.name,
-        code: formData.code || null,
+      const { error } = await supabase.from("projects").insert([{
+        client_name: formData.name,
         description: formData.description || null,
-        client_name: formData.client_name,
         location: formData.location,
-        project_type: formData.project_type || null,
         status: formData.status,
         budget: formData.budget ? parseFloat(formData.budget) : null,
         start_date: formData.start_date || null,
-        end_date: formData.end_date || null,
-        magicplan_iframe_url: formData.magicplan_iframe_url || null,
-        cover_image_url: formData.cover_image_url || null,
-        latitude: formData.latitude ? parseFloat(formData.latitude) : null,
-        longitude: formData.longitude ? parseFloat(formData.longitude) : null,
-      });
+        end_date: formData.end_date || null
+      }]);
 
       if (error) throw error;
 
