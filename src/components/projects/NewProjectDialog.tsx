@@ -39,9 +39,11 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
 
     try {
       const { error } = await supabase.from("projects").insert({
+        id: crypto.randomUUID(),
         name: formData.name,
+        company_name: formData.client_name,
         description: formData.description || null,
-        location: formData.location,
+        location: formData.location || "",
         status: formData.status,
         budget: formData.budget ? parseFloat(formData.budget) : null,
         start_date: formData.start_date || null,
