@@ -75,10 +75,15 @@ export const NewVendorForm = ({ onClose, onSuccess }: NewVendorFormProps) => {
       const { error } = await supabase
         .from('vendors')
         .insert([{
-          ...formData,
+          name: formData.name,
+          company_name: formData.company_name || null,
+          specialization: formData.specialization,
+          phone: formData.phone || null,
+          email: formData.email || null,
+          address: formData.address || null,
           hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : null,
           experience_years: formData.experience_years ? parseInt(formData.experience_years) : null,
-          certifications: certifications.length > 0 ? certifications : null
+          status: 'active'
         }]);
 
       if (error) throw error;

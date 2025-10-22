@@ -115,38 +115,12 @@ export function PropertyForm() {
   }, [selectedCity]);
 
   const onSubmit = async (data: PropertyFormData) => {
-    if (!location) {
-      toast({
-        variant: "destructive",
-        title: "خطأ",
-        description: "يرجى تحديد موقع العقار على الخريطة",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         throw new Error("يجب تسجيل الدخول أولاً");
-      }
-
-      // رفع الصور أولاً
-      const imageUrls: string[] = [];
-      for (const image of images) {
-        const fileName = `${Date.now()}_${image.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("az_gallery")
-          .upload(`properties/${fileName}`, image);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from("az_gallery")
-          .getPublicUrl(uploadData.path);
-
-        imageUrls.push(publicUrl);
       }
 
       // إنشاء العقار
@@ -157,9 +131,9 @@ export function PropertyForm() {
           type: data.type,
           address: data.address,
           area: data.area,
-          rooms: data.rooms,
-          description: data.description,
-          region_id: data.district_id || data.city_id,
+          rooms: data.rooms || 0,
+          description: data.description || null,
+          region_id: data.district_id || data.city_id || null,
           status: "active",
           manager_id: user.id,
         });

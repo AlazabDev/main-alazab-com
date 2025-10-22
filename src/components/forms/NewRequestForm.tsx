@@ -39,7 +39,6 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     priority: "medium",
     preferred_date: "",
     preferred_time: "",
-    customer_notes: "",
     latitude: null as number | null,
     longitude: null as number | null,
     property_id: "" as string
@@ -210,7 +209,6 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
           priority: "medium",
           preferred_date: "",
           preferred_time: "",
-          customer_notes: "",
           latitude: null,
           longitude: null,
           property_id: ""
@@ -494,17 +492,6 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="customer_notes">ملاحظات إضافية</Label>
-            <Textarea
-              id="customer_notes"
-              placeholder="أي معلومات إضافية تساعد في تنفيذ المهمة..."
-              value={formData.customer_notes}
-              onChange={(e) => handleChange("customer_notes", e.target.value)}
-              rows={3}
-            />
           </div>
 
           {/* Priority Badge Preview */}
