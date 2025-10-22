@@ -123,20 +123,32 @@ export function PropertyForm() {
         throw new Error("يجب تسجيل الدخول أولاً");
       }
 
+      // التحقق من الموقع
+      if (!location) {
+        toast({
+          variant: "destructive",
+          title: "خطأ",
+          description: "يرجى تحديد موقع العقار على الخريطة",
+        });
+        return;
+      }
+
       // إنشاء العقار
       const { error: insertError } = await supabase
         .from("properties")
-        .insert({
+        .insert([{
           name: data.name,
           type: data.type,
           address: data.address,
-          area: data.area,
-          rooms: data.rooms || 0,
+          area: data.area ? parseFloat(data.area.toString()) : null,
+          rooms: data.rooms ? parseInt(data.rooms.toString()) : null,
           description: data.description || null,
           region_id: data.district_id || data.city_id || null,
+          latitude: location.latitude,
+          longitude: location.longitude,
           status: "active",
           manager_id: user.id,
-        });
+        } as any]);
 
       if (insertError) throw insertError;
 
