@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      _temp_approvers: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
       app_roles: {
         Row: {
           created_at: string | null
@@ -2911,22 +2929,10 @@ export type Database = {
       }
     }
     Functions: {
-      app_is_admin: {
-        Args: { uid: string }
-        Returns: boolean
-      }
-      app_is_owner: {
-        Args: { row_user_id: string }
-        Returns: boolean
-      }
-      app_is_staff: {
-        Args: { uid: string }
-        Returns: boolean
-      }
-      app_is_vendor: {
-        Args: { uid: string }
-        Returns: boolean
-      }
+      app_is_admin: { Args: { uid: string }; Returns: boolean }
+      app_is_owner: { Args: { row_user_id: string }; Returns: boolean }
+      app_is_staff: { Args: { uid: string }; Returns: boolean }
+      app_is_vendor: { Args: { uid: string }; Returns: boolean }
       calculate_distance: {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
@@ -2973,26 +2979,11 @@ export type Database = {
           vendor_name: string
         }[]
       }
-      fn_claim: {
-        Args: { key: string }
-        Returns: string
-      }
-      fn_claim_uuid: {
-        Args: { key: string }
-        Returns: string
-      }
-      fn_has_role: {
-        Args: { roles: string[] }
-        Returns: boolean
-      }
-      fn_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_invoice_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      fn_claim: { Args: { key: string }; Returns: string }
+      fn_claim_uuid: { Args: { key: string }; Returns: string }
+      fn_has_role: { Args: { roles: string[] }; Returns: boolean }
+      fn_role: { Args: never; Returns: string }
+      generate_invoice_number: { Args: never; Returns: string }
       get_appointment_contact_info: {
         Args: { appointment_id: string }
         Returns: {
@@ -3010,7 +3001,7 @@ export type Database = {
         }[]
       }
       get_appointments_for_staff: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           appointment_date: string
           appointment_time: string
@@ -3029,10 +3020,7 @@ export type Database = {
           vendor_id: string
         }[]
       }
-      get_current_user_company_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_current_user_company_id: { Args: never; Returns: string }
       get_customer_contact_info: {
         Args: { appointment_id: string }
         Returns: {
@@ -3041,18 +3029,9 @@ export type Database = {
           customer_phone: string
         }[]
       }
-      get_customer_email: {
-        Args: { appointment_id: string }
-        Returns: string
-      }
-      get_customer_name: {
-        Args: { appointment_id: string }
-        Returns: string
-      }
-      get_customer_phone: {
-        Args: { appointment_id: string }
-        Returns: string
-      }
+      get_customer_email: { Args: { appointment_id: string }; Returns: string }
+      get_customer_name: { Args: { appointment_id: string }; Returns: string }
+      get_customer_phone: { Args: { appointment_id: string }; Returns: string }
       get_full_customer_info: {
         Args: { appointment_id: string }
         Returns: {
@@ -3062,7 +3041,7 @@ export type Database = {
         }[]
       }
       get_vendor_appointments: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           appointment_date: string
           appointment_time: string
@@ -3089,18 +3068,11 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_staff: {
-        Args: Record<PropertyKey, never> | { uid: string }
-        Returns: boolean
-      }
-      is_vendor: {
-        Args: { uid: string }
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
+      is_staff:
+        | { Args: { uid: string }; Returns: boolean }
+        | { Args: never; Returns: boolean }
+      is_vendor: { Args: { uid: string }; Returns: boolean }
       mask_customer_phone: {
         Args: { phone: string; user_role: string }
         Returns: string
@@ -3109,16 +3081,10 @@ export type Database = {
         Args: { p_request_id: string }
         Returns: undefined
       }
-      update_summary_data: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      update_summary_tables: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      update_summary_data: { Args: never; Returns: undefined }
+      update_summary_tables: { Args: never; Returns: undefined }
       vendor_appointments_func: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           appointment_date: string
           appointment_time: string
