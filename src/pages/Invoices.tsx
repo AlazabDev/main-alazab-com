@@ -32,6 +32,17 @@ export default function Invoices() {
 
   const fetchInvoices = async () => {
     try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session) {
+        toast({
+          title: "يجب تسجيل الدخول",
+          description: "الرجاء تسجيل الدخول لعرض الفواتير",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('invoices')
         .select('*')
@@ -40,6 +51,7 @@ export default function Invoices() {
       if (error) throw error;
       setInvoices(data || []);
     } catch (error: any) {
+      console.error('Error fetching invoices:', error);
       toast({
         title: "خطأ في تحميل الفواتير",
         description: error.message,
