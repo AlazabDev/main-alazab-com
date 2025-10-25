@@ -218,9 +218,9 @@ const Testing = () => {
     const start = Date.now();
     
     try {
-      // Use secure view for testing
+      // استخدام VIEW الآمن للاختبار
       const { data, error } = await supabase
-        .from('appointments_staff_view')
+        .from('appointments_staff_secure')
         .select('*')
         .limit(1);
       
