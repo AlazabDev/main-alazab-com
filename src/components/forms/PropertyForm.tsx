@@ -44,7 +44,12 @@ const propertySchema = z.object({
 
 type PropertyFormData = z.infer<typeof propertySchema>;
 
-export function PropertyForm() {
+interface PropertyFormProps {
+  onSuccess?: () => void;
+  skipNavigation?: boolean;
+}
+
+export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = {}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [location, setLocation] = useState<{
     latitude: number;
@@ -157,7 +162,13 @@ export function PropertyForm() {
         description: "تم إضافة العقار بنجاح",
       });
 
-      navigate("/properties");
+      if (onSuccess) {
+        onSuccess();
+      }
+      
+      if (!skipNavigation) {
+        navigate("/properties");
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",

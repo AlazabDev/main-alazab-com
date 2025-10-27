@@ -14,7 +14,7 @@ import { LocationPicker } from "@/components/forms/LocationPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useRequestLifecycle } from "@/hooks/useRequestLifecycle";
 import { useProperties } from "@/hooks/useProperties";
-import { NewPropertyForm } from "./NewPropertyForm";
+import { PropertyForm } from "./PropertyForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface NewRequestFormProps {
@@ -276,12 +276,12 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
               يجب إضافة عقار أولاً قبل تقديم طلب الصيانة. يساعدنا ذلك في تقديم خدمة أفضل لك.
             </AlertDescription>
           </Alert>
-          <NewPropertyForm 
-            onClose={() => {
+          <PropertyForm 
+            skipNavigation={true}
+            onSuccess={() => {
               setShowPropertyForm(false);
               onCancel?.();
             }}
-            onSuccess={handlePropertyAdded}
           />
         </CardContent>
       </Card>
@@ -328,8 +328,8 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
                   <DialogHeader>
                     <DialogTitle>إضافة عقار جديد</DialogTitle>
                   </DialogHeader>
-                  <NewPropertyForm 
-                    onClose={() => {}}
+                  <PropertyForm 
+                    skipNavigation={true}
                     onSuccess={() => {
                       toast({
                         title: "تم إضافة العقار بنجاح",

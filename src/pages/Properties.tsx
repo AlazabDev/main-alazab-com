@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building2, MapPin, Calendar, DollarSign, Search, Plus, Eye, Edit, MoreVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { NewPropertyForm } from "@/components/forms/NewPropertyForm";
 import { useProperties } from "@/hooks/useProperties";
 import { useNavigate } from "react-router-dom";
 import { PropertyQRCode } from "@/components/properties/PropertyQRCode";
@@ -17,7 +16,6 @@ export default function Properties() {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [showNewPropertyForm, setShowNewPropertyForm] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<{id: string, name: string} | null>(null);
   const navigate = useNavigate();
   
