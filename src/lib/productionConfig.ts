@@ -75,18 +75,29 @@ export const PRODUCTION_CONFIG = {
 
 // دالة للتحقق من إعدادات البيئة
 export const validateEnvironment = () => {
-  const required = [
-    'SUPABASE_URL',
-    'SUPABASE_ANON_KEY',
-  ];
-
-  const missing = required.filter(key => !window.location.hostname.includes('lovable'));
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  
+  const missing: string[] = [];
+  
+  if (!supabaseUrl) missing.push('VITE_SUPABASE_URL');
+  if (!supabaseKey) missing.push('VITE_SUPABASE_PUBLISHABLE_KEY');
   
   if (missing.length > 0) {
-    console.warn('Missing environment variables:', missing);
+    console.error('Missing required environment variables:', missing);
+    return false;
   }
 
-  return missing.length === 0;
+  // تحذير إذا كانت المفاتيح تبدو غير صحيحة
+  if (!supabaseUrl.includes('supabase.co')) {
+    console.warn('VITE_SUPABASE_URL may be invalid');
+  }
+  
+  if (!supabaseKey.startsWith('eyJ')) {
+    console.warn('VITE_SUPABASE_PUBLISHABLE_KEY may be invalid');
+  }
+
+  return true;
 };
 
 // دالة لتطبيق إعدادات الأمان
@@ -99,7 +110,7 @@ export const applySecuritySettings = () => {
   }
 
   // إخفاء أدوات المطور في الإنتاج
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.PROD) {
     const devtools = {
       open: false,
       orientation: null

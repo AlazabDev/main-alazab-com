@@ -101,9 +101,9 @@ serve(async (req) => {
       throw notificationError;
     }
 
-    // تحديث طلب الصيانة لتعيين الفني
+    // تحديث طلب الصيانة لتعيين الفني (استخدام v2)
     const { error: updateError } = await supabase
-      .from('maintenance_requests')
+      .from('maintenance_requests_v2')
       .update({ 
         assigned_vendor_id: nearestVendor.vendor_id,
         status: 'assigned'

@@ -32,8 +32,35 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Verify JWT authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Missing authorization header' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+    // Create client with user's JWT for authentication check
+    const supabaseClient = createClient(supabaseUrl, supabaseKey, {
+      global: {
+        headers: { Authorization: authHeader },
+      },
+    });
+
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Create admin client for database operations
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const body = await req.json();
@@ -48,12 +75,12 @@ Deno.serve(async (req) => {
       });
     }
 
-    // معالجة وتنظيف كل خطأ
+    // معالجة وتنظيف كل خطأ مع ربطه بالمستخدم المصادق عليه
     const sanitizedErrors = errors.map((err: any) => ({
       message: String(err.message || 'Unknown error').slice(0, 1000),
       stack: err.stack ? String(err.stack).slice(0, 5000) : undefined,
       url: err.url ? String(err.url).slice(0, 500) : '',
-      user_id: err.user_id || undefined,
+      user_id: user.id, // استخدام معرف المستخدم المصادق عليه
       user_agent: err.user_agent ? String(err.user_agent).slice(0, 500) : undefined,
       level: ['error', 'warning', 'info', 'warn'].includes(err.level) ? err.level : 'error',
       metadata: err.metadata || undefined,
