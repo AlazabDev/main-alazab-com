@@ -20,7 +20,7 @@ const mockVendors = [
     location: "المنصورة، الدقهلية",
     phone: "01012345678",
     status: "available" as const,
-    hourlyRate: "50 ج.م/ساعة",
+    unitRate: "50 ج.م/وحدة",
     verified: true,
     responseTime: "15 دقيقة"
   },
@@ -33,7 +33,7 @@ const mockVendors = [
     location: "القاهرة، مصر الجديدة",
     phone: "01123456789",
     status: "busy" as const,
-    hourlyRate: "45 ج.م/ساعة",
+    unitRate: "45 ج.م/وحدة",
     verified: true,
     responseTime: "30 دقيقة"
   },
@@ -46,7 +46,7 @@ const mockVendors = [
     location: "الإسكندرية",
     phone: "01234567890",
     status: "available" as const,
-    hourlyRate: "55 ج.م/ساعة",
+    unitRate: "55 ج.م/وحدة",
     verified: false,
     responseTime: "20 دقيقة"
   },
@@ -59,7 +59,7 @@ const mockVendors = [
     location: "الجيزة، 6 أكتوبر",
     phone: "01345678901",
     status: "offline" as const,
-    hourlyRate: "60 ج.م/ساعة",
+    unitRate: "60 ج.م/وحدة",
     verified: true,
     responseTime: "45 دقيقة"
   }
@@ -261,7 +261,7 @@ export default function Vendors() {
               location: vendor.address || vendor.location || 'غير محدد',
               phone: vendor.phone || '',
               status: vendor.status,
-              hourlyRate: vendor.hourly_rate ? `${vendor.hourly_rate} ريال/ساعة` : vendor.hourlyRate || '0 ريال/ساعة',
+              unitRate: vendor.unit_rate ? `${vendor.unit_rate} جنيه/وحدة` : vendor.unitRate || '0 جنيه/وحدة',
               verified: vendor.certifications ? vendor.certifications.length > 0 : vendor.verified || false,
               responseTime: vendor.responseTime || '30 دقيقة'
             }}

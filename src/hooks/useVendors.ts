@@ -11,7 +11,7 @@ export interface Vendor {
   address?: string;
   rating?: number;
   status?: string;
-  hourly_rate?: number;
+  unit_rate?: number;
   experience_years?: number;
   profile_image?: string;
   total_jobs?: number;

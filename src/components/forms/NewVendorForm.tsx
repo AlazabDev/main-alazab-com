@@ -23,7 +23,7 @@ export const NewVendorForm = ({ onClose, onSuccess }: NewVendorFormProps) => {
     phone: "",
     email: "",
     address: "",
-    hourly_rate: "",
+    unit_rate: "",
     experience_years: "",
     notes: ""
   });
@@ -81,7 +81,7 @@ export const NewVendorForm = ({ onClose, onSuccess }: NewVendorFormProps) => {
           phone: formData.phone || null,
           email: formData.email || null,
           address: formData.address || null,
-          hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : null,
+          unit_rate: formData.unit_rate ? parseFloat(formData.unit_rate) : null,
           experience_years: formData.experience_years ? parseInt(formData.experience_years) : null,
           status: 'active'
         }]);
@@ -175,12 +175,12 @@ export const NewVendorForm = ({ onClose, onSuccess }: NewVendorFormProps) => {
               />
             </div>
             <div>
-              <Label htmlFor="hourly_rate">السعر بالساعة (ريال)</Label>
+              <Label htmlFor="unit_rate">سعر الوحدة (جنيه)</Label>
               <Input
-                id="hourly_rate"
+                id="unit_rate"
                 type="number"
-                value={formData.hourly_rate}
-                onChange={(e) => handleInputChange("hourly_rate", e.target.value)}
+                value={formData.unit_rate}
+                onChange={(e) => handleInputChange("unit_rate", e.target.value)}
                 placeholder="0"
               />
             </div>

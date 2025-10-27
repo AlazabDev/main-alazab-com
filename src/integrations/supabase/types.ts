@@ -2665,7 +2665,6 @@ export type Database = {
           created_at: string
           email: string | null
           experience_years: number | null
-          hourly_rate: number | null
           id: string
           name: string
           phone: string | null
@@ -2674,6 +2673,7 @@ export type Database = {
           specialization: string[] | null
           status: string | null
           total_jobs: number | null
+          unit_rate: number | null
           updated_at: string
         }
         Insert: {
@@ -2682,7 +2682,6 @@ export type Database = {
           created_at?: string
           email?: string | null
           experience_years?: number | null
-          hourly_rate?: number | null
           id?: string
           name: string
           phone?: string | null
@@ -2691,6 +2690,7 @@ export type Database = {
           specialization?: string[] | null
           status?: string | null
           total_jobs?: number | null
+          unit_rate?: number | null
           updated_at?: string
         }
         Update: {
@@ -2699,7 +2699,6 @@ export type Database = {
           created_at?: string
           email?: string | null
           experience_years?: number | null
-          hourly_rate?: number | null
           id?: string
           name?: string
           phone?: string | null
@@ -2708,6 +2707,7 @@ export type Database = {
           specialization?: string[] | null
           status?: string | null
           total_jobs?: number | null
+          unit_rate?: number | null
           updated_at?: string
         }
         Relationships: []

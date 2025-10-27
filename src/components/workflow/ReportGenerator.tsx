@@ -22,7 +22,7 @@ export function ReportGenerator({ requestId, requestData }: ReportGeneratorProps
     findings: '',
     recommendations: '',
     materials_used: '',
-    labor_hours: '',
+    labor_units: '',
     total_cost: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,7 +61,7 @@ export function ReportGenerator({ requestId, requestData }: ReportGeneratorProps
         findings: '',
         recommendations: '',
         materials_used: '',
-        labor_hours: '',
+        labor_units: '',
         total_cost: ''
       });
     } catch (error) {
@@ -162,13 +162,13 @@ export function ReportGenerator({ requestId, requestData }: ReportGeneratorProps
               </div>
 
               <div className="space-y-2">
-                <Label>ساعات العمل</Label>
+                <Label>عدد الوحدات</Label>
                 <Input
                   type="number"
-                  value={contentData.labor_hours}
-                  onChange={(e) => setContentData({ ...contentData, labor_hours: e.target.value })}
-                  placeholder="عدد الساعات"
-                  step="0.5"
+                  value={contentData.labor_units}
+                  onChange={(e) => setContentData({ ...contentData, labor_units: e.target.value })}
+                  placeholder="عدد الوحدات"
+                  step="1"
                 />
               </div>
 

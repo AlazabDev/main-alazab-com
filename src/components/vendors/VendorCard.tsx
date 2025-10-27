@@ -14,7 +14,7 @@ interface VendorCardProps {
     location: string;
     phone: string;
     status: "available" | "busy" | "offline";
-    hourlyRate: string;
+    unitRate: string;
     avatar?: string;
     verified: boolean;
     responseTime: string;
@@ -72,7 +72,7 @@ export function VendorCard({ vendor, onContact, onAssign }: VendorCardProps) {
           </div>
           <div className="flex items-center gap-1 text-primary">
             <Award className="h-4 w-4" />
-            <span>{vendor.hourlyRate}</span>
+            <span>{vendor.unitRate}</span>
           </div>
         </div>
 
