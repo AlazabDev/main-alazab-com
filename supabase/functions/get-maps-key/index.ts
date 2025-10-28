@@ -12,14 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    // Read API key from Supabase Secrets
-    let googleMapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
-    
-    // إذا لم يكن موجود في Secrets، استخدم المفتاح الجديد
-    if (!googleMapsApiKey) {
-      googleMapsApiKey = 'AIzaSyBojIb88fGshq8NBXq2qNu-7eEJZwVgGxg';
-      console.log('Using fallback Google Maps API key');
-    }
+    // استخدام المفتاح الجديد المحدّث
+    const googleMapsApiKey = 'AIzaSyBojIb88fGshq8NBXq2qNu-7eEJZwVgGxg';
+    console.log('Using updated Google Maps API key for main-alazab-com');
 
     return new Response(
       JSON.stringify({ apiKey: googleMapsApiKey }), 

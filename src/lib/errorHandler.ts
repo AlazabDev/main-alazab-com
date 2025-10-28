@@ -112,6 +112,14 @@ class ErrorHandler {
     this.errorQueue = [];
 
     try {
+      // تحقق من وجود session أولاً
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // إذا لم يكن هناك session، احتفظ بالأخطاء محلياً فقط
+        console.log('[Dev] Error logs stored locally (no session)');
+        return;
+      }
+
       // إرسال الأخطاء للخادم
       const { error } = await supabase.functions.invoke('error-tracking', {
         body: { errors: errorsToSend }
@@ -120,7 +128,7 @@ class ErrorHandler {
       if (error) {
         // إعادة الأخطاء للطابور في حالة الفشل
         this.errorQueue.unshift(...errorsToSend);
-        throw error;
+        console.warn('Failed to send error logs:', error);
       }
     } catch (error) {
       // إعادة الأخطاء للطابور في حالة الفشل

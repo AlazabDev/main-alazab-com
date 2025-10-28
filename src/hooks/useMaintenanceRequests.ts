@@ -69,10 +69,28 @@ export function useMaintenanceRequests() {
         return;
       }
 
-      const { data, error } = await supabase
+      // جرب الجدول الجديد أولاً
+      let data, error;
+      
+      const result = await supabase
         .from('maintenance_requests')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(1);
+        
+      // إذا نجح، استخدمه
+      if (!result.error) {
+        const fullResult = await supabase
+          .from('maintenance_requests')
+          .select('*')
+          .order('created_at', { ascending: false });
+        data = fullResult.data;
+        error = fullResult.error;
+      } else {
+        // وإلا، لا توجد بيانات
+        data = [];
+        error = null;
+      }
 
       if (error) throw error;
       setRequests(data || []);

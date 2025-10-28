@@ -44,11 +44,14 @@ export default function Register() {
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl
+          emailRedirectTo: redirectUrl,
+          data: {
+            role: selectedRole
+          }
         }
       });
 
@@ -61,10 +64,21 @@ export default function Register() {
           variant: "destructive",
         });
       } else {
-        toast({
-          title: "تم إنشاء الحساب بنجاح",
-          description: "يمكنك الآن تسجيل الدخول",
-        });
+        // تحقق من نوع التسجيل
+        if (data?.user && !data.session) {
+          toast({
+            title: "تم إنشاء الحساب",
+            description: "تم إرسال رسالة تأكيد على بريدك الإلكتروني. تحقق من بريدك لتفعيل الحساب.",
+          });
+        } else {
+          toast({
+            title: "تم إنشاء الحساب بنجاح",
+            description: "مرحباً بك! سيتم تحويلك إلى لوحة التحكم...",
+          });
+          // إذا كان هناك session مباشرة، انتقل للداشبورد
+          setTimeout(() => navigate("/dashboard"), 1500);
+          return;
+        }
         navigate("/login");
       }
     } catch (error) {
