@@ -9,9 +9,7 @@ import { SLAIndicator } from "./SLAIndicator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RequestStatusTimeline } from "./RequestStatusTimeline";
 import { WorkflowDiagram } from "@/components/workflow/WorkflowDiagram";
-import { MaterialRequestForm } from "@/components/workflow/MaterialRequestForm";
 import { ApprovalManager } from "@/components/workflow/ApprovalManager";
-import { ReportGenerator } from "@/components/workflow/ReportGenerator";
 import { toast } from "sonner";
 
 interface MaintenanceRequestDetailsProps {
@@ -324,14 +322,14 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
           />
         </TabsContent>
 
-        {/* Materials Tab */}
+        {/* Materials Tab - Feature Coming Soon */}
         <TabsContent value="materials" className="mt-6 space-y-4">
-          <MaterialRequestForm 
-            requestId={request.id}
-            onSuccess={() => {
-              toast.success('تم إضافة طلب المواد بنجاح');
-            }}
-          />
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              نظام طلبات المواد قيد التطوير حالياً
+            </AlertDescription>
+          </Alert>
         </TabsContent>
 
         {/* Approvals Tab */}
@@ -356,12 +354,14 @@ export function MaintenanceRequestDetails({ request }: MaintenanceRequestDetails
           </div>
         </TabsContent>
 
-        {/* Reports Tab */}
+        {/* Reports Tab - Feature Coming Soon */}
         <TabsContent value="reports" className="mt-6 space-y-4">
-          <ReportGenerator 
-            requestId={request.id}
-            requestData={request}
-          />
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              نظام إنشاء التقارير قيد التطوير حالياً
+            </AlertDescription>
+          </Alert>
         </TabsContent>
       </Tabs>
     </div>

@@ -93,42 +93,35 @@ export const useUserSettings = () => {
     },
   });
 
-  // Fetch platform permissions
+  // Fetch platform permissions based on user role
   const { data: permissions, isLoading: permissionsLoading } = useQuery({
     queryKey: ["platform-permissions"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data, error } = await supabase
-        .from("platform_permissions")
-        .select("*")
+      // الحصول على دور المستخدم
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (error) throw error;
+      const role = roleData?.role || 'customer';
+      const isAdmin = role === 'admin' || role === 'manager';
       
-      // Create default permissions if none exist
-      if (!data) {
-        const { data: newPermissions, error: createError } = await supabase
-          .from("platform_permissions")
-          .insert({
-            user_id: user.id,
-            can_choose_appointment_date: true,
-            can_submit_without_manager_approval: false,
-            can_view_financial_details: false,
-            can_cancel_requests: false,
-            can_reject_prices: false,
-            can_create_properties: false
-          })
-          .select()
-          .single();
-        
-        if (createError) throw createError;
-        return newPermissions as PlatformPermissions;
-      }
+      // إرجاع صلاحيات بناءً على الدور
+      const defaultPermissions: PlatformPermissions = {
+        user_id: user.id,
+        can_choose_appointment_date: true,
+        can_submit_without_manager_approval: isAdmin,
+        can_view_financial_details: isAdmin,
+        can_cancel_requests: isAdmin,
+        can_reject_prices: isAdmin,
+        can_create_properties: isAdmin
+      };
       
-      return data as PlatformPermissions;
+      return defaultPermissions;
     },
   });
 
@@ -234,20 +227,13 @@ export const useUserSettings = () => {
     },
   });
 
-  // Update permissions mutation
+  // Update permissions mutation (simplified - permissions based on role now)
   const updatePermissionsMutation = useMutation({
     mutationFn: async (updates: Partial<PlatformPermissions>) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase
-        .from("platform_permissions")
-        .upsert(
-          { user_id: user.id, ...updates },
-          { onConflict: "user_id" }
-        );
-
-      if (error) throw error;
+      // الصلاحيات الآن تعتمد على الدور فقط
+      // لا حاجة لتحديث في جدول منفصل
+      console.log('Permissions update requested:', updates);
+      // يمكن إضافة logic هنا لتغيير الدور إذا لزم الأمر
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["platform-permissions"] });

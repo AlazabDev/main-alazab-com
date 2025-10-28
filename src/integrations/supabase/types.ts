@@ -14,42 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      _temp_approvers: {
-        Row: {
-          created_at: string | null
-          id: string
-          name: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          name?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          name?: string | null
-        }
-        Relationships: []
-      }
-      app_roles: {
-        Row: {
-          created_at: string | null
-          role: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          role?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          role?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       appointments: {
         Row: {
           appointment_date: string
@@ -127,44 +91,6 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      assets: {
-        Row: {
-          branch_id: string
-          created_at: string
-          created_by: string | null
-          id: string
-          last_service_at: string | null
-          name: string
-          serial_number: string | null
-        }
-        Insert: {
-          branch_id: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          last_service_at?: string | null
-          name: string
-          serial_number?: string | null
-        }
-        Update: {
-          branch_id?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          last_service_at?: string | null
-          name?: string
-          serial_number?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "assets_branch_id_fkey"
-            columns: ["branch_id"]
-            isOneToOne: false
-            referencedRelation: "branches"
             referencedColumns: ["id"]
           },
         ]
@@ -273,36 +199,6 @@ export type Database = {
           is_active?: boolean
           name?: string
           sort_order?: number | null
-        }
-        Relationships: []
-      }
-      comments: {
-        Row: {
-          author_id: string | null
-          content: string
-          created_at: string
-          entity_id: string
-          entity_type: string
-          id: string
-          updated_at: string
-        }
-        Insert: {
-          author_id?: string | null
-          content: string
-          created_at?: string
-          entity_id: string
-          entity_type: string
-          id?: string
-          updated_at?: string
-        }
-        Update: {
-          author_id?: string | null
-          content?: string
-          created_at?: string
-          entity_id?: string
-          entity_type?: string
-          id?: string
-          updated_at?: string
         }
         Relationships: []
       }
@@ -462,30 +358,6 @@ export type Database = {
         }
         Relationships: []
       }
-      internal_teams: {
-        Row: {
-          branch_id: string | null
-          created_at: string
-          id: string
-          is_active: boolean
-          name: string
-        }
-        Insert: {
-          branch_id?: string | null
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          name: string
-        }
-        Update: {
-          branch_id?: string | null
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          name?: string
-        }
-        Relationships: []
-      }
       invoice_items: {
         Row: {
           created_at: string
@@ -580,51 +452,6 @@ export type Database = {
           payment_method?: string | null
           payment_reference?: string | null
           status?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      maintenance_reports: {
-        Row: {
-          approved_by: string | null
-          attachments: string[] | null
-          content: Json
-          created_at: string
-          data_analysis: Json | null
-          id: string
-          prepared_by: string | null
-          report_type: string
-          request_id: string
-          status: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          approved_by?: string | null
-          attachments?: string[] | null
-          content?: Json
-          created_at?: string
-          data_analysis?: Json | null
-          id?: string
-          prepared_by?: string | null
-          report_type: string
-          request_id: string
-          status?: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          approved_by?: string | null
-          attachments?: string[] | null
-          content?: Json
-          created_at?: string
-          data_analysis?: Json | null
-          id?: string
-          prepared_by?: string | null
-          report_type?: string
-          request_id?: string
-          status?: string
-          title?: string
           updated_at?: string
         }
         Relationships: []
@@ -725,13 +552,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "maintenance_requests_asset_id_fkey"
-            columns: ["asset_id"]
-            isOneToOne: false
-            referencedRelation: "assets"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
             columns: ["assigned_vendor_id"]
             isOneToOne: false
@@ -767,298 +587,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      maintenance_services: {
-        Row: {
-          category: string | null
-          code: string
-          created_at: string | null
-          created_by: string | null
-          description: string | null
-          estimated_cost: number | null
-          estimated_time: number | null
-          icon: string | null
-          id: string
-          is_active: boolean | null
-          is_deleted: boolean | null
-          name: string
-          updated_at: string | null
-          updated_by: string | null
-        }
-        Insert: {
-          category?: string | null
-          code?: string
-          created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          estimated_cost?: number | null
-          estimated_time?: number | null
-          icon?: string | null
-          id?: string
-          is_active?: boolean | null
-          is_deleted?: boolean | null
-          name: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Update: {
-          category?: string | null
-          code?: string
-          created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          estimated_cost?: number | null
-          estimated_time?: number | null
-          icon?: string | null
-          id?: string
-          is_active?: boolean | null
-          is_deleted?: boolean | null
-          name?: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
-      mall_branches: {
-        Row: {
-          branch_code: string
-          contact_email: string | null
-          contact_name: string | null
-          contact_phone: string | null
-          created_at: string | null
-          floor: string | null
-          id: string
-          mall_id: number | null
-          store_id: string | null
-          tenant_id: string | null
-          unit_no: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          branch_code: string
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string | null
-          floor?: string | null
-          id?: string
-          mall_id?: number | null
-          store_id?: string | null
-          tenant_id?: string | null
-          unit_no?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          branch_code?: string
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string | null
-          floor?: string | null
-          id?: string
-          mall_id?: number | null
-          store_id?: string | null
-          tenant_id?: string | null
-          unit_no?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mall_branches_mall_id_fkey"
-            columns: ["mall_id"]
-            isOneToOne: false
-            referencedRelation: "malls"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mall_branches_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
-            referencedRelation: "stores"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mall_branches_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "mall_tenants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      mall_tenants: {
-        Row: {
-          brand_code: string | null
-          contact_email: string | null
-          created_at: string | null
-          id: string
-          name: string
-        }
-        Insert: {
-          brand_code?: string | null
-          contact_email?: string | null
-          created_at?: string | null
-          id?: string
-          name: string
-        }
-        Update: {
-          brand_code?: string | null
-          contact_email?: string | null
-          created_at?: string | null
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      malls: {
-        Row: {
-          id: number
-          location: string | null
-          name: string
-          type: string | null
-        }
-        Insert: {
-          id: number
-          location?: string | null
-          name: string
-          type?: string | null
-        }
-        Update: {
-          id?: number
-          location?: string | null
-          name?: string
-          type?: string | null
-        }
-        Relationships: []
-      }
-      material_requests: {
-        Row: {
-          actual_cost: number | null
-          approved_at: string | null
-          approved_by: string | null
-          created_at: string
-          estimated_cost: number | null
-          id: string
-          issued_at: string | null
-          issued_by: string | null
-          material_name: string
-          notes: string | null
-          quantity: number
-          request_id: string
-          status: string
-          unit: string
-          updated_at: string
-        }
-        Insert: {
-          actual_cost?: number | null
-          approved_at?: string | null
-          approved_by?: string | null
-          created_at?: string
-          estimated_cost?: number | null
-          id?: string
-          issued_at?: string | null
-          issued_by?: string | null
-          material_name: string
-          notes?: string | null
-          quantity: number
-          request_id: string
-          status?: string
-          unit: string
-          updated_at?: string
-        }
-        Update: {
-          actual_cost?: number | null
-          approved_at?: string | null
-          approved_by?: string | null
-          created_at?: string
-          estimated_cost?: number | null
-          id?: string
-          issued_at?: string | null
-          issued_by?: string | null
-          material_name?: string
-          notes?: string | null
-          quantity?: number
-          request_id?: string
-          status?: string
-          unit?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      materials: {
-        Row: {
-          barcode: string | null
-          brand: string | null
-          category: string | null
-          cost_price: number | null
-          created_at: string | null
-          currency: string | null
-          description: string | null
-          gallery_urls: string | null
-          height: number | null
-          id: string
-          image_url: string | null
-          is_active: boolean | null
-          length: number | null
-          min_stock: number | null
-          name: string
-          sku: string | null
-          stock_qty: number | null
-          unit: string | null
-          unit_price: number | null
-          updated_at: string | null
-          weight: number | null
-          width: number | null
-        }
-        Insert: {
-          barcode?: string | null
-          brand?: string | null
-          category?: string | null
-          cost_price?: number | null
-          created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          gallery_urls?: string | null
-          height?: number | null
-          id?: string
-          image_url?: string | null
-          is_active?: boolean | null
-          length?: number | null
-          min_stock?: number | null
-          name: string
-          sku?: string | null
-          stock_qty?: number | null
-          unit?: string | null
-          unit_price?: number | null
-          updated_at?: string | null
-          weight?: number | null
-          width?: number | null
-        }
-        Update: {
-          barcode?: string | null
-          brand?: string | null
-          category?: string | null
-          cost_price?: number | null
-          created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          gallery_urls?: string | null
-          height?: number | null
-          id?: string
-          image_url?: string | null
-          is_active?: boolean | null
-          length?: number | null
-          min_stock?: number | null
-          name?: string
-          sku?: string | null
-          stock_qty?: number | null
-          unit?: string | null
-          unit_price?: number | null
-          updated_at?: string | null
-          weight?: number | null
-          width?: number | null
-        }
-        Relationships: []
       }
       notifications: {
         Row: {
@@ -1099,126 +627,6 @@ export type Database = {
           title?: string
           type?: string
           updated_at?: string
-        }
-        Relationships: []
-      }
-      parts_orders: {
-        Row: {
-          actual_cost: number | null
-          created_at: string | null
-          estimated_cost: number | null
-          id: string
-          item_id: string | null
-          item_name: string
-          qty: number
-          received_at: string | null
-          request_id: string | null
-          status: string | null
-          updated_at: string | null
-          vendor_ref: string | null
-        }
-        Insert: {
-          actual_cost?: number | null
-          created_at?: string | null
-          estimated_cost?: number | null
-          id?: string
-          item_id?: string | null
-          item_name: string
-          qty: number
-          received_at?: string | null
-          request_id?: string | null
-          status?: string | null
-          updated_at?: string | null
-          vendor_ref?: string | null
-        }
-        Update: {
-          actual_cost?: number | null
-          created_at?: string | null
-          estimated_cost?: number | null
-          id?: string
-          item_id?: string | null
-          item_name?: string
-          qty?: number
-          received_at?: string | null
-          request_id?: string | null
-          status?: string | null
-          updated_at?: string | null
-          vendor_ref?: string | null
-        }
-        Relationships: []
-      }
-      payments: {
-        Row: {
-          amount: number
-          created_at: string
-          currency: Database["public"]["Enums"]["currency_t"]
-          id: string
-          method: string
-          notes: string | null
-          provider_ref: string | null
-          request_id: string
-          status: Database["public"]["Enums"]["payment_status_t"]
-        }
-        Insert: {
-          amount: number
-          created_at?: string
-          currency?: Database["public"]["Enums"]["currency_t"]
-          id?: string
-          method?: string
-          notes?: string | null
-          provider_ref?: string | null
-          request_id: string
-          status?: Database["public"]["Enums"]["payment_status_t"]
-        }
-        Update: {
-          amount?: number
-          created_at?: string
-          currency?: Database["public"]["Enums"]["currency_t"]
-          id?: string
-          method?: string
-          notes?: string | null
-          provider_ref?: string | null
-          request_id?: string
-          status?: Database["public"]["Enums"]["payment_status_t"]
-        }
-        Relationships: []
-      }
-      platform_permissions: {
-        Row: {
-          can_cancel_requests: boolean | null
-          can_choose_appointment_date: boolean | null
-          can_create_properties: boolean | null
-          can_reject_prices: boolean | null
-          can_submit_without_manager_approval: boolean | null
-          can_view_financial_details: boolean | null
-          created_at: string
-          id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          can_cancel_requests?: boolean | null
-          can_choose_appointment_date?: boolean | null
-          can_create_properties?: boolean | null
-          can_reject_prices?: boolean | null
-          can_submit_without_manager_approval?: boolean | null
-          can_view_financial_details?: boolean | null
-          created_at?: string
-          id?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          can_cancel_requests?: boolean | null
-          can_choose_appointment_date?: boolean | null
-          can_create_properties?: boolean | null
-          can_reject_prices?: boolean | null
-          can_submit_without_manager_approval?: boolean | null
-          can_view_financial_details?: boolean | null
-          created_at?: string
-          id?: string
-          updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
@@ -1302,81 +710,6 @@ export type Database = {
           },
         ]
       }
-      project_documents: {
-        Row: {
-          created_at: string
-          document_type: string
-          file_size: number | null
-          file_url: string
-          id: string
-          project_id: string
-          title: string
-          updated_at: string
-          uploaded_by: string | null
-        }
-        Insert: {
-          created_at?: string
-          document_type: string
-          file_size?: number | null
-          file_url: string
-          id?: string
-          project_id: string
-          title: string
-          updated_at?: string
-          uploaded_by?: string | null
-        }
-        Update: {
-          created_at?: string
-          document_type?: string
-          file_size?: number | null
-          file_url?: string
-          id?: string
-          project_id?: string
-          title?: string
-          updated_at?: string
-          uploaded_by?: string | null
-        }
-        Relationships: []
-      }
-      project_gallery: {
-        Row: {
-          category: string | null
-          created_at: string
-          description: string | null
-          display_order: number | null
-          id: string
-          image_url: string
-          project_id: string
-          title: string | null
-          updated_at: string
-          uploaded_by: string | null
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          display_order?: number | null
-          id?: string
-          image_url: string
-          project_id: string
-          title?: string | null
-          updated_at?: string
-          uploaded_by?: string | null
-        }
-        Update: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          display_order?: number | null
-          id?: string
-          image_url?: string
-          project_id?: string
-          title?: string | null
-          updated_at?: string
-          uploaded_by?: string | null
-        }
-        Relationships: []
-      }
       project_phases: {
         Row: {
           actual_cost: number | null
@@ -1427,39 +760,6 @@ export type Database = {
           sort_order?: number | null
           start_date?: string | null
           status?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      project_reviews: {
-        Row: {
-          comment: string | null
-          created_at: string
-          id: string
-          project_id: string
-          rating: number | null
-          reviewer_id: string | null
-          reviewer_name: string
-          updated_at: string
-        }
-        Insert: {
-          comment?: string | null
-          created_at?: string
-          id?: string
-          project_id: string
-          rating?: number | null
-          reviewer_id?: string | null
-          reviewer_name: string
-          updated_at?: string
-        }
-        Update: {
-          comment?: string | null
-          created_at?: string
-          id?: string
-          project_id?: string
-          rating?: number | null
-          reviewer_id?: string | null
-          reviewer_name?: string
           updated_at?: string
         }
         Relationships: []
@@ -2221,7 +1521,6 @@ export type Database = {
       service_prices: {
         Row: {
           branch_id: string | null
-          currency: Database["public"]["Enums"]["currency_t"]
           id: string
           price: number
           service_id: string
@@ -2230,7 +1529,6 @@ export type Database = {
         }
         Insert: {
           branch_id?: string | null
-          currency?: Database["public"]["Enums"]["currency_t"]
           id?: string
           price: number
           service_id: string
@@ -2239,7 +1537,6 @@ export type Database = {
         }
         Update: {
           branch_id?: string | null
-          currency?: Database["public"]["Enums"]["currency_t"]
           id?: string
           price?: number
           service_id?: string
@@ -2765,174 +2062,9 @@ export type Database = {
       }
     }
     Views: {
-      appointments_staff_secure: {
-        Row: {
-          appointment_date: string | null
-          appointment_time: string | null
-          created_at: string | null
-          created_by: string | null
-          customer_email: string | null
-          customer_name: string | null
-          customer_phone: string | null
-          description: string | null
-          duration_minutes: number | null
-          id: string | null
-          location: string | null
-          maintenance_request_id: string | null
-          notes: string | null
-          property_id: string | null
-          reminder_sent: boolean | null
-          status: string | null
-          title: string | null
-          updated_at: string | null
-          vendor_id: string | null
-        }
-        Insert: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          notes?: string | null
-          property_id?: string | null
-          reminder_sent?: boolean | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Update: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          notes?: string | null
-          property_id?: string | null
-          reminder_sent?: boolean | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "appointments_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      appointments_staff_view: {
-        Row: {
-          appointment_date: string | null
-          appointment_time: string | null
-          created_at: string | null
-          created_by: string | null
-          customer_email: string | null
-          customer_name: string | null
-          customer_phone: string | null
-          description: string | null
-          duration_minutes: number | null
-          id: string | null
-          location: string | null
-          maintenance_request_id: string | null
-          notes: string | null
-          property_id: string | null
-          reminder_sent: boolean | null
-          status: string | null
-          title: string | null
-          updated_at: string | null
-          vendor_id: string | null
-        }
-        Insert: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          notes?: string | null
-          property_id?: string | null
-          reminder_sent?: boolean | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Update: {
-          appointment_date?: string | null
-          appointment_time?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_email?: never
-          customer_name?: never
-          customer_phone?: never
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string | null
-          location?: string | null
-          maintenance_request_id?: string | null
-          notes?: string | null
-          property_id?: string | null
-          reminder_sent?: boolean | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "appointments_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "vendors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
-      app_is_admin: { Args: { uid: string }; Returns: boolean }
-      app_is_owner: { Args: { row_user_id: string }; Returns: boolean }
-      app_is_staff: { Args: { uid: string }; Returns: boolean }
-      app_is_vendor: { Args: { uid: string }; Returns: boolean }
       calculate_distance: {
         Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
@@ -2979,10 +2111,6 @@ export type Database = {
           vendor_name: string
         }[]
       }
-      fn_claim: { Args: { key: string }; Returns: string }
-      fn_claim_uuid: { Args: { key: string }; Returns: string }
-      fn_has_role: { Args: { roles: string[] }; Returns: boolean }
-      fn_role: { Args: never; Returns: string }
       generate_invoice_number: { Args: never; Returns: string }
       get_appointment_contact_info: {
         Args: { appointment_id: string }
@@ -3072,37 +2200,9 @@ export type Database = {
       is_staff:
         | { Args: { uid: string }; Returns: boolean }
         | { Args: never; Returns: boolean }
-      is_vendor: { Args: { uid: string }; Returns: boolean }
-      mask_customer_phone: {
-        Args: { phone: string; user_role: string }
-        Returns: string
-      }
       recalc_request_totals: {
         Args: { p_request_id: string }
         Returns: undefined
-      }
-      update_summary_data: { Args: never; Returns: undefined }
-      update_summary_tables: { Args: never; Returns: undefined }
-      vendor_appointments_func: {
-        Args: never
-        Returns: {
-          appointment_date: string
-          appointment_time: string
-          created_at: string
-          created_by: string
-          description: string
-          duration_minutes: number
-          id: string
-          location: string
-          maintenance_request_id: string
-          notes: string
-          property_id: string
-          reminder_sent: boolean
-          status: string
-          title: string
-          updated_at: string
-          vendor_id: string
-        }[]
       }
     }
     Enums: {
@@ -3116,7 +2216,6 @@ export type Database = {
         | "warehouse"
         | "accounting"
         | "engineering"
-      currency_t: "EGP" | "USD" | "EUR" | "SAR" | "AED"
       maintenance_stage:
         | "DRAFT"
         | "SUBMITTED"
@@ -3170,14 +2269,6 @@ export type Database = {
         | "Completed"
         | "Rejected"
         | "Cancelled"
-      payment_status_t:
-        | "draft"
-        | "pending"
-        | "authorized"
-        | "captured"
-        | "failed"
-        | "refunded"
-        | "cancelled"
       priority_level: "low" | "medium" | "high"
       provider_type_t: "internal_team" | "external_vendor"
       request_status_t:
@@ -3342,7 +2433,6 @@ export const Constants = {
         "accounting",
         "engineering",
       ],
-      currency_t: ["EGP", "USD", "EUR", "SAR", "AED"],
       maintenance_stage: [
         "DRAFT",
         "SUBMITTED",
@@ -3399,15 +2489,6 @@ export const Constants = {
         "Completed",
         "Rejected",
         "Cancelled",
-      ],
-      payment_status_t: [
-        "draft",
-        "pending",
-        "authorized",
-        "captured",
-        "failed",
-        "refunded",
-        "cancelled",
       ],
       priority_level: ["low", "medium", "high"],
       provider_type_t: ["internal_team", "external_vendor"],

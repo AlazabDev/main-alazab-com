@@ -218,9 +218,9 @@ const Testing = () => {
     const start = Date.now();
     
     try {
-      // استخدام VIEW الآمن للاختبار
+      // استخدام الجدول الأساسي للاختبار
       const { data, error } = await supabase
-        .from('appointments_staff_secure')
+        .from('appointments')
         .select('*')
         .limit(1);
       

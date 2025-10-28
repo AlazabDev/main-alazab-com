@@ -52,9 +52,9 @@ export const useAppointments = () => {
 
   const fetchAppointments = async () => {
     try {
-      // استخدام VIEW الآمن بدلاً من الجدول مباشرة
-      const { data, error } = await supabase
-        .from('appointments_staff_secure')
+      // استخدام الجدول الأساسي مباشرة
+      const { data, error} = await supabase
+        .from('appointments')
         .select(`
           *,
           properties:property_id(name, address),

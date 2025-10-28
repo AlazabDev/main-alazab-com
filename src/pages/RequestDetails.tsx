@@ -3,15 +3,13 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, FileText, Settings, Package, CheckSquare, FileBarChart, Archive } from "lucide-react";
+import { ArrowRight, FileText, Settings, Package, CheckSquare, FileBarChart, Archive, AlertCircle } from "lucide-react";
 import { useMaintenanceRequests } from "@/hooks/useMaintenanceRequests";
 import { MaintenanceRequestDetails } from "@/components/maintenance/MaintenanceRequestDetails";
 import { RequestLifecycleTracker } from "@/components/maintenance/RequestLifecycleTracker";
 import { RequestWorkflowControls } from "@/components/maintenance/RequestWorkflowControls";
 import { WorkflowDiagram } from "@/components/workflow/WorkflowDiagram";
-import { MaterialRequestForm } from "@/components/workflow/MaterialRequestForm";
 import { ApprovalManager } from "@/components/workflow/ApprovalManager";
-import { ReportGenerator } from "@/components/workflow/ReportGenerator";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -183,14 +181,16 @@ export default function RequestDetails() {
           </div>
         </TabsContent>
 
-        {/* Materials Tab */}
+        {/* Materials Tab - Coming Soon */}
         <TabsContent value="materials" className="space-y-4">
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">إدارة المواد</h3>
-            <MaterialRequestForm 
-              requestId={request.id}
-              onSuccess={() => toast.success('تم إضافة طلب المواد بنجاح')}
-            />
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                نظام طلبات المواد قيد التطوير حالياً
+              </AlertDescription>
+            </Alert>
           </Card>
         </TabsContent>
 
@@ -216,12 +216,17 @@ export default function RequestDetails() {
           </div>
         </TabsContent>
 
-        {/* Reports Tab */}
+        {/* Reports Tab - Coming Soon */}
         <TabsContent value="reports" className="space-y-4">
-          <ReportGenerator 
-            requestId={request.id}
-            requestData={request}
-          />
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">التقارير</h3>
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                نظام إنشاء التقارير قيد التطوير حالياً
+              </AlertDescription>
+            </Alert>
+          </Card>
         </TabsContent>
 
         {/* Controls Tab */}

@@ -78,12 +78,11 @@ export function MaintenanceRequestActions({ request }: MaintenanceRequestActions
   const addComment = async () => {
     setIsUpdating(true);
     try {
-      await supabase.from('comments').insert({
-        entity_type: 'maintenance_request',
-        entity_id: request.id,
-        content: notes,
-        author_id: (await supabase.auth.getUser()).data.user?.id
-      });
+      // حفظ الملاحظات في vendor_notes مباشرة
+      await supabase
+        .from('maintenance_requests')
+        .update({ vendor_notes: notes })
+        .eq('id', request.id);
 
       toast({
         title: "تم إضافة الملاحظة",
