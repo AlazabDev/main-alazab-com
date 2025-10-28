@@ -39,8 +39,9 @@ npm run build
 <div align="center">
 	<a href="https://alazab.dev">
 		<picture>
-			<source media="(prefers-color-scheme: dark)" srcset="https://al-azab.co/images/logaz.gif">
-			<img src="[https://al-azab.co/images/logaz.gif](https://alazab.dev)" alt="Alazab.Dev" height="42"/>
+			<div style="text-align:center;">
+       <a href="https://alazab.dev" target="_blank">
+    <img src="https://al-azab.co/images/logaz.gif" alt="Alazab.Dev" height="42" style="display:inline-block;">
 		</picture>
 	</a>
 </div>
