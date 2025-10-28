@@ -13,7 +13,11 @@ serve(async (req) => {
 
   try {
     // استخدام المفتاح الجديد المحدّث
-    const googleMapsApiKey = 'AIzaSyBojIb88fGshq8NBXq2qNu-7eEJZwVgGxg';
+    const googleMapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
+if (!googleMapsApiKey) {
+  throw new Error('Missing Google Maps API Key');
+}
+
     console.log('Using updated Google Maps API key for main-alazab-com');
 
     return new Response(
