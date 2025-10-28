@@ -41,7 +41,7 @@ npm run build
 		<picture>
 			<div style="text-align:center;">
        <a href="https://alazab.dev" target="_blank">
-    <img src="https://al-azab.co/images/logaz.gif" alt="Alazab.Dev" height="52" style="display:inline-block;">
+    <img src="https://al-azab.co/images/logaz.gif" alt="Alazab.Dev" height="62" style="display:inline-block;">
 		</picture>
 	</a>
 </div>
