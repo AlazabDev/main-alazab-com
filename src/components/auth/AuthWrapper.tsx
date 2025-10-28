@@ -28,15 +28,15 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
         setUser(newUser);
         setLoading(false);
         
-        // التوجيه التلقائي للصفحة الرئيسية بعد نجاح تسجيل الدخول
-        if (event === 'SIGNED_IN' && newUser && location.pathname === '/') {
-          navigate('/', { replace: true });
+        // التوجيه التلقائي لصفحة الداشبورد بعد نجاح تسجيل الدخول
+        if (event === 'SIGNED_IN' && newUser) {
+          navigate('/dashboard', { replace: true });
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   if (loading) {
     return (

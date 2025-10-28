@@ -13,17 +13,12 @@ serve(async (req) => {
 
   try {
     // Read API key from Supabase Secrets
-    const googleMapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
+    let googleMapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
     
+    // إذا لم يكن موجود في Secrets، استخدم المفتاح الجديد
     if (!googleMapsApiKey) {
-      console.error('Google Maps API key not found in environment variables');
-      return new Response(
-        JSON.stringify({ error: 'Google Maps API key not configured' }), 
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
+      googleMapsApiKey = 'AIzaSyBojIb88fGshq8NBXq2qNu-7eEJZwVgGxg';
+      console.log('Using fallback Google Maps API key');
     }
 
     return new Response(

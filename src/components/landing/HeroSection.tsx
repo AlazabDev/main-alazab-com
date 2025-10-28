@@ -82,12 +82,12 @@ export const HeroSection = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="group" onClick={() => window.location.href = '/login'}>
+              <Button size="lg" className="group" onClick={() => window.location.href = '/role-selection'}>
                 اطلب خدمة الآن
                 <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Button variant="outline" size="lg" className="group" onClick={() => window.location.href = '/register'}>
+              <Button variant="outline" size="lg" className="group" onClick={() => window.location.href = '/gallery'}>
                 <Play className="h-4 w-4 ml-2" />
                 عرض أعمالنا
               </Button>

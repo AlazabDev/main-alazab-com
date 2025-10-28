@@ -29,14 +29,18 @@ export async function smartSignup(
   full_name?: string
 ): Promise<SmartAuthResult> {
   try {
+    // التأكد من وجود كلمة مرور
+    if (!password) {
+      return { ok: false, mode: 'error', error: { message: 'كلمة المرور مطلوبة' } };
+    }
+
     // 1) جرّب إنشاء حساب جديد
     const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
       email,
       password,
       options: { 
         data: { full_name },
-        emailRedirectTo: AUTH_CONFIG.emailRedirectTo,
-        captchaToken: undefined // يمكن إضافة CAPTCHA لاحقاً
+        emailRedirectTo: AUTH_CONFIG.emailRedirectTo
       }
     });
 
