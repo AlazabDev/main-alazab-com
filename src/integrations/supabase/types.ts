@@ -1005,6 +1005,8 @@ export type Database = {
           floors: number | null
           id: string
           last_inspection_date: string | null
+          latitude: number | null
+          longitude: number | null
           maintenance_schedule: string | null
           manager_id: string | null
           name: string
@@ -1029,6 +1031,8 @@ export type Database = {
           floors?: number | null
           id?: string
           last_inspection_date?: string | null
+          latitude?: number | null
+          longitude?: number | null
           maintenance_schedule?: string | null
           manager_id?: string | null
           name: string
@@ -1053,6 +1057,8 @@ export type Database = {
           floors?: number | null
           id?: string
           last_inspection_date?: string | null
+          latitude?: number | null
+          longitude?: number | null
           maintenance_schedule?: string | null
           manager_id?: string | null
           name?: string
@@ -2166,6 +2172,13 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string
+        }[]
+      }
+      get_table_row_counts: {
+        Args: never
+        Returns: {
+          row_count: number
+          table_name: string
         }[]
       }
       get_vendor_appointments: {
