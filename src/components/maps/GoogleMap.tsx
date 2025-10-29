@@ -150,7 +150,8 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
 
   const addMarkers = (mapInstance: google.maps.Map, google: any) => {
     markers.forEach(marker => {
-      const mapMarker = new google.maps.Marker({
+      // استخدام AdvancedMarkerElement بدلاً من Marker القديم
+      const mapMarker = new google.maps.marker.AdvancedMarkerElement({
         position: { lat: marker.lat, lng: marker.lng },
         map: mapInstance,
         title: marker.title,

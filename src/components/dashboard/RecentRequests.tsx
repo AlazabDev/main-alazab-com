@@ -103,8 +103,11 @@ export const RecentRequests = () => {
 
             {/* Footer */}
             <div className="flex items-center justify-between pt-2 border-t border-border">
-              <Badge className={cn("text-xs", statusConfig[request.status as keyof typeof statusConfig].className)}>
-                {statusConfig[request.status as keyof typeof statusConfig].label}
+              <Badge className={cn(
+                "text-xs",
+                statusConfig[request.status as keyof typeof statusConfig]?.className || "bg-muted text-muted-foreground"
+              )}>
+                {statusConfig[request.status as keyof typeof statusConfig]?.label || request.status}
               </Badge>
               {request.estimated_cost && (
                 <span className="text-sm font-medium text-primary">
