@@ -24,16 +24,29 @@ import { Loader2 } from "lucide-react";
 const propertySchema = z.object({
   name: z.string().min(3, "اسم العقار يجب أن يكون 3 أحرف على الأقل"),
   code: z.string().optional(),
+  // توحيد الأنواع مع النموذج الآخر والقيم المخزنة
   type: z.string().refine(
-    (val) => ["project", "branch", "building", "unit", "other"].includes(val),
-    { message: "يرجى اختيار تصنيف العقار" }
+    (val) => [
+      "residential",
+      "commercial",
+      "industrial",
+      "office",
+      "retail",
+      "mixed_use",
+    ].includes(val),
+    { message: "يرجى اختيار نوع العقار" }
   ),
   country_code: z.string().default("EG"),
   city_id: z.string().optional(),
   district_id: z.string().optional(),
-  address: z.string().min(5, "العنوان يجب أن يكون 5 أحرف على الأقل").or(z.literal("")),
-  area: z.number().min(0).optional().or(z.nan()),
-  rooms: z.number().min(0).optional().or(z.nan()),
+  address: z.string().min(5, "العنوان يجب أن يكون 5 أحرف على الأقل"),
+  area: z.number().min(1, "المساحة يجب أن تكون أكبر من 0"),
+  rooms: z.number().min(0).optional(),
+  // حقول اختيارية مدعومة في النظام
+  value: z.number().min(0).optional(),
+  floors: z.number().min(0).optional(),
+  bathrooms: z.number().min(0).optional(),
+  parking_spaces: z.number().min(0).optional(),
   description: z.string().optional(),
   maintenance_manager: z.string().optional(),
   property_supervisor: z.string().optional(),
@@ -44,12 +57,7 @@ const propertySchema = z.object({
 
 type PropertyFormData = z.infer<typeof propertySchema>;
 
-interface PropertyFormProps {
-  onSuccess?: () => void;
-  skipNavigation?: boolean;
-}
-
-export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = {}) {
+export function PropertyForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [location, setLocation] = useState<{
     latitude: number;
@@ -60,7 +68,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
   const [cities, setCities] = useState<any[]>([]);
   const [districts, setDistricts] = useState<any[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>("");
-  
+
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -89,7 +97,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
         .eq('level', 1)
         .eq('is_active', true)
         .order('name');
-      
+
       if (!error && data) {
         setCities(data);
       }
@@ -104,14 +112,14 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
         setDistricts([]);
         return;
       }
-      
+
       const { data, error } = await supabase
         .from('regions')
         .select('*')
         .eq('parent_id', selectedCity)
         .eq('is_active', true)
         .order('name');
-      
+
       if (!error && data) {
         setDistricts(data);
       }
@@ -123,7 +131,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
     setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         throw new Error("يجب تسجيل الدخول أولاً");
       }
@@ -138,7 +146,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
         return;
       }
 
-      // إنشاء العقار
+      // إنشاء العقار (بدون حفظ إحداثيات غير موجودة في الجدول)
       const { error: insertError } = await supabase
         .from("properties")
         .insert([{
@@ -147,10 +155,12 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
           address: data.address,
           area: data.area ? parseFloat(data.area.toString()) : null,
           rooms: data.rooms ? parseInt(data.rooms.toString()) : null,
+          value: data.value ? parseFloat(data.value.toString()) : null,
+          floors: data.floors ? parseInt(data.floors.toString()) : null,
+          bathrooms: data.bathrooms ? parseInt(data.bathrooms.toString()) : null,
+          parking_spaces: data.parking_spaces ? parseInt(data.parking_spaces.toString()) : null,
           description: data.description || null,
           region_id: data.district_id || data.city_id || null,
-          latitude: location.latitude,
-          longitude: location.longitude,
           status: "active",
           manager_id: user.id,
         } as any]);
@@ -162,13 +172,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
         description: "تم إضافة العقار بنجاح",
       });
 
-      if (onSuccess) {
-        onSuccess();
-      }
-      
-      if (!skipNavigation) {
-        navigate("/properties");
-      }
+      navigate("/properties");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -187,26 +191,25 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-      {/* تصنيف العقار */}
+      {/* نوع العقار */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">تصنيف العقار *</h3>
+        <h3 className="text-lg font-semibold">نوع العقار *</h3>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { value: "project", label: "المشروع" },
-            { value: "branch", label: "الفرع" },
-            { value: "building", label: "المبنى" },
-            { value: "unit", label: "الوحدة" },
-            { value: "other", label: "أخرى" },
+            { value: "residential", label: "سكني" },
+            { value: "commercial", label: "تجاري" },
+            { value: "industrial", label: "صناعي" },
+            { value: "office", label: "مكتبي" },
+            { value: "retail", label: "تجزئة" },
           ].map((type) => (
             <button
               key={type.value}
               type="button"
               onClick={() => setValue("type", type.value as any)}
-              className={`p-3 rounded-lg border-2 text-center transition-all ${
-                propertyType === type.value
-                  ? "border-primary bg-primary/10 text-primary font-semibold"
-                  : "border-border hover:border-primary/50"
-              }`}
+              className={`p-3 rounded-lg border-2 text-center transition-all ${propertyType === type.value
+                ? "border-primary bg-primary/10 text-primary font-semibold"
+                : "border-border hover:border-primary/50"
+                }`}
             >
               {type.label}
             </button>
@@ -255,11 +258,11 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
       {/* تفاصيل الموقع */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">تفاصيل الموقع</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label>الدولة</Label>
-            <Select 
+            <Select
               defaultValue="EG"
               onValueChange={(value) => setValue("country_code", value)}
             >
@@ -275,7 +278,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
 
           <div className="space-y-2">
             <Label>المدينة</Label>
-            <Select 
+            <Select
               value={selectedCity}
               onValueChange={(value) => {
                 setSelectedCity(value);
@@ -351,10 +354,10 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
         )}
       </div>
 
-      {/* إعدادات العقار */}
+      {/* المواصفات الأساسية */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">إعدادات العقار</h3>
-        
+        <h3 className="text-lg font-semibold">المواصفات الأساسية</h3>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="area">المساحة (متر مربع) *</Label>
@@ -380,6 +383,46 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="bathrooms">عدد الحمامات</Label>
+            <Input
+              id="bathrooms"
+              type="number"
+              {...register("bathrooms", { valueAsNumber: true })}
+              placeholder="مثال: 2"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="floors">عدد الطوابق</Label>
+            <Input
+              id="floors"
+              type="number"
+              {...register("floors", { valueAsNumber: true })}
+              placeholder="مثال: 1"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="parking_spaces">مواقف السيارات</Label>
+            <Input
+              id="parking_spaces"
+              type="number"
+              {...register("parking_spaces", { valueAsNumber: true })}
+              placeholder="مثال: 1"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="value">القيمة التقديرية</Label>
+            <Input
+              id="value"
+              type="number"
+              {...register("value", { valueAsNumber: true })}
+              placeholder="مثال: 2500000"
+            />
+          </div>
+
         </div>
       </div>
 
@@ -394,10 +437,10 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
         />
       </div>
 
-      {/* إعدادات العقار */}
+      {/* إعدادات الإدارة */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">إعدادات العقار</h3>
-        
+        <h3 className="text-lg font-semibold">إعدادات الإدارة</h3>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="maintenance_manager">مدير الصيانة</Label>
@@ -422,7 +465,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
           <p className="text-sm text-muted-foreground">
             هذه الحقول اختيارية وتُستخدم فقط إذا كنت ترغب بعرض بيانات تواصل مؤقتة للطلبات.
           </p>
-          
+
           <div className="space-y-2">
             <Label htmlFor="temp_contact_name">اسم الشخص للتواصل المؤقت</Label>
             <Input
@@ -435,7 +478,7 @@ export function PropertyForm({ onSuccess, skipNavigation }: PropertyFormProps = 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="temp_contact_country_code">رمز الدولة</Label>
-              <Select 
+              <Select
                 defaultValue="+20"
                 onValueChange={(value) => setValue("temp_contact_country_code", value)}
               >
