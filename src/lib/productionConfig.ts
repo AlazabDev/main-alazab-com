@@ -75,28 +75,7 @@ export const PRODUCTION_CONFIG = {
 
 // دالة للتحقق من إعدادات البيئة
 export const validateEnvironment = () => {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-  
-  const missing: string[] = [];
-  
-  if (!supabaseUrl) missing.push('VITE_SUPABASE_URL');
-  if (!supabaseKey) missing.push('VITE_SUPABASE_PUBLISHABLE_KEY');
-  
-  if (missing.length > 0) {
-    console.error('Missing required environment variables:', missing);
-    return false;
-  }
-
-  // تحذير إذا كانت المفاتيح تبدو غير صحيحة
-  if (!supabaseUrl.includes('supabase.co')) {
-    console.warn('VITE_SUPABASE_URL may be invalid');
-  }
-  
-  if (!supabaseKey.startsWith('eyJ')) {
-    console.warn('VITE_SUPABASE_PUBLISHABLE_KEY may be invalid');
-  }
-
+  // إزالة الفحص - القيم ثابتة في الكود
   return true;
 };
 

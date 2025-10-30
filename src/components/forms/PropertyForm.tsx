@@ -57,7 +57,12 @@ const propertySchema = z.object({
 
 type PropertyFormData = z.infer<typeof propertySchema>;
 
-export function PropertyForm() {
+interface PropertyFormProps {
+  skipNavigation?: boolean;
+  onSuccess?: () => void;
+}
+
+export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyFormProps = {}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [location, setLocation] = useState<{
     latitude: number;
@@ -172,7 +177,11 @@ export function PropertyForm() {
         description: "تم إضافة العقار بنجاح",
       });
 
-      navigate("/properties");
+      if (onSuccess) {
+        onSuccess();
+      } else if (!skipNavigation) {
+        navigate("/properties");
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -508,14 +517,16 @@ export function PropertyForm() {
 
       {/* أزرار الحفظ */}
       <div className="flex gap-3 justify-end pt-6 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => navigate("/properties")}
-          disabled={isSubmitting}
-        >
-          إلغاء
-        </Button>
+        {!skipNavigation && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate("/properties")}
+            disabled={isSubmitting}
+          >
+            إلغاء
+          </Button>
+        )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? (
             <>

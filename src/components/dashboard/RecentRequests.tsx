@@ -5,11 +5,13 @@ import { Eye, MapPin, Clock, User, Loader2, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMaintenanceRequests } from "@/hooks/useSupabaseData";
 
-const statusConfig = {
+const statusConfig: Record<string, { label: string; className: string }> = {
   pending: { label: "معلق", className: "bg-warning text-warning-foreground" },
   "in_progress": { label: "قيد التنفيذ", className: "bg-primary text-primary-foreground" },
   completed: { label: "مكتمل", className: "bg-success text-success-foreground" },
-  cancelled: { label: "ملغي", className: "bg-destructive text-destructive-foreground" }
+  cancelled: { label: "ملغي", className: "bg-destructive text-destructive-foreground" },
+  Open: { label: "مفتوح", className: "bg-primary text-primary-foreground" },
+  Closed: { label: "مغلق", className: "bg-muted text-muted-foreground" }
 };
 
 const priorityConfig = {
@@ -105,9 +107,9 @@ export const RecentRequests = () => {
             <div className="flex items-center justify-between pt-2 border-t border-border">
               <Badge className={cn(
                 "text-xs",
-                statusConfig[request.status as keyof typeof statusConfig]?.className || "bg-muted text-muted-foreground"
+                statusConfig[String(request.status)]?.className || "bg-muted text-muted-foreground"
               )}>
-                {statusConfig[request.status as keyof typeof statusConfig]?.label || request.status}
+                {statusConfig[String(request.status)]?.label || String(request.status)}
               </Badge>
               {request.estimated_cost && (
                 <span className="text-sm font-medium text-primary">
