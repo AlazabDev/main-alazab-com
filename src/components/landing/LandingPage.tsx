@@ -2,6 +2,8 @@ import { LandingHeader } from "./LandingHeader";
 import { HeroSection } from "./HeroSection";
 import { ServicesSection } from "./ServicesSection";
 import { StatsSection } from "./StatsSection";
+import { ExperienceSection } from "./ExperienceSection";
+import { GlobalPresenceSection } from "./GlobalPresenceSection";
 import { StorySection } from "./StorySection";
 import { FeaturesSection } from "./FeaturesSection";
 import { TestimonialsSection } from "./TestimonialsSection";
@@ -14,6 +16,8 @@ export const LandingPage = () => {
       <HeroSection />
       <ServicesSection />
       <StatsSection />
+      <ExperienceSection />
+      <GlobalPresenceSection />
       <StorySection />
       <FeaturesSection />
       <TestimonialsSection />
