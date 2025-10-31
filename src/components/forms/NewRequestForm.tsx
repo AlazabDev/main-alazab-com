@@ -115,8 +115,18 @@ export function NewRequestForm({ onSuccess, onCancel }: NewRequestFormProps) {
     setIsSubmitting(true);
     
     try {
-      // إعداد البيانات للإرسال (حذف property_id من البيانات المرسلة)
-      const { property_id, ...requestData } = formData;
+      // إعداد البيانات للإرسال
+      const { 
+        property_id, 
+        preferred_date, 
+        preferred_time,
+        latitude,
+        longitude,
+        ...requestData 
+      } = formData;
+      
+      // لا نرسل property_id لأن الجدول لا يحتوي عليه
+      // نحفظ معلومات الموقع في حقل location فقط
       const result = await createRequest(requestData);
       if (result) {
         // إنشاء حدث دورة حياة للطلب الجديد
