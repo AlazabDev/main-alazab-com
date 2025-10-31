@@ -134,12 +134,12 @@ export default function Properties() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-orange-500/10 rounded-lg">
-                      <DollarSign className="h-5 w-5 text-orange-500" />
+                      <MapPin className="h-5 w-5 text-orange-500" />
                     </div>
                      <div>
-                       <p className="text-sm text-muted-foreground">القيمة الإجمالية</p>
+                       <p className="text-sm text-muted-foreground">إجمالي المساحات</p>
                        <p className="text-lg font-bold text-orange-500">
-                         {properties.reduce((total, p) => total + (p.value || 0), 0).toLocaleString()} ج.م
+                         {properties.reduce((total, p) => total + (p.area || 0), 0).toLocaleString()} م²
                        </p>
                      </div>
                   </div>
@@ -263,26 +263,12 @@ export default function Properties() {
                             </div>
                           )}
 
-                          {property.value && (
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                              <DollarSign className="h-4 w-4" />
-                              <span>{property.value.toLocaleString()} ج.م</span>
-                            </div>
-                          )}
                         </div>
 
                         {/* Additional Details */}
-                        {(property.rooms || property.bathrooms || property.floors) && (
-                          <div className="grid grid-cols-3 gap-4 text-sm text-muted-foreground">
-                            {property.rooms && (
-                              <div>غرف: {property.rooms}</div>
-                            )}
-                            {property.bathrooms && (
-                              <div>حمامات: {property.bathrooms}</div>
-                            )}
-                            {property.floors && (
-                              <div>طوابق: {property.floors}</div>
-                            )}
+                        {property.rooms && (
+                          <div className="text-sm text-muted-foreground">
+                            عدد الغرف: {property.rooms}
                           </div>
                         )}
 

@@ -24,7 +24,6 @@ import { Loader2 } from "lucide-react";
 const propertySchema = z.object({
   name: z.string().min(3, "اسم العقار يجب أن يكون 3 أحرف على الأقل"),
   code: z.string().optional(),
-  // توحيد الأنواع مع النموذج الآخر والقيم المخزنة
   type: z.string().refine(
     (val) => [
       "residential",
@@ -42,11 +41,6 @@ const propertySchema = z.object({
   address: z.string().min(5, "العنوان يجب أن يكون 5 أحرف على الأقل"),
   area: z.number().min(1, "المساحة يجب أن تكون أكبر من 0"),
   rooms: z.number().min(0).optional(),
-  // حقول اختيارية مدعومة في النظام
-  value: z.number().min(0).optional(),
-  floors: z.number().min(0).optional(),
-  bathrooms: z.number().min(0).optional(),
-  parking_spaces: z.number().min(0).optional(),
   description: z.string().optional(),
   maintenance_manager: z.string().optional(),
   property_supervisor: z.string().optional(),
@@ -151,7 +145,7 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
         return;
       }
 
-      // إنشاء العقار (بدون حفظ إحداثيات غير موجودة في الجدول)
+      // إنشاء العقار مع حفظ إحداثيات الخريطة
       const { error: insertError } = await supabase
         .from("properties")
         .insert([{
@@ -160,12 +154,10 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
           address: data.address,
           area: data.area ? parseFloat(data.area.toString()) : null,
           rooms: data.rooms ? parseInt(data.rooms.toString()) : null,
-          value: data.value ? parseFloat(data.value.toString()) : null,
-          floors: data.floors ? parseInt(data.floors.toString()) : null,
-          bathrooms: data.bathrooms ? parseInt(data.bathrooms.toString()) : null,
-          parking_spaces: data.parking_spaces ? parseInt(data.parking_spaces.toString()) : null,
           description: data.description || null,
           region_id: data.district_id || data.city_id || null,
+          latitude: location.latitude,
+          longitude: location.longitude,
           status: "active",
           manager_id: user.id,
         } as any]);
@@ -331,12 +323,7 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
 
       {/* إحداثيات الخريطة */}
       <div className="space-y-2">
-        <Label>إحداثيات الخريطة</Label>
-        <div className="text-sm text-muted-foreground mb-2">
-          نادي وادي دجلة 1 أكتوبر، 6 أكتوبر، محافظة الجيزة EG
-          <br />
-          من نحن نقدم خدمات صيانة شاملة: نجارة، سباكة، كهرباء، بناء، ترميم، تشطيب.
-        </div>
+        <Label>تحديد الموقع على الخريطة *</Label>
         <LocationPicker
           onLocationSelect={handleLocationSelect}
           initialLatitude={location?.latitude}
@@ -374,7 +361,7 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
               id="area"
               type="number"
               {...register("area", { valueAsNumber: true })}
-              placeholder="مثال: 150"
+              placeholder="مثال: 50"
               className={errors.area ? "border-destructive" : ""}
             />
             {errors.area && (
@@ -388,50 +375,9 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
               id="rooms"
               type="number"
               {...register("rooms", { valueAsNumber: true })}
-              placeholder="مثال: 3"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="bathrooms">عدد الحمامات</Label>
-            <Input
-              id="bathrooms"
-              type="number"
-              {...register("bathrooms", { valueAsNumber: true })}
               placeholder="مثال: 2"
             />
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="floors">عدد الطوابق</Label>
-            <Input
-              id="floors"
-              type="number"
-              {...register("floors", { valueAsNumber: true })}
-              placeholder="مثال: 1"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="parking_spaces">مواقف السيارات</Label>
-            <Input
-              id="parking_spaces"
-              type="number"
-              {...register("parking_spaces", { valueAsNumber: true })}
-              placeholder="مثال: 1"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="value">القيمة التقديرية</Label>
-            <Input
-              id="value"
-              type="number"
-              {...register("value", { valueAsNumber: true })}
-              placeholder="مثال: 2500000"
-            />
-          </div>
-
         </div>
       </div>
 

@@ -7,14 +7,12 @@ export interface Property {
   type: string;
   status: string;
   address: string;
+  latitude?: number;
+  longitude?: number;
   area?: number;
-  value?: number;
+  rooms?: number;
   manager_id?: string;
   region_id?: string;
-  floors?: number;
-  rooms?: number;
-  bathrooms?: number;
-  parking_spaces?: number;
   description?: string;
   amenities?: string[];
   maintenance_schedule?: string;
