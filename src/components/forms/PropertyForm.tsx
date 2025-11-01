@@ -24,17 +24,19 @@ import { Loader2 } from "lucide-react";
 const propertySchema = z.object({
   name: z.string().min(3, "اسم العقار يجب أن يكون 3 أحرف على الأقل"),
   code: z.string().optional(),
-  type: z.string().refine(
-    (val) => [
-      "residential",
-      "commercial",
-      "industrial",
-      "office",
-      "retail",
-      "mixed_use",
-    ].includes(val),
-    { message: "يرجى اختيار نوع العقار" }
-  ),
+  type: z.string()
+    .refine(
+      (val) => [
+        "residential",
+        "commercial",
+        "industrial",
+        "office",
+        "retail",
+        "mixed_use",
+      ].includes(val),
+      { message: "يرجى اختيار نوع العقار" }
+    )
+    .default("residential"),
   country_code: z.string().default("EG"),
   city_id: z.string().optional(),
   district_id: z.string().optional(),
@@ -80,6 +82,7 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
   } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
+      type: "residential",
       country_code: "EG",
       temp_contact_country_code: "+20"
     }
