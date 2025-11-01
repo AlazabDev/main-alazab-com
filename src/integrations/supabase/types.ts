@@ -202,6 +202,21 @@ export type Database = {
         }
         Relationships: []
       }
+      cities: {
+        Row: {
+          id: number
+          name_ar: string
+        }
+        Insert: {
+          id?: number
+          name_ar: string
+        }
+        Update: {
+          id?: number
+          name_ar?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           billing_cycle: string | null
@@ -231,6 +246,39 @@ export type Database = {
           pricing_model?: string | null
         }
         Relationships: []
+      }
+      districts: {
+        Row: {
+          city_id: number
+          id: number
+          name_ar: string
+        }
+        Insert: {
+          city_id: number
+          id?: number
+          name_ar: string
+        }
+        Update: {
+          city_id?: number
+          id?: number
+          name_ar?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "districts_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "districts_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "vw_cities_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       error_logs: {
         Row: {
@@ -552,6 +600,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_maintenance_requests_assigned_vendor"
+            columns: ["assigned_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "maintenance_requests_assigned_vendor_id_fkey"
             columns: ["assigned_vendor_id"]
             isOneToOne: false
@@ -639,6 +694,7 @@ export type Database = {
           department_id: string | null
           email: string
           first_name: string | null
+          full_name: string | null
           id: string
           iframe_key: string | null
           is_deleted: boolean | null
@@ -662,6 +718,7 @@ export type Database = {
           department_id?: string | null
           email: string
           first_name?: string | null
+          full_name?: string | null
           id?: string
           iframe_key?: string | null
           is_deleted?: boolean | null
@@ -685,6 +742,7 @@ export type Database = {
           department_id?: string | null
           email?: string
           first_name?: string | null
+          full_name?: string | null
           id?: string
           iframe_key?: string | null
           is_deleted?: boolean | null
@@ -1122,6 +1180,13 @@ export type Database = {
           urgency_level?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_quick_requests_converted"
+            columns: ["converted_to_request_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_requests"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "quick_maintenance_requests_property_id_fkey"
             columns: ["property_id"]
@@ -2068,7 +2133,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      vw_cities_public: {
+        Row: {
+          id: number | null
+          name_ar: string | null
+        }
+        Insert: {
+          id?: number | null
+          name_ar?: string | null
+        }
+        Update: {
+          id?: number | null
+          name_ar?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calculate_distance: {
@@ -2154,6 +2233,14 @@ export type Database = {
           vendor_id: string
         }[]
       }
+      get_cities_for_user: {
+        Args: { p_user_id: string }
+        Returns: {
+          city_id: string
+          country: string
+          name: string
+        }[]
+      }
       get_current_user_company_id: { Args: never; Returns: string }
       get_customer_contact_info: {
         Args: { appointment_id: string }
@@ -2181,6 +2268,7 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_user_tenant: { Args: never; Returns: string }
       get_vendor_appointments: {
         Args: never
         Returns: {

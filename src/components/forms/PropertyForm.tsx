@@ -38,9 +38,9 @@ const propertySchema = z.object({
   country_code: z.string().default("EG"),
   city_id: z.string().optional(),
   district_id: z.string().optional(),
-  address: z.string().min(5, "العنوان يجب أن يكون 5 أحرف على الأقل"),
-  area: z.number().min(1, "المساحة يجب أن تكون أكبر من 0"),
-  rooms: z.number().min(0).optional(),
+  address: z.string().optional(),
+  area: z.number().optional(),
+  rooms: z.number().optional(),
   description: z.string().optional(),
   maintenance_manager: z.string().optional(),
   property_supervisor: z.string().optional(),
@@ -135,29 +135,19 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
         throw new Error("يجب تسجيل الدخول أولاً");
       }
 
-      // التحقق من الموقع
-      if (!location) {
-        toast({
-          variant: "destructive",
-          title: "خطأ",
-          description: "يرجى تحديد موقع العقار على الخريطة",
-        });
-        return;
-      }
-
       // إنشاء العقار مع حفظ إحداثيات الخريطة
       const { error: insertError } = await supabase
         .from("properties")
         .insert([{
           name: data.name,
           type: data.type,
-          address: data.address,
-          area: data.area ? parseFloat(data.area.toString()) : null,
-          rooms: data.rooms ? parseInt(data.rooms.toString()) : null,
+          address: data.address || location?.address || null,
+          area: data.area || null,
+          rooms: data.rooms || null,
           description: data.description || null,
           region_id: data.district_id || data.city_id || null,
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude: location?.latitude || null,
+          longitude: location?.longitude || null,
           status: "active",
           manager_id: user.id,
         } as any]);
@@ -323,7 +313,7 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
 
       {/* إحداثيات الخريطة */}
       <div className="space-y-2">
-        <Label>تحديد الموقع على الخريطة *</Label>
+        <Label>تحديد الموقع على الخريطة (اختياري)</Label>
         <LocationPicker
           onLocationSelect={handleLocationSelect}
           initialLatitude={location?.latitude}
@@ -334,20 +324,16 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
 
       {/* العنوان التفصيلي */}
       <div className="space-y-2">
-        <Label htmlFor="address">العنوان التفصيلي</Label>
+        <Label htmlFor="address">العنوان التفصيلي (اختياري)</Label>
         <Textarea
           id="address"
           {...register("address")}
           placeholder="نادي وادي دجلة أكتوبر"
           rows={3}
-          className={errors.address ? "border-destructive" : ""}
         />
         <p className="text-xs text-muted-foreground">
           تفاصيل إضافية للعنوان: مثل رقم الطابق، الطريق بعد الرقم الأساسي، رقم الشقة، إلخ
         </p>
-        {errors.address && (
-          <p className="text-sm text-destructive">{errors.address.message}</p>
-        )}
       </div>
 
       {/* المواصفات الأساسية */}
@@ -356,17 +342,17 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="area">المساحة (متر مربع) *</Label>
+            <Label htmlFor="area">المساحة (متر مربع)</Label>
             <Input
               id="area"
               type="number"
-              {...register("area", { valueAsNumber: true })}
+              step="0.01"
+              min="0"
+              {...register("area", { 
+                setValueAs: v => v === '' ? undefined : parseFloat(v)
+              })}
               placeholder="مثال: 50"
-              className={errors.area ? "border-destructive" : ""}
             />
-            {errors.area && (
-              <p className="text-sm text-destructive">{errors.area.message}</p>
-            )}
           </div>
 
           <div className="space-y-2">
@@ -374,7 +360,10 @@ export function PropertyForm({ skipNavigation = false, onSuccess }: PropertyForm
             <Input
               id="rooms"
               type="number"
-              {...register("rooms", { valueAsNumber: true })}
+              min="0"
+              {...register("rooms", { 
+                setValueAs: v => v === '' ? undefined : parseInt(v)
+              })}
               placeholder="مثال: 2"
             />
           </div>
